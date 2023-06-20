@@ -2,6 +2,7 @@
 using Moq;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchieveTrackReader;
+using Wada.IO;
 
 namespace Wada.ReadAchieveTrackApplication.Tests
 {
@@ -41,7 +42,7 @@ namespace Wada.ReadAchieveTrackApplication.Tests
             var expected = paths.Select(_ => res.Select(x => WorkRecordAttempt.Parse(x)))
                                 .SelectMany(x => x);
             CollectionAssert.AreEquivalent(expected.ToList(), actual.ToList());
-            streamMock.Verify(x => x.OpenAsync(It.IsAny<string>()), Times.Exactly(2));
+            streamMock.Verify(x => x.Open(It.IsAny<string>()), Times.Exactly(2));
             readerMock.Verify(x => x.ReadWorkRecordsAsync(It.IsAny<Stream>()), Times.Exactly(2));
         }
     }

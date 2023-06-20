@@ -19,15 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AOP.Logging", "Wada.AO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchievementEntry", "Wada.AchievementEntry\Wada.AchievementEntry.csproj", "{8699365D-BF8B-40A7-87C9-A6AABE398CAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.AchieveTrackService", "Wada.AchieveTrackService\Wada.AchieveTrackService.csproj", "{F2584E6D-418A-4177-9CE9-847478779586}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackService", "Wada.AchieveTrackService\Wada.AchieveTrackService.csproj", "{F2584E6D-418A-4177-9CE9-847478779586}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.ReadAchieveTrackApplication", "Wada.ReadAchieveTrackApplication\Wada.ReadAchieveTrackApplication.csproj", "{568C2C93-3CDF-4597-B38B-E9E22D7726A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadAchieveTrackApplication", "Wada.ReadAchieveTrackApplication\Wada.ReadAchieveTrackApplication.csproj", "{568C2C93-3CDF-4597-B38B-E9E22D7726A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.ReadAchieveTrackApplicationTests", "Wada.ReadAchieveTrackApplicationTests\Wada.ReadAchieveTrackApplicationTests.csproj", "{09F4043C-31FC-4CA7-A997-FC78FFB41C57}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.IO", "Wada.IO\Wada.IO.csproj", "{52B4C492-9840-4BA0-AB19-D64647713A0B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.IOTests", "Wada.IOTests\Wada.IOTests.csproj", "{4097FFF6-3AE8-4545-BFD2-17CB77DE6880}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadAchieveTrackApplicationTests", "Wada.ReadAchieveTrackApplicationTests\Wada.ReadAchieveTrackApplicationTests.csproj", "{09F4043C-31FC-4CA7-A997-FC78FFB41C57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,14 +55,6 @@ Global
 		{09F4043C-31FC-4CA7-A997-FC78FFB41C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09F4043C-31FC-4CA7-A997-FC78FFB41C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09F4043C-31FC-4CA7-A997-FC78FFB41C57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52B4C492-9840-4BA0-AB19-D64647713A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52B4C492-9840-4BA0-AB19-D64647713A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52B4C492-9840-4BA0-AB19-D64647713A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52B4C492-9840-4BA0-AB19-D64647713A0B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4097FFF6-3AE8-4545-BFD2-17CB77DE6880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4097FFF6-3AE8-4545-BFD2-17CB77DE6880}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4097FFF6-3AE8-4545-BFD2-17CB77DE6880}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4097FFF6-3AE8-4545-BFD2-17CB77DE6880}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,8 +65,6 @@ Global
 		{F2584E6D-418A-4177-9CE9-847478779586} = {A4F95C76-45DC-4CDB-816E-DFC05648154F}
 		{568C2C93-3CDF-4597-B38B-E9E22D7726A0} = {F09417BC-393B-4DF0-9DE4-02604E8136E4}
 		{09F4043C-31FC-4CA7-A997-FC78FFB41C57} = {F09417BC-393B-4DF0-9DE4-02604E8136E4}
-		{52B4C492-9840-4BA0-AB19-D64647713A0B} = {CA9E2383-0E27-4018-9723-183AC5FC2F18}
-		{4097FFF6-3AE8-4545-BFD2-17CB77DE6880} = {CA9E2383-0E27-4018-9723-183AC5FC2F18}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6BBC0BD-A5F6-44C4-B7A6-7FAD6289890C}

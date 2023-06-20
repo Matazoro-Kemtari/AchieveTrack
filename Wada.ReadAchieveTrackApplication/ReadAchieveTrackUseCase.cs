@@ -1,4 +1,5 @@
 ﻿using Wada.AchieveTrackService;
+using Wada.IO;
 
 namespace Wada.ReadAchieveTrackApplication;
 
@@ -29,7 +30,7 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
             paths.Select(async path =>
             {
                 // エクセルを開く
-                var stream = await _fileStreamOpener.OpenAsync(path);
+                var stream = _fileStreamOpener.Open(path);
 
                 // 日報オブジェクトを作成する
                 return await _workRecordReader.ReadWorkRecordsAsync(stream);
