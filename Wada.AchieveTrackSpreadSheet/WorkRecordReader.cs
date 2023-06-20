@@ -35,7 +35,8 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"社員番号が取得できませんでした 行: {row.RowNumber()}");
 
-                            if (!row.Cell(workingNumberLetter).TryGetValue(out string workingNumber))
+                            if (!row.Cell(workingNumberLetter).TryGetValue(out string workingNumber)
+                                || workingNumber == string.Empty)
                                 throw new DomainException(
                                     $"作業番号が取得できませんでした 行: {row.RowNumber()}");
 

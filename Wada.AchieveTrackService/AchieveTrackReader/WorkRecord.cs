@@ -5,8 +5,12 @@ namespace Wada.AchieveTrackService.AchieveTrackReader;
 
 public record class WorkRecord
 {
+    private const decimal minimumManHour = 0.02m;
+
     private WorkRecord(DateTime workingDate, uint employeeNumber, WorkingNumber workingNumber, decimal manHour)
     {
+        if (manHour < minimumManHour)
+            throw new DomainException($"工数は最小値({minimumManHour:F2})より大きい値にしてください 工数: {manHour:F2}");
         WorkingDate = workingDate;
         EmployeeNumber = employeeNumber;
         WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));

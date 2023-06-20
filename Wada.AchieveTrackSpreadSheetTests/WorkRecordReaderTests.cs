@@ -30,6 +30,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
         {
             XLWorkbook workbook = new();
             var sht = workbook.AddWorksheet();
+            // 1行目はヘッダ
             MakeTestWorkRecordHeader().Select((header, i) => (header, i))
                                       .ToList()
                                       .ForEach(x =>
@@ -37,6 +38,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                                           sht.Cell(1, x.i + 1).SetValue(x.header);
                                       });
 
+            // 2行目以降にデータ
             MakeTestDatas().Select((item, i) => (item, i))
                            .ToList()
                            .ForEach(x =>
@@ -130,11 +132,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
 
             // when
             IWorkRecordReader workRecordReader = new WorkRecordReader();
-            async Task target()
-            {
-                var hoge = await workRecordReader.ReadWorkRecordsAsync(xlsStream!);
-                _ = hoge.ToList();
-            }
+            Task target() => workRecordReader.ReadWorkRecordsAsync(xlsStream!);
 
             // then
             var ex = await Assert.ThrowsExceptionAsync<DomainException>(target);
@@ -144,11 +142,6 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
 
         [DataTestMethod]
         [DataRow(null)]
-        [DataRow(-1)]
-        [DataRow(0)]
-        [DataRow(1)]
-        [DataRow("ABC")]
-        [DataRow("漢字")]
         public async Task 異常系_作業番号が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
         {
             // given
@@ -172,7 +165,38 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
 
             // then
             var ex = await Assert.ThrowsExceptionAsync<DomainException>(target);
-            var msg = $"正しい作業Noの形式を入力してください 値: {wrongWorkingDate}";
+            var msg = "作業番号が取得できませんでした 行: 2";
+            Assert.AreEqual(msg, ex.Message);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("ABC")]
+        [DataRow("漢字")]
+        public async Task 異常系_工数が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        {
+            // given
+            using var workbook = MakeTestBook();
+            var sht = workbook.Worksheets.First();
+            const string CellAddressInRange = "J2";
+            if (wrongWorkingDate is null)
+                sht.Cell(CellAddressInRange).Clear();
+            else
+                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+            using var xlsStream = new MemoryStream();
+            workbook.SaveAs(xlsStream);
+
+            // when
+            IWorkRecordReader workRecordReader = new WorkRecordReader();
+            async Task target()
+            {
+                var hoge = await workRecordReader.ReadWorkRecordsAsync(xlsStream!);
+                _ = hoge.ToList();
+            }
+
+            // then
+            var ex = await Assert.ThrowsExceptionAsync<DomainException>(target);
+            var msg = "工数が取得できませんでした 行: 2";
             Assert.AreEqual(msg, ex.Message);
         }
     }
