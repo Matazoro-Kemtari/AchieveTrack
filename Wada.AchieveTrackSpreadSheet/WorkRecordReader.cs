@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchieveTrackReader;
+using Wada.AchieveTrackService.ValueObjects;
 
 namespace Wada.AchieveTrackSpreadSheet;
 
@@ -29,7 +30,8 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"作業日が取得できませんでした 行: {row.RowNumber()}");
 
-                            if (!row.Cell(employeeNumberLetter).TryGetValue(out int employeeNumber))
+                            if (!row.Cell(employeeNumberLetter).TryGetValue(out int employeeNumber)
+                                || employeeNumber <= 0)
                                 throw new DomainException(
                                     $"社員番号が取得できませんでした 行: {row.RowNumber()}");
 
@@ -41,12 +43,16 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"工数が取得できませんでした 行: {row.RowNumber()}");
 
-                            return WorkRecord.Create(workingDate, (uint)employeeNumber, workingNumber, manHour);
+                            return WorkRecord.Create(workingDate, (uint)employeeNumber, WorkingNumber.Create(workingNumber), manHour);
                         })));
         }
         catch (InvalidOperationException ex)
         {
             throw new DomainException("ワークシートが見つかりません", ex);
+        }
+        catch (Data.OrderManagement.Models.ValueObjects.WorkingNumberException ex)
+        {
+            throw new DomainException(ex.Message, ex);
         }
     }
 }

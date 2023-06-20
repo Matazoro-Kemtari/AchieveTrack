@@ -10,6 +10,6 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
     public static WorkRecordAttempt Parse(WorkRecord workRecord)
         => new(workRecord.WorkingDate,
                workRecord.EmployeeNumber,
-               workRecord.WorkingNumber,
+               workRecord.WorkingNumber.Value,
                workRecord.ManHour);
 }

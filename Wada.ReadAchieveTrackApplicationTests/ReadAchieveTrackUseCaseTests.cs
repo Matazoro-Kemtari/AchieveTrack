@@ -2,6 +2,7 @@
 using Moq;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchieveTrackReader;
+using Wada.AchieveTrackService.ValueObjects;
 using Wada.IO;
 
 namespace Wada.ReadAchieveTrackApplication.Tests
@@ -19,10 +20,10 @@ namespace Wada.ReadAchieveTrackApplication.Tests
             {
                 TestWorkRecordFactory.Create(
                     workingDate: new DateTime(2023,4,1),
-                    workingNumber: "23A-1"),
+                    workingNumber: WorkingNumber.Create("23A-1")),
                 TestWorkRecordFactory.Create(
                     workingDate: new DateTime(2023,4,1),
-                    workingNumber: "23A-2"),
+                    workingNumber: WorkingNumber.Create("23A-2")),
             };
             readerMock.Setup(x => x.ReadWorkRecordsAsync(It.IsAny<Stream>()))
                 .ReturnsAsync(res);
