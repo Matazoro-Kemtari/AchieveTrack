@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadAchieveTrackApplic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadAchieveTrackApplicationTests", "Wada.ReadAchieveTrackApplicationTests\Wada.ReadAchieveTrackApplicationTests.csproj", "{09F4043C-31FC-4CA7-A997-FC78FFB41C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.AchieveTrackSpreadSheet", "Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj", "{BFEAEB84-DF50-48C9-AC4B-D105F0FC76DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackSpreadSheet", "Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj", "{BFEAEB84-DF50-48C9-AC4B-D105F0FC76DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.AchieveTrackSpreadSheetTests", "Wada.AchieveTrackSpreadSheetTests\Wada.AchieveTrackSpreadSheetTests.csproj", "{26778FCD-2594-41C4-BE6B-66D4011B841E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackSpreadSheetTests", "Wada.AchieveTrackSpreadSheetTests\Wada.AchieveTrackSpreadSheetTests.csproj", "{26778FCD-2594-41C4-BE6B-66D4011B841E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.AchieveTrackServiceTests", "Wada.AchieveTrackServiceTests\Wada.AchieveTrackServiceTests.csproj", "{7130289D-3169-465D-AFAB-1F274F76CB59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,10 @@ Global
 		{26778FCD-2594-41C4-BE6B-66D4011B841E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26778FCD-2594-41C4-BE6B-66D4011B841E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26778FCD-2594-41C4-BE6B-66D4011B841E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7130289D-3169-465D-AFAB-1F274F76CB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7130289D-3169-465D-AFAB-1F274F76CB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7130289D-3169-465D-AFAB-1F274F76CB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7130289D-3169-465D-AFAB-1F274F76CB59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{09F4043C-31FC-4CA7-A997-FC78FFB41C57} = {F09417BC-393B-4DF0-9DE4-02604E8136E4}
 		{BFEAEB84-DF50-48C9-AC4B-D105F0FC76DD} = {CA9E2383-0E27-4018-9723-183AC5FC2F18}
 		{26778FCD-2594-41C4-BE6B-66D4011B841E} = {CA9E2383-0E27-4018-9723-183AC5FC2F18}
+		{7130289D-3169-465D-AFAB-1F274F76CB59} = {A4F95C76-45DC-4CDB-816E-DFC05648154F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6BBC0BD-A5F6-44C4-B7A6-7FAD6289890C}
