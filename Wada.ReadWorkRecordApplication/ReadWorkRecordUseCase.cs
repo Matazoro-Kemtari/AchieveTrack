@@ -1,4 +1,5 @@
 ﻿using Wada.AchieveTrackService;
+using Wada.AOP.Logging;
 using Wada.IO;
 
 namespace Wada.ReadWorkRecordApplication;
@@ -24,6 +25,7 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
         _workRecordReader = workRecordReader;
     }
 
+    [Logging]
     public async Task<IEnumerable<WorkRecordAttempt>> ExecuteAsync(IEnumerable<string> paths)
     {
         var results = await Task.WhenAll(

@@ -2,11 +2,13 @@
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AchieveTrackService.ValueObjects;
+using Wada.AOP.Logging;
 
 namespace Wada.AchieveTrackSpreadSheet;
 
 public class WorkRecordReader : IWorkRecordReader
 {
+    [Logging]
     public async Task<IEnumerable<WorkRecord>> ReadWorkRecordsAsync(Stream stream)
     {
         using var xlBook = new XLWorkbook(stream);
