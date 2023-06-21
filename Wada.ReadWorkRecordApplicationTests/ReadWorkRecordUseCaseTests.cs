@@ -1,11 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Wada.AchieveTrackService;
-using Wada.AchieveTrackService.AchieveTrackReader;
+using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AchieveTrackService.ValueObjects;
 using Wada.IO;
 
-namespace Wada.ReadAchieveTrackApplication.Tests
+namespace Wada.ReadWorkRecordApplication.Tests
 {
     [TestClass()]
     public class ReadAchieveTrackUseCaseTests

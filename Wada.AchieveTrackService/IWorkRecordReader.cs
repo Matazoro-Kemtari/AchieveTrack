@@ -1,4 +1,4 @@
-﻿using Wada.AchieveTrackService.AchieveTrackReader;
+﻿using Wada.AchieveTrackService.WorkRecordReader;
 
 namespace Wada.AchieveTrackService;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wada.AchieveTrackService.ValueObjects;
 
-namespace Wada.AchieveTrackService.AchieveTrackReader.Tests
+namespace Wada.AchieveTrackService.WorkRecordReader.Tests
 {
     [TestClass()]
     public class WorkRecordTests

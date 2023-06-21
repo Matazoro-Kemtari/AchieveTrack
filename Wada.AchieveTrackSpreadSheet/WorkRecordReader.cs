@@ -1,6 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Wada.AchieveTrackService;
-using Wada.AchieveTrackService.AchieveTrackReader;
+using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AchieveTrackService.ValueObjects;
 
 namespace Wada.AchieveTrackSpreadSheet;

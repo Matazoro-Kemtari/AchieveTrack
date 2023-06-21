@@ -1,6 +1,6 @@
-﻿using Wada.AchieveTrackService.AchieveTrackReader;
+﻿using Wada.AchieveTrackService.WorkRecordReader;
 
-namespace Wada.ReadAchieveTrackApplication;
+namespace Wada.ReadWorkRecordApplication;
 
 public record class WorkRecordAttempt(DateTime WorkingDate,
                                       uint EmployeeNumber,

@@ -1,7 +1,7 @@
 ﻿using Wada.AchieveTrackService;
 using Wada.IO;
 
-namespace Wada.ReadAchieveTrackApplication;
+namespace Wada.ReadWorkRecordApplication;
 
 public interface IReadAchieveTrackUseCase
 {

@@ -1,7 +1,7 @@
 ﻿using Wada.AchieveTrackService.ValueObjects;
 using Wada.AOP.Logging;
 
-namespace Wada.AchieveTrackService.AchieveTrackReader;
+namespace Wada.AchieveTrackService.WorkRecordReader;
 
 public record class WorkRecord
 {
