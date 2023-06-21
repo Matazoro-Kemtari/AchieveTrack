@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchieveTrackReader;
+using Wada.AchieveTrackService.ValueObjects;
 
 namespace Wada.AchieveTrackSpreadSheet.Tests
 {
@@ -46,21 +47,21 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                 sht.Cell(x.i + 2, "A").SetValue(x.item.WorkingDate);
                 sht.Cell(x.i + 2, "B").SetValue(x.item.EmployeeNumber);
                 sht.Cell(x.i + 2, "E").SetValue(x.item.WorkingNumber.Value);
-                sht.Cell(x.i + 2, "J").SetValue(x.item.ManHour);
+                sht.Cell(x.i + 2, "J").SetValue(x.item.ManHour.Value);
             });
             return workbook;
         }
 
         private static IEnumerable<WorkRecord> MakeTestDatas() => new List<WorkRecord>
         {
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: 0.1m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: 3.4m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: 2.5m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: 4.0m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,2), manHour: 0.5m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,2), manHour: 3.5m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,3), manHour: 5.5m),
-            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,3), manHour: 2.0m),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: TestManHourFactory.Create(0.1m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: TestManHourFactory.Create(3.4m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: TestManHourFactory.Create(2.5m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,1), manHour: TestManHourFactory.Create(4.0m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,2), manHour: TestManHourFactory.Create(0.5m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,2), manHour: TestManHourFactory.Create(3.5m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,3), manHour: TestManHourFactory.Create(5.5m)),
+            TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,3), manHour: TestManHourFactory.Create(2.0m)),
         };
 
         private static string[] MakeTestWorkRecordHeader() => new string[]

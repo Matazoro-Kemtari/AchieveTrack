@@ -44,7 +44,7 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"工数が取得できませんでした 行: {row.RowNumber()}");
 
-                            return WorkRecord.Create(workingDate, (uint)employeeNumber, WorkingNumber.Create(workingNumber), manHour);
+                            return WorkRecord.Create(workingDate, (uint)employeeNumber, WorkingNumber.Create(workingNumber), ManHour.Create(manHour));
                         })));
         }
         catch (InvalidOperationException ex)

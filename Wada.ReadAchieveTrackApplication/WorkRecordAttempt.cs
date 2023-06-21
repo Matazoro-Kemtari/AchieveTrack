@@ -11,5 +11,5 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
         => new(workRecord.WorkingDate,
                workRecord.EmployeeNumber,
                workRecord.WorkingNumber.Value,
-               workRecord.ManHour);
+               workRecord.ManHour.Value);
 }
