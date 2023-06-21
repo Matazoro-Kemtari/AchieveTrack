@@ -23,8 +23,11 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
 
             // then
             Assert.IsNotNull(actual);
-            var expected = MakeTestDatas();
-            CollectionAssert.AreEquivalent(expected.ToArray(), actual.ToArray());
+            // idは除外して比較
+            var expected = MakeTestDatas().Select(x => new { x.WorkingDate, x.EmployeeNumber, x.WorkingNumber, x.ManHour });
+            CollectionAssert.AreEquivalent(
+                expected.ToArray(),
+                actual.Select(x => new { x.WorkingDate, x.EmployeeNumber, x.WorkingNumber, x.ManHour }).ToArray());
         }
 
         private static IXLWorkbook MakeTestBook()

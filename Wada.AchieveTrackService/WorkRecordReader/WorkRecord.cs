@@ -7,6 +7,16 @@ public record class WorkRecord
 {
     private WorkRecord(DateTime workingDate, uint employeeNumber, WorkingNumber workingNumber, ManHour manHour)
     {
+        Id = Ulid.NewUlid();
+        WorkingDate = workingDate;
+        EmployeeNumber = employeeNumber;
+        WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));
+        ManHour = manHour ?? throw new ArgumentNullException(nameof(manHour));
+    }
+
+    private WorkRecord(Ulid id, DateTime workingDate, uint employeeNumber, WorkingNumber workingNumber, ManHour manHour)
+    {
+        Id = id;
         WorkingDate = workingDate;
         EmployeeNumber = employeeNumber;
         WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));
@@ -18,8 +28,10 @@ public record class WorkRecord
         => new(workingDate, employeeNumber, workingNumber, manHour);
 
     [Logging]
-    public static WorkRecord Reconstruct(DateTime workingDate, uint employeeNumber, WorkingNumber workingNumber, ManHour manHour)
-        => Create(workingDate, employeeNumber, workingNumber, manHour);
+    public static WorkRecord Reconstruct(Ulid id, DateTime workingDate, uint employeeNumber, WorkingNumber workingNumber, ManHour manHour)
+        => new(id, workingDate, employeeNumber, workingNumber, manHour);
+
+    public Ulid Id { get; init; }
 
     public DateTime WorkingDate { get; init; }
 
@@ -39,8 +51,8 @@ public class TestWorkRecordFactory
                                     ManHour? manHour = default)
     {
         workingDate ??= new DateTime(2023, 4, 1);
-        workingNumber ??= TestWorkingNumberFactory.Create("23Z-1");
+        workingNumber ??= TestWorkingNumberFactory.Create();
         manHour ??= ManHour.Create(4);
-        return WorkRecord.Reconstruct(workingDate.Value, employeeNumber, workingNumber, manHour);
+        return WorkRecord.Create(workingDate.Value, employeeNumber, workingNumber, manHour);
     }
 }

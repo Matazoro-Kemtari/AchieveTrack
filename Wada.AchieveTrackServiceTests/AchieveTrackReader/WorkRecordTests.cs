@@ -11,7 +11,7 @@ namespace Wada.AchieveTrackService.WorkRecordReader.Tests
         {
             // given
             // when
-            void target() => _ = WorkRecord.Create(DateTime.Now,
+            static void target() => _ = WorkRecord.Create(DateTime.Now,
                                                    1,
                                                    null!,
                                                    TestManHourFactory.Create());
@@ -25,7 +25,7 @@ namespace Wada.AchieveTrackService.WorkRecordReader.Tests
         {
             // given
             // when
-            void target() => _ = WorkRecord.Create(DateTime.Now,
+            static void target() => _ = WorkRecord.Create(DateTime.Now,
                                                    1,
                                                    TestWorkingNumberFactory.Create(),
                                                    null!);

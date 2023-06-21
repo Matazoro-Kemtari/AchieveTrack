@@ -16,7 +16,7 @@ public record class ManHour
 
     public static ManHour Reconstruct(decimal value) => new(value);
 
-    public override string ToString() => Value.ToString();
+    public override string ToString() => Value.ToString("F2");
 
     public decimal Value { get; init; }
 }
