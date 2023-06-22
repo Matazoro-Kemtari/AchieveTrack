@@ -21,15 +21,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchievementEntry", "Wa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackService", "Wada.AchieveTrackService\Wada.AchieveTrackService.csproj", "{F2584E6D-418A-4177-9CE9-847478779586}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadAchieveTrackApplication", "Wada.ReadAchieveTrackApplication\Wada.ReadAchieveTrackApplication.csproj", "{568C2C93-3CDF-4597-B38B-E9E22D7726A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadWorkRecordApplication", "Wada.ReadWorkRecordApplication\Wada.ReadWorkRecordApplication.csproj", "{568C2C93-3CDF-4597-B38B-E9E22D7726A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadAchieveTrackApplicationTests", "Wada.ReadAchieveTrackApplicationTests\Wada.ReadAchieveTrackApplicationTests.csproj", "{09F4043C-31FC-4CA7-A997-FC78FFB41C57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.ReadWorkRecordApplicationTests", "Wada.ReadWorkRecordApplicationTests\Wada.ReadWorkRecordApplicationTests.csproj", "{09F4043C-31FC-4CA7-A997-FC78FFB41C57}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackSpreadSheet", "Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj", "{BFEAEB84-DF50-48C9-AC4B-D105F0FC76DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackSpreadSheetTests", "Wada.AchieveTrackSpreadSheetTests\Wada.AchieveTrackSpreadSheetTests.csproj", "{26778FCD-2594-41C4-BE6B-66D4011B841E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wada.AchieveTrackServiceTests", "Wada.AchieveTrackServiceTests\Wada.AchieveTrackServiceTests.csproj", "{7130289D-3169-465D-AFAB-1F274F76CB59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.AchieveTrackServiceTests", "Wada.AchieveTrackServiceTests\Wada.AchieveTrackServiceTests.csproj", "{7130289D-3169-465D-AFAB-1F274F76CB59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.VerifyWorkRecordApplication", "Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj", "{52362BE2-262F-40A8-A5D3-E1E9A485D182}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wada.VerifyWorkRecordApplicationTests", "Wada.VerifyWorkRecordApplicationTests\Wada.VerifyWorkRecordApplicationTests.csproj", "{118F8E9A-FCC4-4508-911C-F0CD69E878B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,14 @@ Global
 		{7130289D-3169-465D-AFAB-1F274F76CB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7130289D-3169-465D-AFAB-1F274F76CB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7130289D-3169-465D-AFAB-1F274F76CB59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52362BE2-262F-40A8-A5D3-E1E9A485D182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52362BE2-262F-40A8-A5D3-E1E9A485D182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52362BE2-262F-40A8-A5D3-E1E9A485D182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52362BE2-262F-40A8-A5D3-E1E9A485D182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{118F8E9A-FCC4-4508-911C-F0CD69E878B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{118F8E9A-FCC4-4508-911C-F0CD69E878B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{118F8E9A-FCC4-4508-911C-F0CD69E878B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{118F8E9A-FCC4-4508-911C-F0CD69E878B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +98,8 @@ Global
 		{BFEAEB84-DF50-48C9-AC4B-D105F0FC76DD} = {CA9E2383-0E27-4018-9723-183AC5FC2F18}
 		{26778FCD-2594-41C4-BE6B-66D4011B841E} = {CA9E2383-0E27-4018-9723-183AC5FC2F18}
 		{7130289D-3169-465D-AFAB-1F274F76CB59} = {A4F95C76-45DC-4CDB-816E-DFC05648154F}
+		{52362BE2-262F-40A8-A5D3-E1E9A485D182} = {F09417BC-393B-4DF0-9DE4-02604E8136E4}
+		{118F8E9A-FCC4-4508-911C-F0CD69E878B7} = {F09417BC-393B-4DF0-9DE4-02604E8136E4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6BBC0BD-A5F6-44C4-B7A6-7FAD6289890C}
