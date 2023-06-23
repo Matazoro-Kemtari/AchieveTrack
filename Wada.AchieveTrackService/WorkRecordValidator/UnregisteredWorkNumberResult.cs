@@ -1,7 +1,7 @@
 ﻿namespace Wada.AchieveTrackService.WorkRecordValidator;
 
 /// <summary>
-/// 設計管理に未登録の作業NOの結果
+/// 設計管理に未登録の作業番号の結果
 /// </summary>
 public record class UnregisteredWorkNumberResult : IValidationResult
 {
@@ -9,5 +9,5 @@ public record class UnregisteredWorkNumberResult : IValidationResult
 
     public static UnregisteredWorkNumberResult Create() => new();
 
-    public string Message => "設計管理に未登録の作業NOです";
+    public string Message => "設計管理に未登録の作業番号です";
 }

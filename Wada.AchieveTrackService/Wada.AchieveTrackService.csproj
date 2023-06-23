@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
     <PackageReference Include="Ulid" Version="1.2.6" />
-    <PackageReference Include="Wada.Data.OrderManagement.Models" Version="1.1.0-rc-5" />
+    <PackageReference Include="Wada.Data.OrderManagement.Models" Version="1.1.0-rc-6" />
   </ItemGroup>
 
   <ItemGroup>

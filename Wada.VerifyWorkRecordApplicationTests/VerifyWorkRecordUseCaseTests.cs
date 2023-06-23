@@ -34,7 +34,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             var actual = await useCase.ExecuteAsync(param);
 
             // then
-            Assert.AreEqual(validationResults.Count(), actual.Count());
+            Assert.AreEqual(validationResults.Length, actual.Count());
             Assert.IsTrue(actual.All(x => x.GetType() == typeof(ValidationSuccessResultAttempt)));
         }
 
@@ -62,12 +62,12 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             var actual = await useCase.ExecuteAsync(param);
 
             // then
-            Assert.AreEqual(validationResults.Count(), actual.Count());
+            Assert.AreEqual(validationResults.Length, actual.Count());
             Assert.IsTrue(actual.Any(x => x.GetType() == typeof(WorkDateExpiredResultAttempt)));
         }
 
         [TestMethod()]
-        public async Task 正常系_作業台帳にない作業NOの作業日報が検出できること()
+        public async Task 正常系_作業台帳にない作業番号の作業日報が検出できること()
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
@@ -90,7 +90,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             var actual = await useCase.ExecuteAsync(param);
 
             // then
-            Assert.AreEqual(validationResults.Count(), actual.Count());
+            Assert.AreEqual(validationResults.Length, actual.Count());
             Assert.IsTrue(actual.Any(x => x.GetType() == typeof(InvalidWorkNumberResultAttempt)));
         }
 
@@ -118,12 +118,12 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             var actual = await useCase.ExecuteAsync(param);
 
             // then
-            Assert.AreEqual(validationResults.Count(), actual.Count());
+            Assert.AreEqual(validationResults.Length, actual.Count());
             Assert.IsTrue(actual.Any(x => x.GetType() == typeof(DuplicateWorkDateEmployeeResultAttempt)));
         }
 
         [TestMethod()]
-        public async Task 正常系_設計管理に未登録の作業NOの作業日報が検出できること()
+        public async Task 正常系_設計管理に未登録の作業番号の作業日報が検出できること()
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
@@ -146,7 +146,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             var actual = await useCase.ExecuteAsync(param);
 
             // then
-            Assert.AreEqual(validationResults.Count(), actual.Count());
+            Assert.AreEqual(validationResults.Length, actual.Count());
             Assert.IsTrue(actual.Any(x => x.GetType() == typeof(UnregisteredWorkNumberResultAttempt)));
         }
     }
