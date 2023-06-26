@@ -29,7 +29,7 @@ public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
             { typeof(WorkDateExpiredResult), WorkDateExpiredResultAttempt.Parse },
         };
 
-        var results = await _workRecordValidator.ValidateWorkRecords(achievementRecordParams.Select(x => x.ConvertWorkRecord()));
+        var results = await _workRecordValidator.ValidateWorkRecordsAsync(achievementRecordParams.Select(x => x.ConvertWorkRecord()));
         return results.Select(x => parser[x.GetType()](x));
     }
 }

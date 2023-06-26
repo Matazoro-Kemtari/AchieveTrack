@@ -21,7 +21,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
                 ValidationSuccessResult.Create(),
                 ValidationSuccessResult.Create(),
             };
-            validatorMock.Setup(x => x.ValidateWorkRecords(It.IsAny<IEnumerable<WorkRecord>>()))
+            validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
                 .ReturnsAsync(validationResults);
 
             var param = new WorkRecordParam[]
@@ -49,7 +49,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
                 WorkDateExpiredResult.Create(),
                 ValidationSuccessResult.Create(),
             };
-            validatorMock.Setup(x => x.ValidateWorkRecords(It.IsAny<IEnumerable<WorkRecord>>()))
+            validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
                 .ReturnsAsync(validationResults);
 
             var param = new WorkRecordParam[]
@@ -77,7 +77,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
                 InvalidWorkNumberResult.Create(),
                 ValidationSuccessResult.Create(),
             };
-            validatorMock.Setup(x => x.ValidateWorkRecords(It.IsAny<IEnumerable<WorkRecord>>()))
+            validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
                 .ReturnsAsync(validationResults);
 
             var param = new WorkRecordParam[]
@@ -105,7 +105,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
                 DuplicateWorkDateEmployeeResult.Create(),
                 ValidationSuccessResult.Create(),
             };
-            validatorMock.Setup(x => x.ValidateWorkRecords(It.IsAny<IEnumerable<WorkRecord>>()))
+            validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
                 .ReturnsAsync(validationResults);
 
             var param = new WorkRecordParam[]
@@ -133,7 +133,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
                 UnregisteredWorkNumberResult.Create(),
                 ValidationSuccessResult.Create(),
             };
-            validatorMock.Setup(x => x.ValidateWorkRecords(It.IsAny<IEnumerable<WorkRecord>>()))
+            validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
                 .ReturnsAsync(validationResults);
 
             var param = new WorkRecordParam[]
