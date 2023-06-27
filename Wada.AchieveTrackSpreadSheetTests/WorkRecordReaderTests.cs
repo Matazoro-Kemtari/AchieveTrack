@@ -24,10 +24,10 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             // then
             Assert.IsNotNull(actual);
             // idは除外して比較
-            var expected = MakeTestDatas().Select(x => new { x.WorkingDate, x.EmployeeNumber, x.WorkingNumber, x.ManHour });
+            var expected = MakeTestDatas().Select(x => new { x.WorkingDate, x.EmployeeNumber,x.EmployeeName, x.WorkingNumber, x.ManHour });
             CollectionAssert.AreEquivalent(
                 expected.ToArray(),
-                actual.Select(x => new { x.WorkingDate, x.EmployeeNumber, x.WorkingNumber, x.ManHour }).ToArray());
+                actual.Select(x => new { x.WorkingDate, x.EmployeeNumber, x.EmployeeName, x.WorkingNumber, x.ManHour }).ToArray());
         }
 
         private static IXLWorkbook MakeTestBook()
@@ -49,6 +49,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             {
                 sht.Cell(x.i + 2, "A").SetValue(x.item.WorkingDate);
                 sht.Cell(x.i + 2, "B").SetValue(x.item.EmployeeNumber);
+                sht.Cell(x.i + 2, "C").SetValue(x.item.EmployeeName);
                 sht.Cell(x.i + 2, "E").SetValue(x.item.WorkingNumber.Value);
                 sht.Cell(x.i + 2, "J").SetValue(x.item.ManHour.Value);
             });
@@ -141,6 +142,35 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             // then
             var ex = await Assert.ThrowsExceptionAsync<DomainException>(target);
             var msg = "社員番号が取得できませんでした 行: 2";
+            Assert.AreEqual(msg, ex.Message);
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        public async Task 異常系_社員名が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        {
+            // given
+            using var workbook = MakeTestBook();
+            var sht = workbook.Worksheets.First();
+            const string CellAddressInRange = "C2";
+            if (wrongWorkingDate is null)
+                sht.Cell(CellAddressInRange).Clear();
+            else
+                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+            using var xlsStream = new MemoryStream();
+            workbook.SaveAs(xlsStream);
+
+            // when
+            IWorkRecordReader workRecordReader = new WorkRecordReader();
+            async Task target()
+            {
+                var hoge = await workRecordReader.ReadWorkRecordsAsync(xlsStream!);
+                _ = hoge.ToList();
+            }
+
+            // then
+            var ex = await Assert.ThrowsExceptionAsync<DomainException>(target);
+            var msg = "社員名が取得できませんでした 行: 2";
             Assert.AreEqual(msg, ex.Message);
         }
 
