@@ -40,7 +40,65 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var actual = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            Assert.IsTrue(actual.All(x => x.GetType() == typeof(ValidationSuccessResult)));
+            Assert.IsTrue(actual.SelectMany(x => x)
+                                .All(x => x.GetType() == typeof(ValidationSuccessResult)));
+        }
+
+        [TestMethod()]
+        public async Task 正常系_作業台帳にない実績台帳にあるの複数の異常がある場合検出すること()
+        {
+            // given
+            List<WorkRecord> workRecords = new()
+            {
+                TestWorkRecordFactory.Create(),
+            };
+
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+                .ThrowsAsync(new WorkingLedgerAggregationException());
+
+            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
+
+            Mock<IDesignManagementRepository> designMock = new();
+
+            // when
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock, designMock.Object);
+            var results = await validator.ValidateWorkRecordsAsync(workRecords);
+
+            // then
+            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
+            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+        }
+
+        [TestMethod()]
+        public async Task 正常系_完成日過ぎ設計管理にない実績台帳にあるの複数の異常がある場合検出すること()
+        {
+            // given
+            var workingDate = new DateTime(2023, 4, 1);
+            List<WorkRecord> workRecords = new()
+            {
+                TestWorkRecordFactory.Create(workingDate: workingDate),
+            };
+            var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
+
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+                .ReturnsAsync(workingLedger);
+
+            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
+
+            Mock<IDesignManagementRepository> designMock = new();
+            designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
+                .ThrowsAsync(new DesignManagementAggregationException());
+
+            // when
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock, designMock.Object);
+            var results = await validator.ValidateWorkRecordsAsync(workRecords);
+
+            // then
+            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
+            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
+            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
         }
 
         [TestMethod()]
@@ -53,7 +111,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             };
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
                 .ThrowsAsync(new WorkingLedgerAggregationException());
 
             var achievementMock = Mock.Of<IAchievementLedgerRepository>();
@@ -64,8 +122,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            results.ToList().ForEach(
-                x => Assert.IsInstanceOfType<InvalidWorkNumberResult>(x));
+            Assert.IsTrue(results.SelectMany(x => x)
+                                 .Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
         }
 
         [TestMethod()]
@@ -80,7 +138,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
             var achievementMock = Mock.Of<IAchievementLedgerRepository>();
@@ -91,8 +149,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            results.ToList().ForEach(
-                x => Assert.IsInstanceOfType<WorkDateExpiredResult>(x));
+            Assert.IsTrue(results.SelectMany(x => x)
+                                 .Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
         }
 
         [TestMethod()]
@@ -107,7 +165,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
@@ -119,8 +177,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            results.ToList().ForEach(
-                x => Assert.IsInstanceOfType<DuplicateWorkDateEmployeeResult>(x));
+            Assert.IsTrue(results.SelectMany(x => x)
+                                 .Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
         }
 
         [TestMethod()]
@@ -135,11 +193,11 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
-            achievementMock.Setup(x=>x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(), It.IsAny<uint>()))
+            achievementMock.Setup(x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(), It.IsAny<uint>()))
                 .ThrowsAsync(new AchievementLedgerAggregationException());
 
             Mock<IDesignManagementRepository> designMock = new();
@@ -151,8 +209,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            results.ToList().ForEach(
-                x => Assert.IsInstanceOfType<UnregisteredWorkNumberResult>(x));
+            Assert.IsTrue(results.SelectMany(x => x)
+                                 .Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
         }
     }
 }

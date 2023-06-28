@@ -20,27 +20,31 @@ public class WorkRecordValidator : IWorkRecordValidator
         _designManagementRepository = designManagementRepository;
     }
 
-    public async Task<IEnumerable<IValidationResult>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
+    public async Task<IEnumerable<IEnumerable<IValidationResult>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
     {
         if (!workRecords.Any())
             throw new ArgumentNullException(nameof(workRecords));
 
-        return await Task.WhenAll(workRecords.Select<WorkRecord, Task<IValidationResult>>(
+        return await Task.WhenAll(workRecords.Select(
             async x =>
             {
-                if (!await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
-                    return InvalidWorkNumberResult.Create();
+                var validationResults = new List<IValidationResult>();
 
-                if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
-                    return WorkDateExpiredResult.Create();
+                if (!await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
+                    validationResults.Add(InvalidWorkNumberResult.Create());
+                else
+                {
+                    if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
+                        validationResults.Add(WorkDateExpiredResult.Create());
+
+                    if (!await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
+                        validationResults.Add(UnregisteredWorkNumberResult.Create());
+                }
 
                 if (await IsRecordInAchievementLedgerAsync(x.WorkingDate, x.EmployeeNumber))
-                    return DuplicateWorkDateEmployeeResult.Create();
+                    validationResults.Add(DuplicateWorkDateEmployeeResult.Create());
 
-                if (!await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
-                    return UnregisteredWorkNumberResult.Create();
-
-                return ValidationSuccessResult.Create();
+                return validationResults;
             }));
     }
 
@@ -53,7 +57,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            _ = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
+            _ = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber.Convert());
             return true;
         }
         catch (WorkingLedgerAggregationException)

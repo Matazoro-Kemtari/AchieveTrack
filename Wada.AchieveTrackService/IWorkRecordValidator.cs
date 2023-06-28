@@ -10,5 +10,5 @@ public interface IWorkRecordValidator
     /// </summary>
     /// <param name="workRecords"></param>
     /// <returns></returns>
-    public Task<IEnumerable<IValidationResult>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords);
+    public Task<IEnumerable<IEnumerable<IValidationResult>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords);
 }
