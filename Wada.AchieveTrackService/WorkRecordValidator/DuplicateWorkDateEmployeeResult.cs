@@ -9,5 +9,5 @@ public record class DuplicateWorkDateEmployeeResult : IValidationResult
 
     public static DuplicateWorkDateEmployeeResult Create() => new();
 
-    public string Message => "この作業日と社員NOの組み合わせが 実績処理で既に存在します";
+    public string Message => "この作業日と社員番号の組み合わせが 実績処理で既に存在します";
 }

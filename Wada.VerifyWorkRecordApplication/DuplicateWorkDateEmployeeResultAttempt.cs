@@ -5,7 +5,7 @@ namespace Wada.VerifyWorkRecordApplication;
 
 public record class DuplicateWorkDateEmployeeResultAttempt : DuplicateWorkDateEmployeeResult, IValidationResultAttempt
 {
-    private DuplicateWorkDateEmployeeResultAttempt() { }
+    protected DuplicateWorkDateEmployeeResultAttempt() { }
 
     private static new DuplicateWorkDateEmployeeResultAttempt Create() => new();
 

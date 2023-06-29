@@ -5,7 +5,7 @@ namespace Wada.VerifyWorkRecordApplication;
 
 public record class InvalidWorkNumberResultAttempt : InvalidWorkNumberResult, IValidationResultAttempt
 {
-    private InvalidWorkNumberResultAttempt() { }
+    protected InvalidWorkNumberResultAttempt() { }
 
     private static new InvalidWorkNumberResultAttempt Create() => new();
 

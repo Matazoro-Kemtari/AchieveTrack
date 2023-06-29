@@ -30,9 +30,7 @@ public class WorkRecordValidator : IWorkRecordValidator
             {
                 var validationResults = new List<IValidationResult>();
 
-                if (!await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
-                    validationResults.Add(InvalidWorkNumberResult.Create());
-                else
+                if (await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
                 {
                     if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
                         validationResults.Add(WorkDateExpiredResult.Create());
@@ -40,6 +38,8 @@ public class WorkRecordValidator : IWorkRecordValidator
                     if (!await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
                         validationResults.Add(UnregisteredWorkNumberResult.Create());
                 }
+                else
+                    validationResults.Add(InvalidWorkNumberResult.Create());
 
                 if (await IsRecordInAchievementLedgerAsync(x.WorkingDate, x.EmployeeNumber))
                     validationResults.Add(DuplicateWorkDateEmployeeResult.Create());
@@ -75,7 +75,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            var result = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
+            var result = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber.Convert());
             return result.CompletionDate != null
                    && workingDate.CompareTo(result.CompletionDate) > 0;
         }
@@ -112,7 +112,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            var workingLedger = await _workingLedgerRepository.FindByWorkingNumberAsync(workNumber);
+            var workingLedger = await _workingLedgerRepository.FindByWorkingNumberAsync(workNumber.Convert());
             _ = await _designManagementRepository.FindByOwnCompanyNumberAsync(workingLedger.OwnCompanyNumber);
             return true;
         }

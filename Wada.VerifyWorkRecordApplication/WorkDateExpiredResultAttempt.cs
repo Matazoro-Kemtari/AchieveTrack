@@ -5,7 +5,7 @@ namespace Wada.VerifyWorkRecordApplication;
 
 public record class WorkDateExpiredResultAttempt : WorkDateExpiredResult, IValidationResultAttempt
 {
-    private WorkDateExpiredResultAttempt() { }
+    protected WorkDateExpiredResultAttempt() { }
 
     private static new WorkDateExpiredResultAttempt Create() => new();
 

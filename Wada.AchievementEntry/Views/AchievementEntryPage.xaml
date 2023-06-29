@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewmodels="clr-namespace:Wada.AchievementEntry.ViewModels"
+             xmlns:models="clr-namespace:Wada.AchievementEntry.Models"
              xmlns:converters="clr-namespace:Wada.AchievementEntry.Converters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -25,7 +26,16 @@
             <BooleanToVisibilityConverter />
         </converters:ValueConverterGroup>
     </UserControl.Resources>
-    
+
+    <i:Interaction.Triggers>
+        <l:InteractionMessageTrigger MessageKey="Info" Messenger="{Binding Messenger}">
+            <l:InformationDialogInteractionMessageAction/>
+        </l:InteractionMessageTrigger>
+        <l:InteractionMessageTrigger MessageKey="Confirm" Messenger="{Binding Messenger}">
+            <l:ConfirmationDialogInteractionMessageAction/>
+        </l:InteractionMessageTrigger>
+    </i:Interaction.Triggers>
+
     <DockPanel>
         <TextBlock DockPanel.Dock="Top"
                    Margin="5"
@@ -37,55 +47,70 @@
                     Margin="5"
                     Padding="5"
                     Command="{Binding ClearCommand}"/>
-            <Button Content="進む(_N)"
+            <Button Content="登録(_E)"
                     MinWidth="70"
                     Margin="5"
                     Padding="5"
-                    Command="{Binding NextViewCommand}"/>
+                    Command="{Binding EntryCommand}"/>
         </StackPanel>
 
         <Grid>
-            <ListBox Margin="5"
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ListView Margin="5"
                      x:Name="XlsxPath"
                      ToolTip="日報をドロップしてください"
+                     ItemsSource="{Binding AchievementCollections}"
                      d:ItemsSource="{d:SampleData}"
                      VirtualizingPanel.IsVirtualizing="True"
                      VirtualizingPanel.VirtualizationMode="Recycling"
                      VirtualizingPanel.ScrollUnit="Pixel"
                      dd:DragDrop.IsDropTarget="True"
-                     dd:DragDrop.DropHandler="{Binding AchievementDropHandler}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <CheckBox Margin="5"
-                                      Grid.Row="0"
-                                      VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="1"
-                                       Margin="5"
-                                       Text=""
-                                       d:Text="C:\Windows\ABCD\abcd.xlsx"
-                                       VerticalAlignment="Center"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                     dd:DragDrop.DropHandler="{Binding}">
+                <ListView.View>
+                    <GridView>
+                        <!-- GridViewColumnにCheckBoxを追加する -->
+                        <GridViewColumn Header="選択">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox Margin="5,3,5,0" IsChecked="{Binding CheckedItem.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="実績日付" DisplayMemberBinding="{Binding AchievementDate.Value, StringFormat={}{0:yyyy/M/d(ddd)}}"/>
+                        <GridViewColumn Header="社員名" DisplayMemberBinding="{Binding EmployeeName.Value}"/>
+                        <GridViewColumn Header="エラー">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ListBox ItemsSource="{Binding ValidationResults}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <TextBlock Text="{Binding Message.Value}"
+                                                               Foreground="Red"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <TextBlock HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Text="{Binding ErrorMsgDropSpreadSheet.Value}"
+                       Text="{Binding ToolTip, ElementName=XlsxPath}"
                        Visibility="{Binding HasItems, ElementName=XlsxPath, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
                        d:Text="ErrorMsgDropSpreadSheet"
                        Foreground="Red"
                        FontWeight="Bold"
                        TextWrapping="Wrap"/>
+            <StackPanel Grid.Row="1" HorizontalAlignment="Right">
+                <CheckBox Margin="5" Content="設計情報に追加する"/>
+            </StackPanel>
         </Grid>
     </DockPanel>
 </UserControl>

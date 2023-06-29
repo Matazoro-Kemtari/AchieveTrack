@@ -6,7 +6,7 @@ namespace Wada.VerifyAchievementRecordContentApplication;
 
 public interface IVerifyWorkRecordUseCase
 {
-    Task<IEnumerable<IValidationResultAttempt>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams);
+    Task<IEnumerable<IEnumerable<IValidationResultAttempt>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams);
 }
 
 public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
@@ -18,18 +18,18 @@ public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
         _workRecordValidator = workRecordValidator;
     }
 
-    public async Task<IEnumerable<IValidationResultAttempt>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams)
+    public async Task<IEnumerable<IEnumerable<IValidationResultAttempt>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams)
     {
         var parser = new Dictionary<Type, Func<IValidationResult, IValidationResultAttempt>>
         {
-            { typeof(ValidationSuccessResult), ValidationSuccessResultAttempt.Parse },
             { typeof(DuplicateWorkDateEmployeeResult), DuplicateWorkDateEmployeeResultAttempt.Parse },
             { typeof(InvalidWorkNumberResult), InvalidWorkNumberResultAttempt.Parse },
             { typeof(UnregisteredWorkNumberResult), UnregisteredWorkNumberResultAttempt.Parse },
             { typeof(WorkDateExpiredResult), WorkDateExpiredResultAttempt.Parse },
         };
 
-        var results = await _workRecordValidator.ValidateWorkRecordsAsync(achievementRecordParams.Select(x => x.ConvertWorkRecord()));
-        return results.Select(x => parser[x.GetType()](x));
+        var results = await _workRecordValidator.ValidateWorkRecordsAsync(
+            achievementRecordParams.Select(x => x.Convert()));
+        return results.Select(x => x.Select(y=> parser[y.GetType()](y)));
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Wada.AchieveTrackService.ValueObjects;
 using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.Data.OrderManagement.Models;
 using Wada.Data.OrderManagement.Models.AchievementLedgerAggregation;
@@ -26,7 +25,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
@@ -40,8 +39,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var actual = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            Assert.IsTrue(actual.SelectMany(x => x)
-                                .All(x => x.GetType() == typeof(ValidationSuccessResult)));
+            Assert.IsFalse(actual.SelectMany(x => x).Any());
         }
 
         [TestMethod()]

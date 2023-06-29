@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wada.AchievementEntry\Wada.AchievementEntry.csproj" />
+    <ProjectReference Include="..\Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj" />
     <ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
   </ItemGroup>
   <ItemGroup>

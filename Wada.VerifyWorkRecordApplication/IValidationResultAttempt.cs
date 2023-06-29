@@ -1,8 +1,7 @@
 ﻿using Wada.AchieveTrackService.WorkRecordValidator;
 
-namespace Wada.VerifyAchievementRecordContentApplication
+namespace Wada.VerifyAchievementRecordContentApplication;
+
+public interface IValidationResultAttempt : IValidationResult
 {
-    public interface IValidationResultAttempt : IValidationResult
-    {
-    }
 }
