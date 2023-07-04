@@ -25,6 +25,7 @@ public class WorkRecordReader : IWorkRecordReader
                         {
                             const string workingDateLetter = "A";
                             const string employeeNumberLetter = "B";
+                            const string employeeNameLetter = "C";
                             const string workingNumberLetter = "E";
                             const string monHourLetter = "J";
 
@@ -37,6 +38,11 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"社員番号が取得できませんでした 行: {row.RowNumber()}");
 
+                            if (!row.Cell(employeeNameLetter).TryGetValue(out string employeeName)
+                                || employeeName == string.Empty)
+                                throw new DomainException(
+                                    $"社員名が取得できませんでした 行: {row.RowNumber()}");
+
                             if (!row.Cell(workingNumberLetter).TryGetValue(out string workingNumber)
                                 || workingNumber == string.Empty)
                                 throw new DomainException(
@@ -46,7 +52,7 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"工数が取得できませんでした 行: {row.RowNumber()}");
 
-                            return WorkRecord.Create(workingDate, (uint)employeeNumber, WorkingNumber.Create(workingNumber), ManHour.Create(manHour));
+                            return WorkRecord.Create(workingDate, (uint)employeeNumber, employeeName, WorkingNumber.Create(workingNumber), ManHour.Create(manHour));
                         })));
         }
         catch (InvalidOperationException ex)

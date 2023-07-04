@@ -6,6 +6,14 @@ using System.IO;
 using System.Windows;
 using VerifyAttendanceCSV.Views;
 using Wada.AchievementEntry;
+using Wada.AchieveTrackService;
+using Wada.AchieveTrackService.WorkRecordValidator;
+using Wada.AchieveTrackSpreadSheet;
+using Wada.Data.OrderManagement;
+using Wada.Data.OrderManagement.Models;
+using Wada.IO;
+using Wada.ReadWorkRecordApplication;
+using Wada.VerifyAchievementRecordContentApplication;
 
 namespace VerifyAttendanceCSV
 {
@@ -29,35 +37,21 @@ namespace VerifyAttendanceCSV
             // DI logger
             _ = containerRegistry.RegisterSingleton<ILogger>(_ => LogManager.GetCurrentClassLogger());
 
-            //// DBライブラリ
-            //_ = containerRegistry.Register<IMatchedEmployeeNumberRepository, MatchedEmployeeNumberRepository>();
-            //_ = containerRegistry.Register<IDepartmentCompanyHolidayRepository, DepartmentCompanyHolidayRepository>();
-            //_ = containerRegistry.Register<IOwnCompanyHolidayRepository, OwnCompanyHolidayRepository>();
-            //_ = containerRegistry.Register<IEmployeeRepository, EmployeeRepository>();
+            // DBライブラリ
+            _ = containerRegistry.Register<IWorkingLedgerRepository, WorkingLedgerRepository>();
+            _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
+            _ = containerRegistry.Register<IDesignManagementRepository, DesignManagementRepository>();
 
-            //// Wada.IO
-            //_ = containerRegistry.Register<IFileStreamOpener, FileStreamOpener>();
-            //_ = containerRegistry.Register<IStreamReaderOpener, StreamReaderOpener>();
+            // Wada.IO
+            _ = containerRegistry.Register<IFileStreamOpener, FileStreamOpener>();
 
-            //// 設定保存
-            //_ = containerRegistry.Register<IApplicationConfigurationWriter, ApplicationConfigurationWriter>();
-            //_ = containerRegistry.Register<IStoreSelectedXlsxDirectoriesUseCase, StoreSelectedXlsxDirectoriesUseCase>();
+            // 日報読み込み
+            _ = containerRegistry.Register<IWorkRecordReader, WorkRecordReader>();
+            _ = containerRegistry.Register<IReadAchieveTrackUseCase, ReadAchieveTrackUseCase>();
 
-            //// DI 勤怠表エクセル
-            //_ = containerRegistry.Register<IAttendanceTableRepository, AttendanceTableRepository>();
-            //// DI 勤怠CSV
-            //_ = containerRegistry.Register<IEmployeeAttendanceCsvReader, EmployeeAttendanceCsvReader>();
-            //// 自社休日
-            //_ = containerRegistry.Register<IOwnCompanyHolidayListReader, OwnCompanyHolidayListReader>();
-            //_ = containerRegistry.Register<IRegisterOwnCompanyHolidayUseCase, RegisterOwnCompanyHolidayUseCase>();
-            //_ = containerRegistry.Register<IFetchOwnCompanyHolidayMaxDateUseCase, FetchOwnCompanyHolidayMaxDateUseCase>();
-
-            //// 勤怠エクセルと給与システムCSVを同異判定するUseCase
-            //_ = containerRegistry.Register<IDetermineDifferenceUseCase, DetermineDifferenceUseCase>();
-
-            //// 社員番号対応表読込
-            //_ = containerRegistry.Register<IMatchedEmployeeNumberListReader, MatchedEmployeeNumberSpreadSheetReader>();
-            //_ = containerRegistry.Register<IRegisterEmployeeNumberTableUseCase, RegisterEmployeeNumberTableUseCase>();
+            // 日報検証
+            _ = containerRegistry.Register<IWorkRecordValidator, WorkRecordValidator>();
+            _ = containerRegistry.Register<IVerifyWorkRecordUseCase, VerifyWorkRecordUseCase>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
