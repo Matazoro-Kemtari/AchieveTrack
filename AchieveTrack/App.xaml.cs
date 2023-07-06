@@ -9,8 +9,6 @@ using Wada.AchievementEntry;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.AchieveTrackSpreadSheet;
-using Wada.Data.OrderManagement;
-using Wada.Data.OrderManagement.Models;
 using Wada.IO;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
@@ -38,9 +36,9 @@ namespace VerifyAttendanceCSV
             _ = containerRegistry.RegisterSingleton<ILogger>(_ => LogManager.GetCurrentClassLogger());
 
             // DBライブラリ
-            _ = containerRegistry.Register<IWorkingLedgerRepository, WorkingLedgerRepository>();
-            _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
-            _ = containerRegistry.Register<IDesignManagementRepository, DesignManagementRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IWorkingLedgerRepository, Wada.Data.OrderManagement.WorkingLedgerRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IAchievementLedgerRepository, Wada.Data.OrderManagement.AchievementLedgerRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IDesignManagementRepository, Wada.Data.OrderManagement.DesignManagementRepository>();
 
             // Wada.IO
             _ = containerRegistry.Register<IFileStreamOpener, FileStreamOpener>();

@@ -10,10 +10,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator;
 public class WorkRecordValidator : IWorkRecordValidator
 {
     private readonly IWorkingLedgerRepository _workingLedgerRepository;
-    private readonly IAchievementLedgerRepository _achievementLedgerRepository;
+    private readonly Data.OrderManagement.Models.IAchievementLedgerRepository _achievementLedgerRepository;
     private readonly IDesignManagementRepository _designManagementRepository;
 
-    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository)
+    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, Data.OrderManagement.Models.IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository)
     {
         _workingLedgerRepository = workingLedgerRepository;
         _achievementLedgerRepository = achievementLedgerRepository;
