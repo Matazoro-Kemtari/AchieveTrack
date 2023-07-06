@@ -1,5 +1,4 @@
 ﻿using Wada.AchieveTrackService.ValueObjects;
-using Wada.Data.OrderManagement.Models.WorkingLedgerAggregation;
 
 namespace Wada.AchieveTrackService.WorkingLedgerAggregation;
 
@@ -26,6 +25,9 @@ public record class WorkingLedger
         => new(
             ownCompanyNumber,
             workingNumber);
+
+    public static WorkingLedger Parse(Data.OrderManagement.Models.WorkingLedgerAggregation.WorkingLedger workingLedger)
+        => new(workingLedger.OwnCompanyNumber, WorkingNumber.Parse(workingLedger.WorkingNumber));
 
     /// <summary>
     /// 自社NO
