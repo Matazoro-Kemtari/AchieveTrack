@@ -1,11 +1,13 @@
-﻿using Wada.AOP.Logging;
+﻿using Wada.AchieveTrackService.EmployeeAggregation;
+using Wada.AOP.Logging;
 using Wada.Data.OrderManagement.Models;
+using Wada.WriteWorkRecordApplication;
 
-namespace Wada.AchieveTrackService.EmployeeAggregation;
+namespace Wada.DataSource.OrderManagement;
 
 public class EmployeeReader : IEmployeeReader
 {
-    IEmployeeRepository _employeeRepository;
+    private readonly IEmployeeRepository _employeeRepository;
 
     public EmployeeReader(IEmployeeRepository employeeRepository)
     {

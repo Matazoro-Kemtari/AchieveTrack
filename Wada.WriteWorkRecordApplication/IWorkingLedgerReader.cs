@@ -1,7 +1,7 @@
 ﻿using Wada.AchieveTrackService.ValueObjects;
 using Wada.AchieveTrackService.WorkingLedgerAggregation;
 
-namespace Wada.AchieveTrackService;
+namespace Wada.WriteWorkRecordApplication;
 
 public interface IWorkingLedgerReader
 {

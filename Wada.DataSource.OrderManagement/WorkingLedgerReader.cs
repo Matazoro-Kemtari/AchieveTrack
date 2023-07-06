@@ -1,8 +1,10 @@
 ﻿using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkingLedgerAggregation;
 using Wada.AOP.Logging;
 using Wada.Data.OrderManagement.Models;
+using Wada.WriteWorkRecordApplication;
 
-namespace Wada.AchieveTrackService.WorkingLedgerAggregation;
+namespace Wada.DataSource.OrderManagement;
 
 public class WorkingLedgerReader : IWorkingLedgerReader
 {

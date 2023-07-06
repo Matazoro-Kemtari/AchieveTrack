@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Wada.AchieveTrackService.EmployeeAggregation;
 using Wada.Data.OrderManagement.Models;
+using Wada.WriteWorkRecordApplication;
 
-namespace Wada.AchieveTrackService.EmployeeAggregation.Tests
+namespace Wada.DataSource.OrderManagement.Tests
 {
     [TestClass()]
     public class EmployeeReaderTests

@@ -9,7 +9,7 @@ public record class WorkingNumber : Data.OrderManagement.Models.ValueObjects.Wor
 
     public static WorkingNumber Reconstruct(string Value) => new(Value);
 
-    internal Data.OrderManagement.Models.ValueObjects.WorkingNumber Convert()
+    public Data.OrderManagement.Models.ValueObjects.WorkingNumber Convert()
         => new(Value);
 
     public static WorkingNumber Parse(Data.OrderManagement.Models.ValueObjects.WorkingNumber workingNumber)

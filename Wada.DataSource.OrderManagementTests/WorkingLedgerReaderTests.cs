@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Wada.AchieveTrackService.WorkingLedgerAggregation;
 using Wada.Data.OrderManagement.Models;
 using Wada.Data.OrderManagement.Models.ValueObjects;
+using Wada.WriteWorkRecordApplication;
 
-namespace Wada.AchieveTrackService.WorkingLedgerAggregation.Tests
+namespace Wada.DataSource.OrderManagement.Tests
 {
     [TestClass()]
     public class WorkingLedgerReaderTests
@@ -19,7 +21,7 @@ namespace Wada.AchieveTrackService.WorkingLedgerAggregation.Tests
 
             // when
             IWorkingLedgerReader reader = new WorkingLedgerReader(workingMock.Object);
-            var actual = await reader.FindByWorkingNumberAsync(ValueObjects.WorkingNumber.Parse(workingLedger.WorkingNumber));
+            var actual = await reader.FindByWorkingNumberAsync(AchieveTrackService.ValueObjects.WorkingNumber.Parse(workingLedger.WorkingNumber));
 
             // then
             Assert.IsNotNull(actual);
