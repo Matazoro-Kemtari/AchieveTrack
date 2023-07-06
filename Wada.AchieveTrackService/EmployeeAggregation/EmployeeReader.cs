@@ -1,4 +1,5 @@
-﻿using Wada.Data.OrderManagement.Models;
+﻿using Wada.AOP.Logging;
+using Wada.Data.OrderManagement.Models;
 
 namespace Wada.AchieveTrackService.EmployeeAggregation;
 
@@ -11,6 +12,7 @@ public class EmployeeReader : IEmployeeReader
         _employeeRepository = employeeRepository;
     }
 
+    [Logging]
     public async Task<Employee> FindByEmployeeNumberAsync(uint employeeNumber)
     {
         try

@@ -1,4 +1,5 @@
-﻿using Wada.AchieveTrackService;
+﻿using System.Transactions;
+using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchievementLedgerAggregation;
 using Wada.AchieveTrackService.EmployeeAggregation;
 using Wada.AchieveTrackService.ValueObjects;
@@ -28,6 +29,8 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     [Logging]
     public async Task<int> ExecuteAsync(IEnumerable<AchievementParam> achievements)
     {
+        using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
         var addedCounts = await Task.WhenAll(achievements.Select(async achievement =>
         {
             // 部署IDと実績工程IDを取得する

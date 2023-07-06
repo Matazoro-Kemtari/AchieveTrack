@@ -20,7 +20,7 @@ public record class Employee
     public static Employee Reconstruct(uint employeeNumber, string name, uint? departmentID, uint? achievementClassificationId)
         => new(employeeNumber, name, departmentID, achievementClassificationId);
 
-    internal static Employee Parse(Data.OrderManagement.Models.EmployeeAggregation.Employee employee)
+    public static Employee Parse(Data.OrderManagement.Models.EmployeeAggregation.Employee employee)
         => new(employee.EmployeeNumber, employee.Name, employee.DepartmentId, employee.AchievementClassificationId);
 
     /// <summary>
