@@ -1,5 +1,4 @@
-﻿using Wada.DataSource.OrderManagement;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchievementLedgerAggregation;
@@ -25,6 +24,25 @@ namespace Wada.DataSource.OrderManagement.Tests
             // then
             Assert.AreEqual(achievementLedger.AchievementDetails.Count() + 1, count);
             achievementMock.Verify(x => x.AddAsync(It.IsAny<Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedger>()), Times.Once);
+        }
+
+        [TestMethod()]
+        public async Task 異常系_実績台帳に追加できなかった場合例外を返すこと()
+        {
+            // given
+            Mock<Data.OrderManagement.Models.IAchievementLedgerRepository> achievementMock = new();
+            var achievementLedger = TestAchievementLedgerFacroty.Create();
+            var message = $"実績台帳に登録できませんでした レコード: {achievementLedger}";
+            achievementMock.Setup(x => x.AddAsync(It.IsAny<Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedger>()))
+                .ThrowsAsync(new Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedgerAggregationException(message));
+
+            // when
+            IAchievementLedgerRepository repository = new AchievementLedgerRepository(achievementMock.Object);
+            Task target() => repository.AddAsync(achievementLedger);
+
+            // then
+            var ex = await Assert.ThrowsExceptionAsync<AchievementLedgerAggregationException>(target);
+            Assert.AreEqual(message, ex.Message);
         }
 
         [TestMethod()]
@@ -69,7 +87,5 @@ namespace Wada.DataSource.OrderManagement.Tests
                                       results.SelectMany(x => x.AchievementDetails).ToList());
             achievementMock.Verify(x => x.FindAllAsync(), Times.Once);
         }
-
-        // TODO: 異常のテスト
     }
 }

@@ -41,9 +41,12 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 achievement.AchievementDetails.Select(
                     async x => await _workingLedgerReader.FindByWorkingNumberAsync(WorkingNumber.Create(x.WorkingNumber))));
 
+            // 実績IDインクリメントのため、全件取得
+            var achievementLedgerTask = _achievementLedgerRepository.FindAllAsync();
+
             try
             {
-                await Task.WhenAll(employeeTask, workingLedgerTasks);
+                await Task.WhenAll(employeeTask, workingLedgerTasks, achievementLedgerTask);
             }
             catch (DomainException ex) when (ex is EmployeeAggregationException
                                                    or WorkingLedgerAggregationException)
@@ -54,20 +57,26 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
 
             var employee = employeeTask.Result;
             var workingLedgers = workingLedgerTasks.Result;
-
-            // Entity作成
-            var achievementLedger = AchievementLedger.Create(achievement.WorkingDate,
-                                                             achievement.EmployeeNumber,
-                                                             achievement.AchievementDetails.Select(
-                                                                 x => AchievementDetail.Create(
-                                                                 workingLedgers.First(y => y.WorkingNumber.Value == x.WorkingNumber).OwnCompanyNumber,
-                                                                 x.ManHour)));
+            var nextAchievementId = achievementLedgerTask.Result.Max(x => x.AchievementId) + 1;
             try
             {
+                // Entity作成
+                var achievementLedger = AchievementLedger.Create(
+                    nextAchievementId,
+                    achievement.WorkingDate,
+                    achievement.EmployeeNumber,
+                    employee.DepartmentId,
+                    achievement.AchievementDetails.Select(
+                        x => AchievementDetail.Create(
+                            nextAchievementId,
+                            workingLedgers.First(y => y.WorkingNumber.Value == x.WorkingNumber).OwnCompanyNumber,
+                            employee.AchievementClassificationId ?? throw new NullReferenceException(),
+                            x.ManHour)));
+
                 // 実績台帳に追加する
                 return await _achievementLedgerRepository.AddAsync(achievementLedger);
             }
-            catch (AchievementLedgerAggregationException ex)
+            catch (Exception ex) when (ex is AchievementLedgerAggregationException or NullReferenceException)
             {
                 throw new WriteWorkRecordUseCaseException(
                     $"実績を登録中に問題が発生しました\n{ex.Message}", ex);

@@ -20,12 +20,10 @@ public class AchievementLedgerRepository : IAchievementLedgerRepository
         {
             return await _achievementLedgerRepository.AddAsync(achievementLedger.Convert());
         }
-        catch (Exception)
+        catch (Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedgerAggregationException ex)
         {
-
-            throw;
+            throw new AchievementLedgerAggregationException(ex.Message, ex);
         }
-        throw new NotImplementedException();
     }
 
     [Logging]
