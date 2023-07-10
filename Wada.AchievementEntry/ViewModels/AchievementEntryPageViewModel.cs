@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,6 +20,7 @@ using Wada.IO;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
+using Wada.WriteWorkRecordApplication;
 
 namespace Wada.AchievementEntry.ViewModels;
 
@@ -27,18 +29,27 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
     private readonly AchievementEntryPageModel _model = new();
     private readonly IReadAchieveTrackUseCase _readAchieveTrackUseCase;
     private readonly IVerifyWorkRecordUseCase _verifyWorkRecordUseCase;
+    private readonly IWriteWorkRecordUseCase _writeWorkRecordUseCase;
 
-    public AchievementEntryPageViewModel(IReadAchieveTrackUseCase readAchieveTrackUseCase, IVerifyWorkRecordUseCase verifyWorkRecordUseCase)
+    public AchievementEntryPageViewModel(IReadAchieveTrackUseCase readAchieveTrackUseCase,
+                                         IVerifyWorkRecordUseCase verifyWorkRecordUseCase,
+                                         IWriteWorkRecordUseCase writeWorkRecordUseCase)
     {
         _readAchieveTrackUseCase = readAchieveTrackUseCase;
         _verifyWorkRecordUseCase = verifyWorkRecordUseCase;
+        _writeWorkRecordUseCase = writeWorkRecordUseCase;
 
         // 日報エクセルリスト
         AchievementCollections = _model.AchievementCollections
             .ToReadOnlyReactiveCollection(x => x)
             .AddTo(Disposables);
 
-        // TODO:進むボタン
+        // 登録ボタン
+        EntryCommand = AchievementCollections.ObserveProperty(x => x.Count)
+                                             .Select(x => x > 0)
+                                             .ToAsyncReactiveCommand()
+                                             .WithSubscribe(() => AddWorkRecordAsync())
+                                             .AddTo(Disposables);
 
         // クリアボタン
         ClearCommand = new AsyncReactiveCommand()
@@ -72,6 +83,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             try
             {
                 workRecords = await _readAchieveTrackUseCase.ExecuteAsync(dragFiles);
+
+                // 日報を保持する
+                _model.WorkRecords.AddRange(workRecords);
             }
             catch (FileStreamOpenerException ex)
             {
@@ -137,7 +151,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                 { typeof(UnregisteredWorkNumberResultRequest), UnregisteredWorkNumberResultCollectionViewModel.Create },
                 { typeof(WorkDateExpiredResultRequest), WorkDateExpiredResultCollectionViewModel.Create },
             };
-            
+
             var aggregates = merge.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
                 .Select(g => new
                 {
@@ -157,6 +171,32 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                     x.ValidationResults));
             _model.AchievementCollections.AddRange(
                 collectionModels.Select(x => new AchievementCollectionViewModel(x)));
+        }
+        finally
+        {
+            Mouse.OverrideCursor = null;
+        }
+    }
+
+    private async Task AddWorkRecordAsync()
+    {
+        // 引数作成
+        var param = _model.WorkRecords.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
+            .Select(x => new AchievementParam(x.Key.WorkingDate,
+                                              x.Key.EmployeeNumber,
+                                              x.Select(y => new AchievementDetailParam(
+                                                  y.WorkingNumber,
+                                                  y.ManHour))));
+        try
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            await _writeWorkRecordUseCase.ExecuteAsync(param);
+        }
+        catch (WriteWorkRecordUseCaseException ex)
+        {
+            var message = MessageNotificationViaLivet.MakeErrorMessage(ex.Message);
+            await Messenger.RaiseAsync(message);
+            Environment.Exit(0);
         }
         finally
         {

@@ -1,6 +1,7 @@
 ﻿using Reactive.Bindings;
 using Wada.AchievementEntry.ViewModels;
 using Wada.AOP.Logging;
+using Wada.ReadWorkRecordApplication;
 
 namespace Wada.AchievementEntry.Models;
 
@@ -13,4 +14,6 @@ class AchievementEntryPageModel
     }
 
     public ReactiveCollection<AchievementCollectionViewModel> AchievementCollections { get; } = new();
+    
+    public ReactiveCollection<WorkRecordAttempt> WorkRecords { get; } = new();
 }

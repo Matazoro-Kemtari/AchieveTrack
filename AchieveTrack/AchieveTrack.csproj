@@ -21,8 +21,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wada.AchievementEntry\Wada.AchievementEntry.csproj" />
+    <ProjectReference Include="..\Wada.AchieveTrackService\Wada.AchieveTrackService.csproj" />
     <ProjectReference Include="..\Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj" />
     <ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
+    <ProjectReference Include="..\Wada.DataSource.OrderManagement\Wada.DataSource.OrderManagement.csproj" />
+    <ProjectReference Include="..\Wada.ReadWorkRecordApplication\Wada.ReadWorkRecordApplication.csproj" />
+    <ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
+    <ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update=".env">
