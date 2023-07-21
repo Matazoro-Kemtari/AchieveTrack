@@ -45,11 +45,17 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             .AddTo(Disposables);
 
         // 登録ボタン
-        EntryCommand = AchievementCollections.ObserveProperty(x => x.Count)
-                                             .Select(x => x > 0)
-                                             .ToAsyncReactiveCommand()
-                                             .WithSubscribe(() => AddWorkRecordAsync())
-                                             .AddTo(Disposables);
+        EntryCommand = new[]
+        {
+            AchievementCollections.ObserveProperty(x => x.Count).Select(x => x <= 0),
+            // TODO: 上手くできない保留
+            //AchievementCollections.Select(xx => xx.ValidationResults.ObserveProperty(x => x.Count).Select(x => x <= 0))
+            //                      .ToObservable().SelectMany(x => x),
+        }
+        .CombineLatestValuesAreAllFalse()
+        .ToAsyncReactiveCommand()
+        .WithSubscribe(() => AddWorkRecordAsync())
+        .AddTo(Disposables);
 
         // クリアボタン
         ClearCommand = new AsyncReactiveCommand()
