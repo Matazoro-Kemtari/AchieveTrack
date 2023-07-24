@@ -1,9 +1,12 @@
-﻿using Wada.AchieveTrackService.AchievementLedgerAggregation;
+﻿using System.Transactions;
+using Wada.AchieveTrackService.AchievementLedgerAggregation;
 
 namespace Wada.AchieveTrackService;
 
 public interface IAchievementLedgerRepository
 {
+    void SetTransaction(CommittableTransaction transaction);
+
     /// <summary>
     /// 実績台帳に追加する
     /// </summary>

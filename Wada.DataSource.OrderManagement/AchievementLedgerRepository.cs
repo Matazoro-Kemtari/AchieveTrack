@@ -1,4 +1,5 @@
-﻿using Wada.AchieveTrackService;
+﻿using System.Transactions;
+using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchievementLedgerAggregation;
 using Wada.AOP.Logging;
 
@@ -32,4 +33,8 @@ public class AchievementLedgerRepository : IAchievementLedgerRepository
         var results = await _achievementLedgerRepository.FindAllAsync();
         return results.Select(x => AchievementLedger.Parse(x));
     }
+
+    [Logging]
+    public void SetTransaction(CommittableTransaction? transaction)
+        => _achievementLedgerRepository.SetTransaction(transaction);
 }

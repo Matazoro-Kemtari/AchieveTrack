@@ -29,7 +29,12 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     [Logging]
     public async Task<int> ExecuteAsync(IEnumerable<AchievementParam> achievements)
     {
-        using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        using var transaction = new CommittableTransaction(
+            new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted,
+                Timeout = new TimeSpan(0, 1, 0),
+            });
 
         var addedCounts = await Task.WhenAll(achievements.Select(async achievement =>
         {
@@ -57,6 +62,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
 
             var employee = employeeTask.Result;
             var workingLedgers = workingLedgerTasks.Result;
+            // TODO: 非同期だとIDが重複の恐れ
             var nextAchievementId = achievementLedgerTask.Result.Max(x => x.AchievementId) + 1;
             try
             {
@@ -82,6 +88,8 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                     $"実績を登録中に問題が発生しました\n{ex.Message}", ex);
             }
         }));
+
+        transaction.Commit();
         return addedCounts.Sum();
     }
 }
