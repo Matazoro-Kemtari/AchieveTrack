@@ -36,7 +36,10 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 Timeout = new TimeSpan(0, 1, 0),
             });
 
-        var addedCounts = await Task.WhenAll(achievements.Select(async achievement =>
+        // 実績IDインクリメントのため、全件取得
+        var achievementLedgers = await _achievementLedgerRepository.FindAllAsync();
+        var currentAchievementId = achievementLedgers.Max(x => x.AchievementId);
+        var addedCounts = await Task.WhenAll(achievements.Select(async (achievement, i) =>
         {
             // 部署IDと実績工程IDを取得する
             var employeeTask = _employeeReader.FindByEmployeeNumberAsync(achievement.EmployeeNumber);
@@ -46,12 +49,9 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 achievement.AchievementDetails.Select(
                     async x => await _workingLedgerReader.FindByWorkingNumberAsync(WorkingNumber.Create(x.WorkingNumber))));
 
-            // 実績IDインクリメントのため、全件取得
-            var achievementLedgerTask = _achievementLedgerRepository.FindAllAsync();
-
             try
             {
-                await Task.WhenAll(employeeTask, workingLedgerTasks, achievementLedgerTask);
+                await Task.WhenAll(employeeTask, workingLedgerTasks);
             }
             catch (DomainException ex) when (ex is EmployeeAggregationException
                                                    or WorkingLedgerAggregationException)
@@ -62,10 +62,9 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
 
             var employee = employeeTask.Result;
             var workingLedgers = workingLedgerTasks.Result;
-            // TODO: 非同期だとIDが重複の恐れ
-            var nextAchievementId = achievementLedgerTask.Result.Max(x => x.AchievementId) + 1;
             try
             {
+                var nextAchievementId = currentAchievementId + 1u + (uint)i;
                 // Entity作成
                 var achievementLedger = AchievementLedger.Create(
                     nextAchievementId,
