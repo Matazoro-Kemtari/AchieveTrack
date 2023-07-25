@@ -48,9 +48,8 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         EntryCommand = new[]
         {
             AchievementCollections.ObserveProperty(x => x.Count).Select(x => x <= 0),
-            // TODO: 上手くできない保留
-            //AchievementCollections.Select(xx => xx.ValidationResults.ObserveProperty(x => x.Count).Select(x => x <= 0))
-            //                      .ToObservable().SelectMany(x => x),
+            // エラーがあったら無効
+            AchievementCollections.Select(x => x.ValidationResults.Any()).ToObservable(),
         }
         .CombineLatestValuesAreAllFalse()
         .ToAsyncReactiveCommand()
@@ -186,6 +185,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
     private async Task AddWorkRecordAsync()
     {
+        if (_model.AchievementCollections.Select(x => x.ValidationResults.Any()).Any(x => x))
+            return;
+
         // 引数作成
         var param = _model.WorkRecords.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
             .Select(x => new AchievementParam(x.Key.WorkingDate,
@@ -208,6 +210,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         {
             Mouse.OverrideCursor = null;
         }
+        _model.Clear();
     }
 
     /// <summary>
