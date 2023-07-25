@@ -34,6 +34,10 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
                 // エクセルを開く
                 var stream = _fileStreamOpener.Open(path);
 
+                if (stream.Length == 0)
+                    throw new ReadAchieveTrackUseCaseException(
+                        $"ファイルサイズが不正です パス: {path}");
+
                 // 日報オブジェクトを作成する
                 return await _workRecordReader.ReadWorkRecordsAsync(stream);
             }));

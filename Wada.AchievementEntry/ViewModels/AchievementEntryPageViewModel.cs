@@ -44,12 +44,22 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             .ToReadOnlyReactiveCollection(x => x)
             .AddTo(Disposables);
 
+        // 設計管理登録チェックボックス
+        AddingDesignManagementIsChecked = _model.AddingDesignManagementIsChecked
+            .AddTo(Disposables);
+
         // 登録ボタン
         EntryCommand = new[]
         {
             AchievementCollections.ObserveProperty(x => x.Count).Select(x => x <= 0),
-            // エラーがあったら無効
-            AchievementCollections.Select(x => x.ValidationResults.Any()).ToObservable(),
+            // エラーがあったら無効 　　出来ないから保留
+            //AddingDesignManagementIsChecked.Value
+            //? AchievementCollections.ObserveProperty(
+            //    x => x.Select(y => y.ValidationResults.Where(z => z.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel))
+            //                            .Any())
+            //    .Any())
+            
+            //: AchievementCollections.Select(x => x.ValidationResults.Any()).ToObservable(),
         }
         .CombineLatestValuesAreAllFalse()
         .ToAsyncReactiveCommand()
@@ -82,29 +92,12 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         try
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            _model.Clear();
 
             // 日報を読み込む
-            IEnumerable<WorkRecordAttempt> workRecords;
-            try
-            {
-                workRecords = await _readAchieveTrackUseCase.ExecuteAsync(dragFiles);
-
-                // 日報を保持する
-                _model.WorkRecords.AddRange(workRecords);
-            }
-            catch (FileStreamOpenerException ex)
-            {
-                var message = MessageNotificationViaLivet.MakeErrorMessage(ex.Message);
-                await Messenger.RaiseAsync(message);
-                Environment.Exit(0);
+            IEnumerable<WorkRecordAttempt>? workRecords = await ReadAchieveTrack(dragFiles);
+            if (workRecords == null)
                 return;
-            }
-            catch (DomainException ex)
-            {
-                var message = MessageNotificationViaLivet.MakeExclamationMessage(ex.Message);
-                await Messenger.RaiseAsync(message);
-                return;
-            }
 
             // 検証
             IEnumerable<IEnumerable<IValidationResultAttempt>> validationResults;
@@ -183,8 +176,70 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         }
     }
 
+    private async Task<IEnumerable<WorkRecordAttempt>?> ReadAchieveTrack(IEnumerable<string> paths)
+    {
+        try
+        {
+            var workRecords = await _readAchieveTrackUseCase.ExecuteAsync(paths);
+
+            // 日報を保持する
+            _model.WorkRecords.AddRange(workRecords);
+
+            return workRecords;
+        }
+        catch (FileStreamOpenerException ex)
+        {
+            var message = MessageNotificationViaLivet.MakeErrorMessage(ex.Message);
+            await Messenger.RaiseAsync(message);
+            Environment.Exit(0);
+            return null;
+        }
+        catch (Exception ex) when (ex is DomainException or ReadAchieveTrackUseCaseException)
+        {
+            var message = MessageNotificationViaLivet.MakeExclamationMessage(ex.Message);
+            await Messenger.RaiseAsync(message);
+            return null;
+        }
+    }
+
     private async Task AddWorkRecordAsync()
     {
+        if (!_model.AchievementCollections.Any(x => x.CheckedItem.Value))
+        {
+            var message = MessageNotificationViaLivet.MakeExclamationMessage(
+                "1つも選択されていないため実行できません");
+            await Messenger.RaiseAsync(message);
+            return;
+        }
+
+        if (_model.AddingDesignManagementIsChecked.Value)
+        {
+            if (_model.AchievementCollections.Where(x => x.CheckedItem.Value)
+                                             .Select(
+                x => x.ValidationResults.Where(
+                    y => y.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel))
+                                        .Any())
+                                             .Any(x => x))
+            {
+                var message = MessageNotificationViaLivet.MakeExclamationMessage(
+                    "エラーがあるため実行できません");
+                await Messenger.RaiseAsync(message);
+                return;
+            }
+        }
+        else
+        {
+            if (_model.AchievementCollections.Where(x => x.CheckedItem.Value)
+                                             .Select(
+                x => x.ValidationResults.Any())
+                                             .Any(x => x))
+            {
+                var message = MessageNotificationViaLivet.MakeExclamationMessage(
+                    "エラーがあるため実行できません");
+                await Messenger.RaiseAsync(message);
+                return;
+            }
+        }
         if (_model.AchievementCollections.Select(x => x.ValidationResults.Any()).Any(x => x))
             return;
 
@@ -218,7 +273,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
     /// </summary>
     private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
-    internal InteractionMessenger Messenger { get; } = new InteractionMessenger();
+    public InteractionMessenger Messenger { get; } = new InteractionMessenger();
 
     public AsyncReactiveCommand EntryCommand { get; }
 
@@ -228,4 +283,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
     /// 日報エクセルリスト
     /// </summary>
     public ReadOnlyReactiveCollection<AchievementCollectionViewModel> AchievementCollections { get; }
+
+    /// <summary>
+    /// 設計情報に追加するチェックボックス
+    /// </summary>
+    public ReactivePropertySlim<bool> AddingDesignManagementIsChecked { get; }
 }

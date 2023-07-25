@@ -109,7 +109,8 @@
                        FontWeight="Bold"
                        TextWrapping="Wrap"/>
             <StackPanel Grid.Row="1" HorizontalAlignment="Right">
-                <CheckBox Margin="5" Content="設計情報に追加する"/>
+                <CheckBox Margin="5" Content="設計情報に追加する"
+                          IsChecked="{Binding AddingDesignManagementIsChecked.Value}"/>
             </StackPanel>
         </Grid>
     </DockPanel>

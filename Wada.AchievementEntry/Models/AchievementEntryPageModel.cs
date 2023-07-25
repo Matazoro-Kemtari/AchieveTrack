@@ -11,9 +11,13 @@ class AchievementEntryPageModel
     public void Clear()
     {
         AchievementCollections.Clear();
+        WorkRecords.Clear();
+        AddingDesignManagementIsChecked.Value = false;
     }
 
     public ReactiveCollection<AchievementCollectionViewModel> AchievementCollections { get; } = new();
-    
+
     public ReactiveCollection<WorkRecordAttempt> WorkRecords { get; } = new();
+
+    public ReactivePropertySlim<bool> AddingDesignManagementIsChecked { get; } = new();
 }
