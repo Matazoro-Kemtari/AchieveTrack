@@ -24,8 +24,11 @@ namespace Wada.WriteWorkRecordApplication.Tests
                 .ReturnsAsync(TestWorkingLedgerFactory.Create());
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
-            achievementMock.Setup(x => x.AddAsync(It.IsAny<AchievementLedger>()))
-                .ReturnsAsync(1);
+            achievementMock.Setup(x => x.MaxByAchievementIdAsync())
+                .ReturnsAsync(TestAchievementLedgerFacroty.Create());
+            achievementMock.Setup(x => x.Add(It.IsAny<AchievementLedger>()))
+                .Returns(1);
+
 
             // when
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
@@ -41,10 +44,11 @@ namespace Wada.WriteWorkRecordApplication.Tests
 
             // then
             Assert.AreEqual(achievements.Count, count);
+            achievementMock.Verify(x => x.MaxByAchievementIdAsync(), Times.Once);
             employeeMock.Verify(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()), Times.Exactly(achievements.Count));
             workingLedgerMock.Verify(
                 x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(achievements.Sum(x => x.AchievementDetails.Count())));
-            achievementMock.Verify(x => x.AddAsync(It.IsAny<AchievementLedger>()), Times.Exactly(achievements.Count));
+            achievementMock.Verify(x => x.Add(It.IsAny<AchievementLedger>()), Times.Exactly(achievements.Count));
         }
 
         [TestMethod()]
@@ -125,6 +129,8 @@ namespace Wada.WriteWorkRecordApplication.Tests
                 .ReturnsAsync(TestWorkingLedgerFactory.Create());
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
+            achievementMock.Setup(x => x.MaxByAchievementIdAsync())
+                .ReturnsAsync(TestAchievementLedgerFacroty.Create());
             var achievements = new List<AchievementParam>
             {
                 TestAchievementParamFactory.Create(),
@@ -134,8 +140,8 @@ namespace Wada.WriteWorkRecordApplication.Tests
                 $"実績日: {achievements.First().WorkingDate:yyyy/MM/dd(ddd)}\n" +
                 $"氏名: {testEmployee.Name}\n" +
                 $"作業番号: {achievements.First().AchievementDetails.First().WorkingNumber}";
-            achievementMock.Setup(x => x.AddAsync(It.IsAny<AchievementLedger>()))
-                .ThrowsAsync(new AchievementLedgerAggregationException(achievementMessage));
+            achievementMock.Setup(x => x.Add(It.IsAny<AchievementLedger>()))
+                .Throws(new AchievementLedgerAggregationException(achievementMessage));
 
             // when
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(

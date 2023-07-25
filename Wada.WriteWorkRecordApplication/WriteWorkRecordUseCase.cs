@@ -29,17 +29,62 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     [Logging]
     public async Task<int> ExecuteAsync(IEnumerable<AchievementParam> achievements)
     {
-        using var transaction = new CommittableTransaction(
-            new TransactionOptions
-            {
-                IsolationLevel = IsolationLevel.ReadCommitted,
-                Timeout = new TimeSpan(0, 1, 0),
-            });
+        var maxTask = _achievementLedgerRepository.MaxByAchievementIdAsync();
+        var additionalInformationTask = FetchEmployeeAndWorkingLedger(achievements);
+        await Task.WhenAll(maxTask, additionalInformationTask);
 
         // 実績IDインクリメントのため、全件取得
-        var achievementLedgers = await _achievementLedgerRepository.FindAllAsync();
-        var currentAchievementId = achievementLedgers.Max(x => x.AchievementId);
-        var addedCounts = await Task.WhenAll(achievements.Select(async (achievement, i) =>
+        var maxAchievementLedger = maxTask.Result;
+
+        // 登録に使用する情報を取得する
+        (Employee employee, WorkingLedger[] workingLedgers)[] additionalInformations = additionalInformationTask.Result;
+
+        using TransactionScope scope = new();
+
+        int addedCount = 0;
+        uint index = 0;
+        achievements.ToList().ForEach(achievement =>
+        {
+            try
+            {
+                var nextAchievementId = maxAchievementLedger.AchievementId + 1u + index;
+                // Entity作成
+                var achievementLedger = AchievementLedger.Create(
+                nextAchievementId,
+                    achievement.WorkingDate,
+                    achievement.EmployeeNumber,
+                    additionalInformations[index].employee.DepartmentId,
+                    achievement.AchievementDetails.Select(
+                        x => AchievementDetail.Create(
+                            nextAchievementId,
+                            additionalInformations[index].workingLedgers.First(y => y.WorkingNumber.Value == x.WorkingNumber).OwnCompanyNumber,
+                            additionalInformations[index].employee.AchievementClassificationId ?? throw new NullReferenceException(),
+                            x.ManHour)));
+
+                // 実績台帳に追加する
+                addedCount += _achievementLedgerRepository.Add(achievementLedger);
+            }
+            catch (Exception ex) when (ex is AchievementLedgerAggregationException or NullReferenceException)
+            {
+                throw new WriteWorkRecordUseCaseException(
+                    $"実績を登録中に問題が発生しました\n{ex.Message}", ex);
+            }
+            index++;
+        });
+
+        scope.Complete();
+        return addedCount;
+    }
+
+    /// <summary>
+    /// 社員情報と作業台帳を取得する
+    /// </summary>
+    /// <param name="achievements"></param>
+    /// <returns></returns>
+    /// <exception cref="WriteWorkRecordUseCaseException"></exception>
+    private Task<(Employee employee, WorkingLedger[] workingLedgers)[]> FetchEmployeeAndWorkingLedger(IEnumerable<AchievementParam> achievements)
+    {
+        return Task.WhenAll(achievements.Select(async (achievement, i) =>
         {
             // 部署IDと実績工程IDを取得する
             var employeeTask = _employeeReader.FindByEmployeeNumberAsync(achievement.EmployeeNumber);
@@ -62,34 +107,8 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
 
             var employee = employeeTask.Result;
             var workingLedgers = workingLedgerTasks.Result;
-            try
-            {
-                var nextAchievementId = currentAchievementId + 1u + (uint)i;
-                // Entity作成
-                var achievementLedger = AchievementLedger.Create(
-                    nextAchievementId,
-                    achievement.WorkingDate,
-                    achievement.EmployeeNumber,
-                    employee.DepartmentId,
-                    achievement.AchievementDetails.Select(
-                        x => AchievementDetail.Create(
-                            nextAchievementId,
-                            workingLedgers.First(y => y.WorkingNumber.Value == x.WorkingNumber).OwnCompanyNumber,
-                            employee.AchievementClassificationId ?? throw new NullReferenceException(),
-                            x.ManHour)));
-
-                // 実績台帳に追加する
-                return await _achievementLedgerRepository.AddAsync(achievementLedger);
-            }
-            catch (Exception ex) when (ex is AchievementLedgerAggregationException or NullReferenceException)
-            {
-                throw new WriteWorkRecordUseCaseException(
-                    $"実績を登録中に問題が発生しました\n{ex.Message}", ex);
-            }
+            return (employee, workingLedgers);
         }));
-
-        transaction.Commit();
-        return addedCounts.Sum();
     }
 }
 

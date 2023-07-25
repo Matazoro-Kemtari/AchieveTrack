@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using Wada.AchieveTrackService;
+﻿using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchievementLedgerAggregation;
 using Wada.AOP.Logging;
 
@@ -15,11 +14,11 @@ public class AchievementLedgerRepository : IAchievementLedgerRepository
     }
 
     [Logging]
-    public async Task<int> AddAsync(AchievementLedger achievementLedger)
+    public int Add(AchievementLedger achievementLedger)
     {
         try
         {
-            return await _achievementLedgerRepository.AddAsync(achievementLedger.Convert());
+            return _achievementLedgerRepository.Add(achievementLedger.Convert());
         }
         catch (Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedgerAggregationException ex)
         {
@@ -35,6 +34,16 @@ public class AchievementLedgerRepository : IAchievementLedgerRepository
     }
 
     [Logging]
-    public void SetTransaction(CommittableTransaction? transaction)
-        => _achievementLedgerRepository.SetTransaction(transaction);
+    public async Task<AchievementLedger> MaxByAchievementIdAsync()
+    {
+        try
+        {
+            return AchievementLedger.Parse(
+                await _achievementLedgerRepository.MaxByAchievementIdAsync());
+        }
+        catch (Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedgerAggregationException ex)
+        {
+            throw new AchievementLedgerAggregationException(ex.Message, ex);
+        }
+    }
 }
