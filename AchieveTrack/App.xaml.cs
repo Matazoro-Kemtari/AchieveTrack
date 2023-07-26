@@ -59,7 +59,6 @@ namespace VerifyAttendanceCSV
 
             // 日報書き込み
             _ = containerRegistry.Register<IEmployeeReader, EmployeeReader>();
-            _ = containerRegistry.Register<IWorkingLedgerReader, WorkingLedgerReader>();
             _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
             _ = containerRegistry.Register<IDesignManagementWriter, DesignManagementWriter>();
             _ = containerRegistry.Register<IWriteWorkRecordUseCase, WriteWorkRecordUseCase>();

@@ -21,7 +21,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(TestEmployeeFactory.Create());
 
-            Mock<IWorkingLedgerReader> workingLedgerMock = new();
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-1")))
                 .ReturnsAsync(TestWorkingLedgerFactory.Create(ownCompanyNumber: 101u,
                                                               workingNumber: TestWorkingNumberFactory.Create("23Z-1")));
@@ -77,7 +77,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ThrowsAsync(new EmployeeAggregationException(employeeMessage));
 
-            Mock<IWorkingLedgerReader> workingLedgerMock = new();
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(TestWorkingLedgerFactory.Create());
 
@@ -110,7 +110,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             // given
             Mock<IEmployeeReader> employeeMock = new();
 
-            Mock<IWorkingLedgerReader> workingLedgerMock = new();
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             string workingLedgerMessage = "作業台帳が見つかりません";
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ThrowsAsync(new WorkingLedgerAggregationException(workingLedgerMessage));
@@ -147,7 +147,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(testEmployee);
 
-            Mock<IWorkingLedgerReader> workingLedgerMock = new();
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(TestWorkingLedgerFactory.Create());
 
