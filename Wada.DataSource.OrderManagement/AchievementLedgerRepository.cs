@@ -27,13 +27,6 @@ public class AchievementLedgerRepository : IAchievementLedgerRepository
     }
 
     [Logging]
-    public async Task<IEnumerable<AchievementLedger>> FindAllAsync()
-    {
-        var results = await _achievementLedgerRepository.FindAllAsync();
-        return results.Select(x => AchievementLedger.Parse(x));
-    }
-
-    [Logging]
     public async Task<AchievementLedger> FindByWorkingDateAndEmployeeNumberAsync(DateTime workingDate, uint employeeNumber)
     {
         try
