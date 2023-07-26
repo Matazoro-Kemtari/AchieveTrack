@@ -3,7 +3,7 @@
 namespace Wada.AchieveTrackService.WorkRecordValidator
 {
     [Serializable]
-    public class WorkRecordValidatorException : Exception
+    public class WorkRecordValidatorException : DomainException
     {
         public WorkRecordValidatorException()
         {

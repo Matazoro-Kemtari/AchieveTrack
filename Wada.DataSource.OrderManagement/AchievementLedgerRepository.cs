@@ -34,6 +34,20 @@ public class AchievementLedgerRepository : IAchievementLedgerRepository
     }
 
     [Logging]
+    public async Task<AchievementLedger> FindByWorkingDateAndEmployeeNumberAsync(DateTime workingDate, uint employeeNumber)
+    {
+        try
+        {
+            var achievementLedger = await _achievementLedgerRepository.FindByWorkingDateAndEmployeeNumberAsync(workingDate, employeeNumber);
+            return AchievementLedger.Parse(achievementLedger);
+        }
+        catch (Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedgerAggregationException ex)
+        {
+            throw new AchievementLedgerAggregationException(ex.Message, ex);
+        }
+    }
+
+    [Logging]
     public async Task<AchievementLedger> MaxByAchievementIdAsync()
     {
         try

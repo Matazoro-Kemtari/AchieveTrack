@@ -7,6 +7,7 @@ using System.Windows;
 using VerifyAttendanceCSV.Views;
 using Wada.AchievementEntry;
 using Wada.AchieveTrackService;
+using Wada.AchieveTrackService.DesignManagementWriter;
 using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.AchieveTrackSpreadSheet;
 using Wada.DataSource.OrderManagement;
@@ -51,6 +52,8 @@ namespace VerifyAttendanceCSV
             _ = containerRegistry.Register<IReadAchieveTrackUseCase, ReadAchieveTrackUseCase>();
 
             // 日報検証
+            _ = containerRegistry.Register<IWorkingLedgerRepository, WorkingLedgerRepository>();
+            _ = containerRegistry.Register<IDesignManagementRepository, DesignManagementRepository>();
             _ = containerRegistry.Register<IWorkRecordValidator, WorkRecordValidator>();
             _ = containerRegistry.Register<IVerifyWorkRecordUseCase, VerifyWorkRecordUseCase>();
 
@@ -58,6 +61,7 @@ namespace VerifyAttendanceCSV
             _ = containerRegistry.Register<IEmployeeReader, EmployeeReader>();
             _ = containerRegistry.Register<IWorkingLedgerReader, WorkingLedgerReader>();
             _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
+            _ = containerRegistry.Register<IDesignManagementWriter, DesignManagementWriter>();
             _ = containerRegistry.Register<IWriteWorkRecordUseCase, WriteWorkRecordUseCase>();
         }
 

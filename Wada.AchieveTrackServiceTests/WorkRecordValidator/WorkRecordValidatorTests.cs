@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Wada.AchieveTrackService.AchievementLedgerAggregation;
+using Wada.AchieveTrackService.DesignManagementAggregation;
+using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkingLedgerAggregation;
 using Wada.AchieveTrackService.WorkRecordReader;
-using Wada.Data.OrderManagement.Models;
-using Wada.Data.OrderManagement.Models.AchievementLedgerAggregation;
-using Wada.Data.OrderManagement.Models.DesignManagementAggregation;
-using Wada.Data.OrderManagement.Models.WorkingLedgerAggregation;
 
 namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 {
@@ -25,10 +25,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
-            Mock<Data.OrderManagement.Models.IAchievementLedgerRepository> achievementMock = new();
+            Mock<IAchievementLedgerRepository> achievementMock = new();
             achievementMock.Setup(x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(), It.IsAny<uint>()))
                 .ThrowsAsync(new AchievementLedgerAggregationException());
 
@@ -52,10 +52,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             };
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ThrowsAsync(new WorkingLedgerAggregationException());
 
-            var achievementMock = Mock.Of<Data.OrderManagement.Models.IAchievementLedgerRepository>();
+            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
 
             Mock<IDesignManagementRepository> designMock = new();
 
@@ -80,10 +80,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
-            var achievementMock = Mock.Of<Data.OrderManagement.Models.IAchievementLedgerRepository>();
+            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
 
             Mock<IDesignManagementRepository> designMock = new();
             designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
@@ -109,10 +109,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             };
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ThrowsAsync(new WorkingLedgerAggregationException());
 
-            var achievementMock = Mock.Of<Data.OrderManagement.Models.IAchievementLedgerRepository>();
+            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
             var designMock = Mock.Of<IDesignManagementRepository>();
 
             // when
@@ -136,10 +136,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
-            var achievementMock = Mock.Of<Data.OrderManagement.Models.IAchievementLedgerRepository>();
+            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
             var designMock = Mock.Of<IDesignManagementRepository>();
 
             // when
@@ -163,10 +163,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
-            Mock<Data.OrderManagement.Models.IAchievementLedgerRepository> achievementMock = new();
+            Mock<IAchievementLedgerRepository> achievementMock = new();
 
             var designMock = Mock.Of<IDesignManagementRepository>();
 
@@ -191,10 +191,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingLedger = TestWorkingLedgerFactory.Create();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<Data.OrderManagement.Models.ValueObjects.WorkingNumber>()))
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
-            Mock<Data.OrderManagement.Models.IAchievementLedgerRepository> achievementMock = new();
+            Mock<IAchievementLedgerRepository> achievementMock = new();
             achievementMock.Setup(x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(), It.IsAny<uint>()))
                 .ThrowsAsync(new AchievementLedgerAggregationException());
 

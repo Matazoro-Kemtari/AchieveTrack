@@ -11,8 +11,10 @@ namespace Wada.WriteWorkRecordApplication.Tests
     [TestClass()]
     public class WriteWorkRecordUseCaseTests
     {
-        [TestMethod()]
-        public async Task 正常系_例外なく更新処理が終わること()
+        [DataTestMethod()]
+        [DataRow(true)]
+        [DataRow(false)]
+        public async Task 正常系_例外なく更新処理が終わること(bool canAdd)
         {
             // given
             Mock<IEmployeeReader> employeeMock = new();
@@ -20,8 +22,12 @@ namespace Wada.WriteWorkRecordApplication.Tests
                 .ReturnsAsync(TestEmployeeFactory.Create());
 
             Mock<IWorkingLedgerReader> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ReturnsAsync(TestWorkingLedgerFactory.Create());
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-1")))
+                .ReturnsAsync(TestWorkingLedgerFactory.Create(ownCompanyNumber: 101u,
+                                                              workingNumber: TestWorkingNumberFactory.Create("23Z-1")));
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-2")))
+                .ReturnsAsync(TestWorkingLedgerFactory.Create(ownCompanyNumber: 102u,
+                                                              workingNumber: TestWorkingNumberFactory.Create("23Z-2")));
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
             achievementMock.Setup(x => x.MaxByAchievementIdAsync())
@@ -29,18 +35,28 @@ namespace Wada.WriteWorkRecordApplication.Tests
             achievementMock.Setup(x => x.Add(It.IsAny<AchievementLedger>()))
                 .Returns(1);
 
+            Mock<IDesignManagementWriter> designMock = new();
 
             // when
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 workingLedgerMock.Object,
-                achievementMock.Object);
+                achievementMock.Object,
+                designMock.Object);
             var achievements = new List<AchievementParam>
             {
-                TestAchievementParamFactory.Create(),
-                TestAchievementParamFactory.Create(),
+                TestAchievementParamFactory.Create(
+                    achievementDetails: new[]
+                    {
+                        TestAchievementDetailParamFactory.Create(workingNumber: "23Z-1")
+                    }),
+                TestAchievementParamFactory.Create(
+                    achievementDetails: new[]
+                    {
+                        TestAchievementDetailParamFactory.Create(workingNumber: "23Z-2")
+                    }),
             };
-            var count = await useCase.ExecuteAsync(achievements);
+            var count = await useCase.ExecuteAsync(achievements, canAdd);
 
             // then
             Assert.AreEqual(achievements.Count, count);
@@ -49,6 +65,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             workingLedgerMock.Verify(
                 x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(achievements.Sum(x => x.AchievementDetails.Count())));
             achievementMock.Verify(x => x.Add(It.IsAny<AchievementLedger>()), Times.Exactly(achievements.Count));
+            designMock.Verify(x => x.Add(It.IsAny<uint>()), Times.Exactly(canAdd ? achievements.Count : 0));
         }
 
         [TestMethod()]
@@ -66,17 +83,20 @@ namespace Wada.WriteWorkRecordApplication.Tests
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
 
+            Mock<IDesignManagementWriter> designMock = new();
+
             // when
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 workingLedgerMock.Object,
-                achievementMock.Object);
+                achievementMock.Object,
+                designMock.Object);
             var achievements = new List<AchievementParam>
             {
                 TestAchievementParamFactory.Create(),
                 TestAchievementParamFactory.Create(),
             };
-            Task target() => _ = useCase.ExecuteAsync(achievements!);
+            Task target() => _ = useCase.ExecuteAsync(achievements!, false);
 
             // then
             var ex = await Assert.ThrowsExceptionAsync<WriteWorkRecordUseCaseException>(target);
@@ -97,17 +117,20 @@ namespace Wada.WriteWorkRecordApplication.Tests
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
 
+            Mock<IDesignManagementWriter> designMock = new();
+
             // when
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 workingLedgerMock.Object,
-                achievementMock.Object);
+                achievementMock.Object,
+                designMock.Object);
             var achievements = new List<AchievementParam>
             {
                 TestAchievementParamFactory.Create(),
                 TestAchievementParamFactory.Create(),
             };
-            Task target() => _ = useCase.ExecuteAsync(achievements!);
+            Task target() => _ = useCase.ExecuteAsync(achievements!, false);
 
             // then
             var ex = await Assert.ThrowsExceptionAsync<WriteWorkRecordUseCaseException>(target);
@@ -131,6 +154,9 @@ namespace Wada.WriteWorkRecordApplication.Tests
             Mock<IAchievementLedgerRepository> achievementMock = new();
             achievementMock.Setup(x => x.MaxByAchievementIdAsync())
                 .ReturnsAsync(TestAchievementLedgerFacroty.Create());
+
+            Mock<IDesignManagementWriter> designMock = new();
+
             var achievements = new List<AchievementParam>
             {
                 TestAchievementParamFactory.Create(),
@@ -147,8 +173,9 @@ namespace Wada.WriteWorkRecordApplication.Tests
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 workingLedgerMock.Object,
-                achievementMock.Object);
-            Task target() => _ = useCase.ExecuteAsync(achievements!);
+                achievementMock.Object,
+                designMock.Object);
+            Task target() => _ = useCase.ExecuteAsync(achievements!, false);
 
             // then
             var ex = await Assert.ThrowsExceptionAsync<WriteWorkRecordUseCaseException>(target);

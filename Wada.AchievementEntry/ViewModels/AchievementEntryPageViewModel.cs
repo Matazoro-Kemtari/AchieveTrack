@@ -113,7 +113,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                  x.ManHour)));
             }
             catch (Exception)
-            {
+            {// TODO: エラーチェック
                 throw;
             }
 
@@ -204,6 +204,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
     private async Task AddWorkRecordAsync()
     {
+        // ボタンの有効判定で実現したい
         if (!_model.AchievementCollections.Any(x => x.CheckedItem.Value))
         {
             var message = MessageNotificationViaLivet.MakeExclamationMessage(
@@ -240,8 +241,6 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                 return;
             }
         }
-        if (_model.AchievementCollections.Select(x => x.ValidationResults.Any()).Any(x => x))
-            return;
 
         // 引数作成
         var param = _model.WorkRecords.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
@@ -253,7 +252,10 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         try
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            await _writeWorkRecordUseCase.ExecuteAsync(param);
+            await _writeWorkRecordUseCase.ExecuteAsync(param, AddingDesignManagementIsChecked.Value);
+            
+            var message = MessageNotificationViaLivet.MakeInformationMessage("登録しました");
+            await Messenger.RaiseAsync(message);
         }
         catch (WriteWorkRecordUseCaseException ex)
         {
