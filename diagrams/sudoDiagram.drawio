@@ -1,10 +1,10 @@
 <mxfile host="65bd71144e">
     <diagram id="RzdB1_ECVK01WcsdOi-J" name="sodo">
-        <mxGraphModel dx="1980" dy="1124" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+        <mxGraphModel dx="1386" dy="787" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="749" value="&lt;u&gt;作業日報検証ドメインサービス&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+                <mxCell id="749" value="&lt;u&gt;作業日報検証ドメインサービス&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;" parent="1" vertex="1">
                     <mxGeometry x="10" y="1560" width="417.5" height="210" as="geometry"/>
                 </mxCell>
                 <mxCell id="740" value="&lt;u&gt;Database&lt;br&gt;&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;" parent="1" vertex="1">
@@ -161,7 +161,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="727" value="&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;u&gt;M実績台帳明細&lt;br&gt;&lt;/u&gt;&lt;/span&gt;(AchievementLedgerDetail&lt;span&gt;)&lt;/span&gt;&lt;br style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;自社NO&lt;br&gt;工数&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
+                <mxCell id="727" value="&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;u&gt;M実績台帳明細&lt;br&gt;&lt;/u&gt;&lt;/span&gt;(AchievementDetail&lt;span&gt;)&lt;/span&gt;&lt;br style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;自社NO&lt;br&gt;工数&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
                     <mxGeometry x="40" y="1362.25" width="160" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="744" style="edgeStyle=none;html=1;startArrow=none;startFill=0;endArrow=classic;endFill=1;" parent="1" source="737" target="692" edge="1">
@@ -179,19 +179,19 @@
                 <mxCell id="746" value="受注管理に登録する" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="950" y="290" width="180" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="748" value="&lt;u&gt;成功&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;ValidationSuccessResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+                <mxCell id="748" value="&lt;u&gt;成功&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;ValidationSuccessResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
                     <mxGeometry x="32.5" y="1591.5" width="150" height="48.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="750" value="&lt;u&gt;作業日が完成日を過ぎている&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;WorkDateExpiredResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+                <mxCell id="750" value="&lt;u&gt;作業日が完成日を過ぎている&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;WorkDateExpiredResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
                     <mxGeometry x="20" y="1650" width="175" height="48.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="751" value="&lt;u&gt;作業台帳にない作業番号&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;InvalidWorkNumberResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+                <mxCell id="751" value="&lt;u&gt;作業台帳にない作業番号&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;InvalidWorkNumberResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
                     <mxGeometry x="25" y="1710" width="165" height="48.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="752" value="&lt;u&gt;すでに実績台帳に登録済み&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;DuplicateWorkDateEmployeeResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+                <mxCell id="752" value="&lt;u&gt;すでに実績台帳に登録済み&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;DuplicateWorkDateEmployeeResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
                     <mxGeometry x="207.5" y="1591.5" width="205" height="48.5" as="geometry"/>
                 </mxCell>
-                <mxCell id="753" value="&lt;u&gt;設計監理に未登録の作業NO&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;UnregisteredWorkNumberResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+                <mxCell id="753" value="&lt;u&gt;設計監理に未登録の作業NO&lt;/u&gt;&lt;br&gt;&lt;div style=&quot;text-align: start;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;UnregisteredWorkNumberResult)&lt;/span&gt;&lt;/div&gt;メッセージ&lt;span style=&quot;color: rgb(255 , 255 , 255)&quot;&gt;&lt;br&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=middle;align=center;" parent="1" vertex="1">
                     <mxGeometry x="215" y="1650" width="190" height="48.5" as="geometry"/>
                 </mxCell>
             </root>

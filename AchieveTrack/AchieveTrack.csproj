@@ -16,13 +16,18 @@
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="Wada.Data.DesignDepartmentDataBase" Version="1.0.11" />
     <PackageReference Include="Wada.Data.DesignDepartmentDataBase.Models" Version="1.0.16" />
-    <PackageReference Include="Wada.Data.OrderManagement" Version="1.1.0-rc-9.0.3" />
-    <PackageReference Include="Wada.Data.OrderManagement.Models" Version="1.1.0-rc-9.0.3" />
+    <PackageReference Include="Wada.Data.OrderManagement" Version="1.1.0-rc-9.0.9" />
+    <PackageReference Include="Wada.Data.OrderManagement.Models" Version="1.1.0-rc-9.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wada.AchievementEntry\Wada.AchievementEntry.csproj" />
+    <ProjectReference Include="..\Wada.AchieveTrackService\Wada.AchieveTrackService.csproj" />
     <ProjectReference Include="..\Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj" />
     <ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
+    <ProjectReference Include="..\Wada.DataSource.OrderManagement\Wada.DataSource.OrderManagement.csproj" />
+    <ProjectReference Include="..\Wada.ReadWorkRecordApplication\Wada.ReadWorkRecordApplication.csproj" />
+    <ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
+    <ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update=".env">

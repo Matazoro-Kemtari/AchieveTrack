@@ -7,13 +7,14 @@ using System.Windows;
 using VerifyAttendanceCSV.Views;
 using Wada.AchievementEntry;
 using Wada.AchieveTrackService;
+using Wada.AchieveTrackService.DesignManagementWriter;
 using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.AchieveTrackSpreadSheet;
-using Wada.Data.OrderManagement;
-using Wada.Data.OrderManagement.Models;
+using Wada.DataSource.OrderManagement;
 using Wada.IO;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
+using Wada.WriteWorkRecordApplication;
 
 namespace VerifyAttendanceCSV
 {
@@ -38,9 +39,10 @@ namespace VerifyAttendanceCSV
             _ = containerRegistry.RegisterSingleton<ILogger>(_ => LogManager.GetCurrentClassLogger());
 
             // DBライブラリ
-            _ = containerRegistry.Register<IWorkingLedgerRepository, WorkingLedgerRepository>();
-            _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
-            _ = containerRegistry.Register<IDesignManagementRepository, DesignManagementRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IWorkingLedgerRepository, Wada.Data.OrderManagement.WorkingLedgerRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IAchievementLedgerRepository, Wada.Data.OrderManagement.AchievementLedgerRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IDesignManagementRepository, Wada.Data.OrderManagement.DesignManagementRepository>();
+            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IEmployeeRepository, Wada.Data.OrderManagement.EmployeeRepository>();
 
             // Wada.IO
             _ = containerRegistry.Register<IFileStreamOpener, FileStreamOpener>();
@@ -50,8 +52,16 @@ namespace VerifyAttendanceCSV
             _ = containerRegistry.Register<IReadAchieveTrackUseCase, ReadAchieveTrackUseCase>();
 
             // 日報検証
+            _ = containerRegistry.Register<IWorkingLedgerRepository, WorkingLedgerRepository>();
+            _ = containerRegistry.Register<IDesignManagementRepository, DesignManagementRepository>();
             _ = containerRegistry.Register<IWorkRecordValidator, WorkRecordValidator>();
             _ = containerRegistry.Register<IVerifyWorkRecordUseCase, VerifyWorkRecordUseCase>();
+
+            // 日報書き込み
+            _ = containerRegistry.Register<IEmployeeReader, EmployeeReader>();
+            _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
+            _ = containerRegistry.Register<IDesignManagementWriter, DesignManagementWriter>();
+            _ = containerRegistry.Register<IWriteWorkRecordUseCase, WriteWorkRecordUseCase>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

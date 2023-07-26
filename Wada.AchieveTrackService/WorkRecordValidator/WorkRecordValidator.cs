@@ -1,9 +1,8 @@
-﻿using Wada.AchieveTrackService.ValueObjects;
+﻿using Wada.AchieveTrackService.AchievementLedgerAggregation;
+using Wada.AchieveTrackService.DesignManagementAggregation;
+using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkingLedgerAggregation;
 using Wada.AchieveTrackService.WorkRecordReader;
-using Wada.Data.OrderManagement.Models;
-using Wada.Data.OrderManagement.Models.AchievementLedgerAggregation;
-using Wada.Data.OrderManagement.Models.DesignManagementAggregation;
-using Wada.Data.OrderManagement.Models.WorkingLedgerAggregation;
 
 namespace Wada.AchieveTrackService.WorkRecordValidator;
 
@@ -57,7 +56,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            _ = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber.Convert());
+            _ = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
             return true;
         }
         catch (WorkingLedgerAggregationException)
@@ -75,7 +74,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            var result = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber.Convert());
+            var result = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
             return result.CompletionDate != null
                    && workingDate.CompareTo(result.CompletionDate) > 0;
         }
@@ -112,7 +111,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            var workingLedger = await _workingLedgerRepository.FindByWorkingNumberAsync(workNumber.Convert());
+            var workingLedger = await _workingLedgerRepository.FindByWorkingNumberAsync(workNumber);
             _ = await _designManagementRepository.FindByOwnCompanyNumberAsync(workingLedger.OwnCompanyNumber);
             return true;
         }

@@ -23,6 +23,9 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         AchievementDate = _model.AchievementDate.ToReactivePropertyAsSynchronized(x => x.Value)
                                                 .AddTo(Disposables);
 
+        EmployeeNumber = _model.EmployeeNumber.ToReactivePropertyAsSynchronized(x => x.Value)
+                                              .AddTo(Disposables);
+
         EmployeeName = _model.EmployeeName.ToReactivePropertyAsSynchronized(x => x.Value)
                                           .AddTo(Disposables);
 
@@ -41,6 +44,8 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
 
     public ReactiveProperty<DateTime> AchievementDate { get; }
 
+    public ReactiveProperty<uint> EmployeeNumber { get; }
+    
     public ReactiveProperty<string?> EmployeeName { get; }
 
     public ReadOnlyReactiveCollection<IValidationResultCollectionViewModel> ValidationResults { get; }
