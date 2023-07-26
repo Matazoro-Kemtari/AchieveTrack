@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Input;
 using Wada.AchievementEntry.Models;
 using Wada.AchieveTrackService;
+using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.IO;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
@@ -112,9 +113,12 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                  x.WorkingNumber,
                                                  x.ManHour)));
             }
-            catch (Exception)
-            {// TODO: エラーチェック
-                throw;
+            catch (WorkRecordValidatorException ex)
+            {
+                var message = MessageNotificationViaLivet.MakeErrorMessage(ex.Message);
+                await Messenger.RaiseAsync(message);
+                Environment.Exit(0);
+                return;
             }
 
             // 集計
