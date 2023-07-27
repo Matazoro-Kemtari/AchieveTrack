@@ -248,17 +248,29 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         }
 
         // 引数作成
-        var param = _model.WorkRecords.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
+        var param = _model.WorkRecords.Join(
+            _model.AchievementCollections.Where(x => x.CheckedItem.Value),
+            w => new { w.WorkingDate, w.EmployeeNumber },
+            a => new { WorkingDate = a.AchievementDate.Value, EmployeeNumber = a.EmployeeNumber.Value },
+            (w, _) => new
+            {
+                w.WorkingDate,
+                w.EmployeeNumber,
+                w.WorkingNumber,
+                w.ManHour,
+            })
+            .GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
             .Select(x => new AchievementParam(x.Key.WorkingDate,
                                               x.Key.EmployeeNumber,
-                                              x.Select(y => new AchievementDetailParam(
-                                                  y.WorkingNumber,
-                                                  y.ManHour))));
+                                              x.GroupBy(y => y.WorkingNumber).Select(y => new AchievementDetailParam(
+                                                  y.Key,
+                                                  y.Sum(z => z.ManHour)))));
+
         try
         {
             Mouse.OverrideCursor = Cursors.Wait;
             await _writeWorkRecordUseCase.ExecuteAsync(param, AddingDesignManagementIsChecked.Value);
-            
+
             var message = MessageNotificationViaLivet.MakeInformationMessage("登録しました");
             await Messenger.RaiseAsync(message);
         }
