@@ -2,6 +2,7 @@
 using Moq;
 using Wada.AchieveTrackService.AchievementLedgerAggregation;
 using Wada.AchieveTrackService.DesignManagementAggregation;
+using Wada.AchieveTrackService.EmployeeAggregation;
 using Wada.AchieveTrackService.ValueObjects;
 using Wada.AchieveTrackService.WorkingLedgerAggregation;
 using Wada.AchieveTrackService.WorkRecordReader;
@@ -34,8 +35,16 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
+            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
+            Mock<IEmployeeReader> employeeMock = new();
+            employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
+                .ReturnsAsync(employee);
+
             // when
-            WorkRecordValidator validator = new(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
+            WorkRecordValidator validator = new(workingLedgerMock.Object,
+                                                achievementMock.Object,
+                                                designMock.Object,
+                                                employeeMock.Object);
             var actual = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
@@ -66,8 +75,13 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
+            Mock<IEmployeeReader> employeeMock = new();
+
             // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object,
+                                                                     achievementMock.Object,
+                                                                     designMock.Object,
+                                                                     employeeMock.Object);
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
@@ -111,8 +125,16 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
                 .ThrowsAsync(new DesignManagementAggregationException());
 
+            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
+            Mock<IEmployeeReader> employeeMock = new();
+            employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
+                .ReturnsAsync(employee);
+
             // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object,
+                                                                     achievementMock.Object,
+                                                                     designMock.Object,
+                                                                     employeeMock.Object);
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
@@ -155,8 +177,16 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
+            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
+            Mock<IEmployeeReader> employeeMock = new();
+            employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
+                .ReturnsAsync(employee);
+
             // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object,
+                                                                     achievementMock.Object,
+                                                                     designMock.Object,
+                                                                     employeeMock.Object);
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then

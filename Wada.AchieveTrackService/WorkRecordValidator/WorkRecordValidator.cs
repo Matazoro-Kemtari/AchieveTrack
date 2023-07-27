@@ -11,12 +11,14 @@ public class WorkRecordValidator : IWorkRecordValidator
     private readonly IWorkingLedgerRepository _workingLedgerRepository;
     private readonly IAchievementLedgerRepository _achievementLedgerRepository;
     private readonly IDesignManagementRepository _designManagementRepository;
+    private readonly IEmployeeReader _employeeReader;
 
-    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository)
+    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository, IEmployeeReader employeeReader)
     {
         _workingLedgerRepository = workingLedgerRepository;
         _achievementLedgerRepository = achievementLedgerRepository;
         _designManagementRepository = designManagementRepository;
+        _employeeReader = employeeReader;
     }
 
     public async Task<IEnumerable<IEnumerable<IValidationResult>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
@@ -24,7 +26,9 @@ public class WorkRecordValidator : IWorkRecordValidator
         if (!workRecords.Any())
             throw new ArgumentNullException(nameof(workRecords));
 
-        return await Task.WhenAll(workRecords.Select(
+        const uint CadAchievementClassificationId = 2u;
+
+        return await Task.WhenAll((IEnumerable<Task<List<IValidationResult>>>)workRecords.Select(
             async x =>
             {
                 var validationResults = new List<IValidationResult>();
@@ -34,7 +38,9 @@ public class WorkRecordValidator : IWorkRecordValidator
                     if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
                         validationResults.Add(WorkDateExpiredResult.Create(x.WorkingNumber, x.Note));
 
-                    if (!await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
+                    var employee = await _employeeReader.FindByEmployeeNumberAsync(x.EmployeeNumber);
+                    if (employee.AchievementClassificationId == CadAchievementClassificationId
+                        && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
                         validationResults.Add(UnregisteredWorkNumberResult.Create(x.WorkingNumber, x.Note));
                 }
                 else
