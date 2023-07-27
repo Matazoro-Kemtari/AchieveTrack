@@ -10,6 +10,8 @@ namespace Wada.AchievementEntry.ViewModels;
 public interface IValidationResultCollectionViewModel : IDestructible
 {
     ReactivePropertySlim<string> Message { get; }
+    ReactivePropertySlim<string> WorkingNumber { get; }
+    ReactivePropertySlim<string> Note { get; }
 }
 
 public class InvalidWorkNumberResultCollectionViewModel : BindableBase, IDestructible, IValidationResultCollectionViewModel
@@ -21,6 +23,12 @@ public class InvalidWorkNumberResultCollectionViewModel : BindableBase, IDestruc
         _model = validationResult;
 
         Message = new ReactivePropertySlim<string>(_model.Message)
+            .AddTo(Disposables);
+
+        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        Note = new ReactivePropertySlim<string>(_model.Note)
             .AddTo(Disposables);
     }
 
@@ -35,6 +43,10 @@ public class InvalidWorkNumberResultCollectionViewModel : BindableBase, IDestruc
     private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
     public ReactivePropertySlim<string> Message { get; }
+
+    public ReactivePropertySlim<string> WorkingNumber { get; }
+
+    public ReactivePropertySlim<string> Note { get; }
 }
 
 public class DuplicateWorkDateEmployeeResultCollectionViewModel : BindableBase, IDestructible, IValidationResultCollectionViewModel
@@ -46,6 +58,12 @@ public class DuplicateWorkDateEmployeeResultCollectionViewModel : BindableBase, 
         _model = validationResult;
 
         Message = new ReactivePropertySlim<string>(_model.Message)
+            .AddTo(Disposables);
+
+        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        Note = new ReactivePropertySlim<string>(_model.Note)
             .AddTo(Disposables);
     }
 
@@ -60,6 +78,10 @@ public class DuplicateWorkDateEmployeeResultCollectionViewModel : BindableBase, 
     private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
     public ReactivePropertySlim<string> Message { get; }
+
+    public ReactivePropertySlim<string> WorkingNumber { get; }
+
+    public ReactivePropertySlim<string> Note { get; }
 }
 
 public class UnregisteredWorkNumberResultCollectionViewModel : BindableBase, IDestructible, IValidationResultCollectionViewModel
@@ -71,6 +93,12 @@ public class UnregisteredWorkNumberResultCollectionViewModel : BindableBase, IDe
         _model = validationResult;
 
         Message = new ReactivePropertySlim<string>(_model.Message)
+            .AddTo(Disposables);
+
+        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        Note = new ReactivePropertySlim<string>(_model.Note)
             .AddTo(Disposables);
     }
 
@@ -85,6 +113,10 @@ public class UnregisteredWorkNumberResultCollectionViewModel : BindableBase, IDe
     private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
     public ReactivePropertySlim<string> Message { get; }
+
+    public ReactivePropertySlim<string> WorkingNumber { get; }
+
+    public ReactivePropertySlim<string> Note { get; }
 }
 
 public class WorkDateExpiredResultCollectionViewModel : BindableBase, IDestructible, IValidationResultCollectionViewModel
@@ -96,6 +128,12 @@ public class WorkDateExpiredResultCollectionViewModel : BindableBase, IDestructi
         _model = validationResult;
 
         Message = new ReactivePropertySlim<string>(_model.Message)
+            .AddTo(Disposables);
+
+        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        Note = new ReactivePropertySlim<string>(_model.Note)
             .AddTo(Disposables);
     }
 
@@ -110,4 +148,8 @@ public class WorkDateExpiredResultCollectionViewModel : BindableBase, IDestructi
     private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
     public ReactivePropertySlim<string> Message { get; }
+
+    public ReactivePropertySlim<string> WorkingNumber { get; }
+
+    public ReactivePropertySlim<string> Note { get; }
 }

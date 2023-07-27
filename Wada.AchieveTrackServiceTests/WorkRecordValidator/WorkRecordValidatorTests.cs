@@ -32,18 +32,25 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             achievementMock.Setup(x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(), It.IsAny<uint>()))
                 .ThrowsAsync(new AchievementLedgerAggregationException());
 
-            var designMock = Mock.Of<IDesignManagementRepository>();
+            Mock<IDesignManagementRepository> designMock = new();
 
             // when
-            WorkRecordValidator validator = new(workingLedgerMock.Object, achievementMock.Object, designMock);
+            WorkRecordValidator validator = new(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
             var actual = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
             Assert.IsFalse(actual.SelectMany(x => x).Any());
+            workingLedgerMock.Verify(
+                x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(3 * workRecords.Count));
+            achievementMock.Verify(
+                x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(),
+                                                               It.IsAny<uint>()), Times.Exactly(workRecords.Count));
+            designMock.Verify(
+                x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()), Times.Exactly(workRecords.Count));
         }
 
         [TestMethod()]
-        public async Task 正常系_作業台帳にない実績台帳にあるの複数の異常がある場合検出すること()
+        public async Task 正常系_作業台帳にない_実績台帳に登録済みの異常があることを検出すること()
         {
             // given
             List<WorkRecord> workRecords = new()
@@ -55,21 +62,36 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ThrowsAsync(new WorkingLedgerAggregationException());
 
-            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
+            Mock<IAchievementLedgerRepository> achievementMock = new();
 
             Mock<IDesignManagementRepository> designMock = new();
 
             // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock, designMock.Object);
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
-            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            var expected = workRecords.First();
+            var actual = results.SelectMany(x => x);
+            Assert.IsTrue(actual.Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            actual.ToList().ForEach(x =>
+            {
+                Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
+                Assert.AreEqual(expected.Note, x.Note);
+            });
+
+            workingLedgerMock.Verify(
+                x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Once);
+            achievementMock.Verify(
+                x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(),
+                                                               It.IsAny<uint>()), Times.Once);
+            designMock.Verify(
+                x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()), Times.Never);
         }
 
         [TestMethod()]
-        public async Task 正常系_完成日過ぎ設計管理にない実績台帳にあるの複数の異常がある場合検出すること()
+        public async Task 正常系_完成日過ぎている_設計管理に登録されていない_実績台帳に登録済みの異常があることを検出すること()
         {
             // given
             var workingDate = new DateTime(2023, 4, 1);
@@ -83,120 +105,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
                 .ReturnsAsync(workingLedger);
 
-            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
-
-            Mock<IDesignManagementRepository> designMock = new();
-            designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
-                .ThrowsAsync(new DesignManagementAggregationException());
-
-            // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock, designMock.Object);
-            var results = await validator.ValidateWorkRecordsAsync(workRecords);
-
-            // then
-            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
-            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
-            Assert.IsTrue(results.SelectMany(x => x).Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
-        }
-
-        [TestMethod()]
-        public async Task 正常系_作業番号が台帳にない場合検出すること()
-        {
-            // given
-            List<WorkRecord> workRecords = new()
-            {
-                TestWorkRecordFactory.Create(),
-            };
-
-            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ThrowsAsync(new WorkingLedgerAggregationException());
-
-            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
-            var designMock = Mock.Of<IDesignManagementRepository>();
-
-            // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock, designMock);
-            var results = await validator.ValidateWorkRecordsAsync(workRecords);
-
-            // then
-            Assert.IsTrue(results.SelectMany(x => x)
-                                 .Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
-        }
-
-        [TestMethod()]
-        public async Task 正常系_作業日が完成日を過ぎている場合検出すること()
-        {
-            // given
-            var workingDate = new DateTime(2023, 4, 1);
-            List<WorkRecord> workRecords = new()
-            {
-                TestWorkRecordFactory.Create(workingDate: workingDate),
-            };
-            var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
-
-            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ReturnsAsync(workingLedger);
-
-            var achievementMock = Mock.Of<IAchievementLedgerRepository>();
-            var designMock = Mock.Of<IDesignManagementRepository>();
-
-            // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock, designMock);
-            var results = await validator.ValidateWorkRecordsAsync(workRecords);
-
-            // then
-            Assert.IsTrue(results.SelectMany(x => x)
-                                 .Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
-        }
-
-        [TestMethod()]
-        public async Task 正常系_実績台帳に登録済みの場合検出すること()
-        {
-            // given
-            List<WorkRecord> workRecords = new()
-            {
-                TestWorkRecordFactory.Create(),
-            };
-
-            var workingLedger = TestWorkingLedgerFactory.Create();
-
-            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ReturnsAsync(workingLedger);
-
             Mock<IAchievementLedgerRepository> achievementMock = new();
-
-            var designMock = Mock.Of<IDesignManagementRepository>();
-
-            // when
-            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock.Object, designMock);
-            var results = await validator.ValidateWorkRecordsAsync(workRecords);
-
-            // then
-            Assert.IsTrue(results.SelectMany(x => x)
-                                 .Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
-        }
-
-        [TestMethod()]
-        public async Task 正常系_設計管理に未登録の場合検出すること()
-        {
-            // given
-            List<WorkRecord> workRecords = new()
-            {
-                TestWorkRecordFactory.Create(),
-            };
-
-            var workingLedger = TestWorkingLedgerFactory.Create();
-
-            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ReturnsAsync(workingLedger);
-
-            Mock<IAchievementLedgerRepository> achievementMock = new();
-            achievementMock.Setup(x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(), It.IsAny<uint>()))
-                .ThrowsAsync(new AchievementLedgerAggregationException());
 
             Mock<IDesignManagementRepository> designMock = new();
             designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
@@ -207,8 +116,66 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var results = await validator.ValidateWorkRecordsAsync(workRecords);
 
             // then
-            Assert.IsTrue(results.SelectMany(x => x)
-                                 .Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
+            var expected = workRecords.First();
+            var actual = results.SelectMany(x => x);
+            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            actual.ToList().ForEach(x =>
+            {
+                Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
+                Assert.AreEqual(expected.Note, x.Note);
+            });
+
+            workingLedgerMock.Verify(
+                x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(3 * workRecords.Count));
+            achievementMock.Verify(
+                x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(),
+                                                               It.IsAny<uint>()), Times.Once);
+            designMock.Verify(
+                x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()), Times.Exactly(workRecords.Count));
+        }
+
+        [TestMethod()]
+        public async Task 正常系_作業日が完成日を過ぎていることを検出すること()
+        {
+            // given
+            var workingDate = new DateTime(2023, 4, 1);
+            List<WorkRecord> workRecords = new()
+            {
+                TestWorkRecordFactory.Create(workingDate: workingDate),
+            };
+            var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
+
+            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
+            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
+                .ReturnsAsync(workingLedger);
+
+            Mock<IAchievementLedgerRepository> achievementMock = new();
+
+            Mock<IDesignManagementRepository> designMock = new();
+
+            // when
+            IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object, achievementMock.Object, designMock.Object);
+            var results = await validator.ValidateWorkRecordsAsync(workRecords);
+
+            // then
+            var expected = workRecords.First();
+            var actual = results.SelectMany(x => x);
+            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
+            actual.ToList().ForEach(x =>
+            {
+                Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
+                Assert.AreEqual(expected.Note, x.Note);
+            });
+
+            workingLedgerMock.Verify(
+                x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(3));
+            achievementMock.Verify(
+                x => x.FindByWorkingDateAndEmployeeNumberAsync(It.IsAny<DateTime>(),
+                                                               It.IsAny<uint>()), Times.Once);
+            designMock.Verify(
+                x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()), Times.Once);
         }
     }
 }

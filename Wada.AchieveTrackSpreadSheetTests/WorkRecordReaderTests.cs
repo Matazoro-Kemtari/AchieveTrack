@@ -51,6 +51,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                 sht.Cell(x.i + 2, "B").SetValue(x.item.EmployeeNumber);
                 sht.Cell(x.i + 2, "C").SetValue(x.item.EmployeeName);
                 sht.Cell(x.i + 2, "E").SetValue(x.item.WorkingNumber.Value);
+                sht.Cell(x.i + 2, "H").SetValue(x.item.Note);
                 sht.Cell(x.i + 2, "J").SetValue(x.item.ManHour.Value);
             });
             return workbook;
