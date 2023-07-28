@@ -60,15 +60,15 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ListView Margin="5"
-                     x:Name="XlsxPath"
-                     ToolTip="日報をドロップしてください"
-                     ItemsSource="{Binding AchievementCollections}"
-                     d:ItemsSource="{d:SampleData}"
-                     VirtualizingPanel.IsVirtualizing="True"
-                     VirtualizingPanel.VirtualizationMode="Recycling"
-                     VirtualizingPanel.ScrollUnit="Pixel"
-                     dd:DragDrop.IsDropTarget="True"
-                     dd:DragDrop.DropHandler="{Binding}">
+                      x:Name="XlsxPath"
+                      ToolTip="日報をドロップしてください"
+                      ItemsSource="{Binding AchievementCollections}"
+                      d:ItemsSource="{d:SampleData}"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      VirtualizingPanel.ScrollUnit="Pixel"
+                      dd:DragDrop.IsDropTarget="True"
+                      dd:DragDrop.DropHandler="{Binding}">
                 <ListView.View>
                     <GridView>
                         <!-- GridViewColumnにCheckBoxを追加する -->

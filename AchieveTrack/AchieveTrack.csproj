@@ -3,8 +3,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <AssemblyVersion>1.1.1.4</AssemblyVersion>
-    <FileVersion>1.1.1.4</FileVersion>
+    <AssemblyVersion>1.1.1.5</AssemblyVersion>
+    <FileVersion>1.1.1.5</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="2.5.0" />
