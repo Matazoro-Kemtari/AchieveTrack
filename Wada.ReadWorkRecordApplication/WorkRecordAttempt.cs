@@ -6,7 +6,8 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
                                       uint EmployeeNumber,
                                       string EmployeeName,
                                       string WorkingNumber,
-                                      string Note,
+                                      string? JigCode,
+                                      string? Note,
                                       decimal ManHour)
 {
     public static WorkRecordAttempt Parse(WorkRecord workRecord)
@@ -14,6 +15,7 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
                workRecord.EmployeeNumber,
                workRecord.EmployeeName,
                workRecord.WorkingNumber.Value,
+               workRecord.JigCode,
                workRecord.Note,
                workRecord.ManHour.Value);
 }

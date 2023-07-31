@@ -6,12 +6,12 @@ namespace Wada.VerifyWorkRecordApplication;
 
 public record class InvalidWorkNumberResultAttempt : InvalidWorkNumberResult, IValidationResultAttempt
 {
-    protected InvalidWorkNumberResultAttempt(WorkingNumber workingNumber, string note)
-        : base(workingNumber, note)
+    protected InvalidWorkNumberResultAttempt(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
     { }
 
-    private static new InvalidWorkNumberResultAttempt Create(WorkingNumber workingNumber, string note)
-        => new(workingNumber, note);
+    private static new InvalidWorkNumberResultAttempt Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static InvalidWorkNumberResultAttempt Parse(IValidationResult validationResult)
     {
@@ -20,6 +20,6 @@ public record class InvalidWorkNumberResultAttempt : InvalidWorkNumberResult, IV
                 $"引数には{nameof(InvalidWorkNumberResult)}を渡してください",
                 nameof(validationResult));
 
-        return Create(validationResult.WorkingNumber, validationResult.Note);
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 }

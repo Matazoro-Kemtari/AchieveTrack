@@ -92,6 +92,7 @@
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
                                                         <ColumnDefinition/>
+                                                        <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Margin="0,0,5,0"
                                                                Text="{Binding Message.Value}"
@@ -101,6 +102,10 @@
                                                                Text="{Binding WorkingNumber.Value}"
                                                                Foreground="Red"/>
                                                     <TextBlock Grid.Column="2"
+                                                               Margin="0,0,5,0"
+                                                               Text="{Binding JigCode.Value}"
+                                                               Foreground="Red"/>
+                                                    <TextBlock Grid.Column="3"
                                                                Margin="0,0,5,0"
                                                                Text="{Binding Note.Value}"
                                                                Foreground="Red"/>

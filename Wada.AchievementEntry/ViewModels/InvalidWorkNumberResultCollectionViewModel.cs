@@ -11,6 +11,7 @@ public interface IValidationResultCollectionViewModel : IDestructible
 {
     ReactivePropertySlim<string> Message { get; }
     ReactivePropertySlim<string> WorkingNumber { get; }
+    ReactivePropertySlim<string> JigCode { get; }
     ReactivePropertySlim<string> Note { get; }
 }
 
@@ -26,6 +27,9 @@ public class InvalidWorkNumberResultCollectionViewModel : BindableBase, IDestruc
             .AddTo(Disposables);
 
         WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        JigCode = new ReactivePropertySlim<string>(_model.JigCode)
             .AddTo(Disposables);
 
         Note = new ReactivePropertySlim<string>(_model.Note)
@@ -46,6 +50,8 @@ public class InvalidWorkNumberResultCollectionViewModel : BindableBase, IDestruc
 
     public ReactivePropertySlim<string> WorkingNumber { get; }
 
+    public ReactivePropertySlim<string> JigCode { get; }
+
     public ReactivePropertySlim<string> Note { get; }
 }
 
@@ -61,6 +67,9 @@ public class DuplicateWorkDateEmployeeResultCollectionViewModel : BindableBase, 
             .AddTo(Disposables);
 
         WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        JigCode = new ReactivePropertySlim<string>(_model.JigCode)
             .AddTo(Disposables);
 
         Note = new ReactivePropertySlim<string>(_model.Note)
@@ -81,6 +90,8 @@ public class DuplicateWorkDateEmployeeResultCollectionViewModel : BindableBase, 
 
     public ReactivePropertySlim<string> WorkingNumber { get; }
 
+    public ReactivePropertySlim<string> JigCode { get; }
+
     public ReactivePropertySlim<string> Note { get; }
 }
 
@@ -96,6 +107,9 @@ public class UnregisteredWorkNumberResultCollectionViewModel : BindableBase, IDe
             .AddTo(Disposables);
 
         WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        JigCode = new ReactivePropertySlim<string>(_model.JigCode)
             .AddTo(Disposables);
 
         Note = new ReactivePropertySlim<string>(_model.Note)
@@ -116,6 +130,8 @@ public class UnregisteredWorkNumberResultCollectionViewModel : BindableBase, IDe
 
     public ReactivePropertySlim<string> WorkingNumber { get; }
 
+    public ReactivePropertySlim<string> JigCode { get; }
+
     public ReactivePropertySlim<string> Note { get; }
 }
 
@@ -131,6 +147,9 @@ public class WorkDateExpiredResultCollectionViewModel : BindableBase, IDestructi
             .AddTo(Disposables);
 
         WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+            .AddTo(Disposables);
+
+        JigCode = new ReactivePropertySlim<string>(_model.JigCode)
             .AddTo(Disposables);
 
         Note = new ReactivePropertySlim<string>(_model.Note)
@@ -150,6 +169,8 @@ public class WorkDateExpiredResultCollectionViewModel : BindableBase, IDestructi
     public ReactivePropertySlim<string> Message { get; }
 
     public ReactivePropertySlim<string> WorkingNumber { get; }
+
+    public ReactivePropertySlim<string> JigCode { get; }
 
     public ReactivePropertySlim<string> Note { get; }
 }

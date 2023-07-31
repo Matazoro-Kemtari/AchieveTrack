@@ -36,18 +36,18 @@ public class WorkRecordValidator : IWorkRecordValidator
                 if (await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
                 {
                     if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
-                        validationResults.Add(WorkDateExpiredResult.Create(x.WorkingNumber, x.Note));
+                        validationResults.Add(WorkDateExpiredResult.Create(x.WorkingNumber,x.JigCode, x.Note));
 
                     var employee = await _employeeReader.FindByEmployeeNumberAsync(x.EmployeeNumber);
                     if (employee.AchievementClassificationId == CadAchievementClassificationId
                         && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
-                        validationResults.Add(UnregisteredWorkNumberResult.Create(x.WorkingNumber, x.Note));
+                        validationResults.Add(UnregisteredWorkNumberResult.Create(x.WorkingNumber, x.JigCode, x.Note));
                 }
                 else
-                    validationResults.Add(InvalidWorkNumberResult.Create(x.WorkingNumber, x.Note));
+                    validationResults.Add(InvalidWorkNumberResult.Create(x.WorkingNumber, x.JigCode, x.Note));
 
                 if (await IsRecordInAchievementLedgerAsync(x.WorkingDate, x.EmployeeNumber))
-                    validationResults.Add(DuplicateWorkDateEmployeeResult.Create(x.WorkingNumber, x.Note));
+                    validationResults.Add(DuplicateWorkDateEmployeeResult.Create(x.WorkingNumber, x.JigCode, x.Note));
 
                 return validationResults;
             }));

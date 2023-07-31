@@ -138,6 +138,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                  x.EmployeeNumber,
                                                  x.EmployeeName,
                                                  x.WorkingNumber,
+                                                 x.JigCode,
                                                  x.Note,
                                                  x.ManHour)));
             }

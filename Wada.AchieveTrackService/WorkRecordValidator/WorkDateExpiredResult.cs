@@ -7,17 +7,20 @@ namespace Wada.AchieveTrackService.WorkRecordValidator;
 /// </summary>
 public record class WorkDateExpiredResult : IValidationResult
 {
-    protected WorkDateExpiredResult(WorkingNumber workingNumber, string note)
+    protected WorkDateExpiredResult(WorkingNumber workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
+        JigCode = jigCode;
         Note = note;
     }
 
-    public static WorkDateExpiredResult Create(WorkingNumber workingNumber, string note) => new(workingNumber, note);
+    public static WorkDateExpiredResult Create(WorkingNumber workingNumber, string jigCode, string note) => new(workingNumber, jigCode, note);
 
     public string Message => "作業日が完成を過ぎています";
 
     public WorkingNumber WorkingNumber { get; }
+
+    public string JigCode { get; }
 
     public string Note { get; }
 }
@@ -25,9 +28,10 @@ public record class WorkDateExpiredResult : IValidationResult
 public class TestWorkDateExpiredResultFactory
 {
     public static WorkDateExpiredResult Create(WorkingNumber? workingNumber = default,
+                                               string jigCode = "11A",
                                                string note = "特記事項")
     {
         workingNumber ??= TestWorkingNumberFactory.Create();
-        return WorkDateExpiredResult.Create(workingNumber, note);
+        return WorkDateExpiredResult.Create(workingNumber, jigCode, note);
     }
 }

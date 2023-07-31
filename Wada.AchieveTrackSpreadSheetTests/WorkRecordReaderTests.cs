@@ -24,10 +24,28 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             // then
             Assert.IsNotNull(actual);
             // idは除外して比較
-            var expected = MakeTestDatas().Select(x => new { x.WorkingDate, x.EmployeeNumber,x.EmployeeName, x.WorkingNumber, x.ManHour });
+            var expected = MakeTestDatas().Select(x => new
+            {
+                x.WorkingDate,
+                x.EmployeeNumber,
+                x.EmployeeName,
+                x.WorkingNumber,
+                x.JigCode,
+                x.ManHour,
+                x.Note,
+            });
             CollectionAssert.AreEquivalent(
                 expected.ToArray(),
-                actual.Select(x => new { x.WorkingDate, x.EmployeeNumber, x.EmployeeName, x.WorkingNumber, x.ManHour }).ToArray());
+                actual.Select(x => new
+                { 
+                    x.WorkingDate,
+                    x.EmployeeNumber,
+                    x.EmployeeName,
+                    x.WorkingNumber,
+                    x.JigCode,
+                    x.ManHour,
+                    x.Note,
+                }).ToArray());
         }
 
         private static IXLWorkbook MakeTestBook()
@@ -51,6 +69,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                 sht.Cell(x.i + 2, "B").SetValue(x.item.EmployeeNumber);
                 sht.Cell(x.i + 2, "C").SetValue(x.item.EmployeeName);
                 sht.Cell(x.i + 2, "E").SetValue(x.item.WorkingNumber.Value);
+                sht.Cell(x.i + 2, "F").SetValue(x.item.JigCode);
                 sht.Cell(x.i + 2, "H").SetValue(x.item.Note);
                 sht.Cell(x.i + 2, "J").SetValue(x.item.ManHour.Value);
             });
@@ -94,16 +113,16 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
         [DataRow(null)]
         [DataRow("ABC")]
         [DataRow("漢字")]
-        public async Task 異常系_作業日が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        public async Task 異常系_作業日が取得できないとき例外を返すこと(dynamic testData)
         {
             // given
             using var workbook = MakeTestBook();
             var sht = workbook.Worksheets.First();
             const string CellAddressInRange = "A2";
-            if (wrongWorkingDate is null)
+            if (testData is null)
                 sht.Cell(CellAddressInRange).Clear();
             else
-                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+                sht.Cell(CellAddressInRange).SetValue(testData);
             using var xlsStream = new MemoryStream();
             workbook.SaveAs(xlsStream);
 
@@ -123,16 +142,16 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
         [DataRow(0)]
         [DataRow("ABC")]
         [DataRow("漢字")]
-        public async Task 異常系_社員番号が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        public async Task 異常系_社員番号が取得できないとき例外を返すこと(dynamic testData)
         {
             // given
             using var workbook = MakeTestBook();
             var sht = workbook.Worksheets.First();
             const string CellAddressInRange = "B2";
-            if (wrongWorkingDate is null)
+            if (testData is null)
                 sht.Cell(CellAddressInRange).Clear();
             else
-                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+                sht.Cell(CellAddressInRange).SetValue(testData);
             using var xlsStream = new MemoryStream();
             workbook.SaveAs(xlsStream);
 
@@ -148,16 +167,16 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
 
         [DataTestMethod]
         [DataRow(null)]
-        public async Task 異常系_社員名が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        public async Task 異常系_社員名が取得できないとき例外を返すこと(dynamic testData)
         {
             // given
             using var workbook = MakeTestBook();
             var sht = workbook.Worksheets.First();
             const string CellAddressInRange = "C2";
-            if (wrongWorkingDate is null)
+            if (testData is null)
                 sht.Cell(CellAddressInRange).Clear();
             else
-                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+                sht.Cell(CellAddressInRange).SetValue(testData);
             using var xlsStream = new MemoryStream();
             workbook.SaveAs(xlsStream);
 
@@ -177,16 +196,16 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
 
         [DataTestMethod]
         [DataRow(null)]
-        public async Task 異常系_作業番号が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        public async Task 異常系_作業番号が取得できないとき例外を返すこと(dynamic testData)
         {
             // given
             using var workbook = MakeTestBook();
             var sht = workbook.Worksheets.First();
             const string CellAddressInRange = "E2";
-            if (wrongWorkingDate is null)
+            if (testData is null)
                 sht.Cell(CellAddressInRange).Clear();
             else
-                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+                sht.Cell(CellAddressInRange).SetValue(testData);
             using var xlsStream = new MemoryStream();
             workbook.SaveAs(xlsStream);
 
@@ -208,16 +227,16 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
         [DataRow(null)]
         [DataRow("ABC")]
         [DataRow("漢字")]
-        public async Task 異常系_工数が取得できないとき例外を返すこと(dynamic wrongWorkingDate)
+        public async Task 異常系_工数が取得できないとき例外を返すこと(dynamic testData)
         {
             // given
             using var workbook = MakeTestBook();
             var sht = workbook.Worksheets.First();
             const string CellAddressInRange = "J2";
-            if (wrongWorkingDate is null)
+            if (testData is null)
                 sht.Cell(CellAddressInRange).Clear();
             else
-                sht.Cell(CellAddressInRange).SetValue(wrongWorkingDate);
+                sht.Cell(CellAddressInRange).SetValue(testData);
             using var xlsStream = new MemoryStream();
             workbook.SaveAs(xlsStream);
 

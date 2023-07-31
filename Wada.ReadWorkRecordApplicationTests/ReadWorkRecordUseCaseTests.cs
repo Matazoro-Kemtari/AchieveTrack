@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Wada.AchieveTrackService;
-using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.IO;
-using System.IO;
 
 namespace Wada.ReadWorkRecordApplication.Tests
 {
@@ -16,8 +15,14 @@ namespace Wada.ReadWorkRecordApplication.Tests
         {
             // given
             Mock<IFileStreamOpener> streamMock = new();
-            streamMock.Setup(x => x.Open(It.IsAny<string>()))
-                .Returns(new MemoryStream(new byte[] { 1, 2, 3 }));
+            var paths = new string[]
+            {
+                "1st",
+                "2nd"
+            };
+            paths.ToList().ForEach(
+                path => streamMock.Setup(x => x.Open(path))
+                                               .Returns(new MemoryStream(new byte[] { 1, 2, 3 })));
 
             Mock<IWorkRecordReader> readerMock = new();
             var res = new List<WorkRecord>
@@ -32,11 +37,6 @@ namespace Wada.ReadWorkRecordApplication.Tests
             readerMock.Setup(x => x.ReadWorkRecordsAsync(It.IsAny<Stream>()))
                 .ReturnsAsync(res);
 
-            var paths = new string[]
-            {
-                "1st",
-                "2nd"
-            };
 
             // when
             IReadAchieveTrackUseCase useCase = new ReadAchieveTrackUseCase(streamMock.Object,

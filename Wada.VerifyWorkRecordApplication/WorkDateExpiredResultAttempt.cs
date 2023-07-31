@@ -6,12 +6,12 @@ namespace Wada.VerifyWorkRecordApplication;
 
 public record class WorkDateExpiredResultAttempt : WorkDateExpiredResult, IValidationResultAttempt
 {
-    protected WorkDateExpiredResultAttempt(WorkingNumber workingNumber, string note)
-        : base(workingNumber, note)
+    protected WorkDateExpiredResultAttempt(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
     { }
 
-    private static new WorkDateExpiredResultAttempt Create(WorkingNumber workingNumber, string note)
-        => new(workingNumber, note);
+    private static new WorkDateExpiredResultAttempt Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static WorkDateExpiredResultAttempt Parse(IValidationResult validationResult)
     {
@@ -20,6 +20,6 @@ public record class WorkDateExpiredResultAttempt : WorkDateExpiredResult, IValid
                 $"引数には{nameof(WorkDateExpiredResult)}を渡してください",
                 nameof(validationResult));
 
-        return Create(validationResult.WorkingNumber, validationResult.Note);
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 }

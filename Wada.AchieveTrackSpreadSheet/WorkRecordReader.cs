@@ -27,6 +27,7 @@ public class WorkRecordReader : IWorkRecordReader
                             const string employeeNumberLetter = "B";
                             const string employeeNameLetter = "C";
                             const string workingNumberLetter = "E";
+                            const string jigCodeNumberLetter = "F";
                             const string noteLetter = "H";
                             const string monHourLetter = "J";
 
@@ -49,9 +50,9 @@ public class WorkRecordReader : IWorkRecordReader
                                 throw new DomainException(
                                     $"作業番号が取得できませんでした 行: {row.RowNumber()}");
 
-                            if (!row.Cell(noteLetter).TryGetValue(out string note))
-                                throw new DomainException(
-                                    $"特記事項が取得できませんでした 行: {row.RowNumber()}");
+                            var jigCode = row.Cell(jigCodeNumberLetter).GetString();
+
+                            var note = row.Cell(noteLetter).GetString();
 
                             if (!row.Cell(monHourLetter).TryGetValue(out decimal manHour))
                                 throw new DomainException(
@@ -61,6 +62,7 @@ public class WorkRecordReader : IWorkRecordReader
                                                      (uint)employeeNumber,
                                                      employeeName,
                                                      WorkingNumber.Create(workingNumber),
+                                                     jigCode,
                                                      note,
                                                      ManHour.Create(manHour));
                         })));

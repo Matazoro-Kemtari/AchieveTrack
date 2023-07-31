@@ -7,17 +7,20 @@ namespace Wada.AchieveTrackService.WorkRecordValidator;
 /// </summary>
 public record class InvalidWorkNumberResult : IValidationResult
 {
-    protected InvalidWorkNumberResult(WorkingNumber workingNumber, string note)
+    protected InvalidWorkNumberResult(WorkingNumber workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
+        JigCode = jigCode;
         Note = note;
     }
 
-    public static InvalidWorkNumberResult Create(WorkingNumber workingNumber, string note) => new(workingNumber, note);
+    public static InvalidWorkNumberResult Create(WorkingNumber workingNumber, string jigCode, string note) => new(workingNumber, jigCode, note);
 
     public string Message => "作業台帳にない作業番号です";
 
     public WorkingNumber WorkingNumber { get; }
+
+    public string JigCode { get; }
 
     public string Note { get; }
 }
@@ -25,9 +28,10 @@ public record class InvalidWorkNumberResult : IValidationResult
 public class TestInvalidWorkNumberResultFactory
 {
     public static InvalidWorkNumberResult Create(WorkingNumber? workingNumber = default,
-                                                      string note = "特記事項")
+                                                 string jigCode = "11A",
+                                                 string note = "特記事項")
     {
         workingNumber ??= TestWorkingNumberFactory.Create();
-        return InvalidWorkNumberResult.Create(workingNumber, note);
+        return InvalidWorkNumberResult.Create(workingNumber, jigCode, note);
     }
 }

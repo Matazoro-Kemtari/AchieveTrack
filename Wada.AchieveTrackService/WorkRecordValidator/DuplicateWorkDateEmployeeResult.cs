@@ -7,17 +7,20 @@ namespace Wada.AchieveTrackService.WorkRecordValidator;
 /// </summary>
 public record class DuplicateWorkDateEmployeeResult : IValidationResult
 {
-    protected DuplicateWorkDateEmployeeResult(WorkingNumber workingNumber, string note)
+    protected DuplicateWorkDateEmployeeResult(WorkingNumber workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
+        JigCode = jigCode;
         Note = note;
     }
 
-    public static DuplicateWorkDateEmployeeResult Create(WorkingNumber workingNumber, string note) => new(workingNumber, note);
+    public static DuplicateWorkDateEmployeeResult Create(WorkingNumber workingNumber, string jigCode, string note) => new(workingNumber, jigCode, note);
 
     public string Message => "この作業日と社員番号の組み合わせが 実績処理で既に存在します";
 
     public WorkingNumber WorkingNumber { get; }
+
+    public string JigCode { get; }
 
     public string Note { get; }
 }
@@ -25,9 +28,10 @@ public record class DuplicateWorkDateEmployeeResult : IValidationResult
 public class TestDuplicateWorkDateEmployeeResultFactory
 {
     public static DuplicateWorkDateEmployeeResult Create(WorkingNumber? workingNumber = default,
-                                                      string note = "特記事項")
+                                                         string jigCode = "11A",
+                                                         string note = "特記事項")
     {
         workingNumber ??= TestWorkingNumberFactory.Create();
-        return DuplicateWorkDateEmployeeResult.Create(workingNumber, note);
+        return DuplicateWorkDateEmployeeResult.Create(workingNumber, jigCode, note);
     }
 }

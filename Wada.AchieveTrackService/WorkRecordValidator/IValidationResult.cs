@@ -8,5 +8,7 @@ public interface IValidationResult
 
     public WorkingNumber WorkingNumber { get; }
 
+    public string JigCode { get; }
+
     public string Note { get; }
 }
