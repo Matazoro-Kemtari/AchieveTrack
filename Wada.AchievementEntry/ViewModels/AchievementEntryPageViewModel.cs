@@ -228,14 +228,14 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
             return workRecords;
         }
-        catch (FileStreamOpenerException ex)
+        catch (AchieveTrackIOException ex)
         {
             var message = MessageNotificationViaLivet.MakeErrorMessage(ex.Message);
             await Messenger.RaiseAsync(message);
             Environment.Exit(0);
             return null;
         }
-        catch (Exception ex) when (ex is DomainException or ReadAchieveTrackUseCaseException)
+        catch (ReadAchieveTrackUseCaseException ex)
         {
             var message = MessageNotificationViaLivet.MakeExclamationMessage(ex.Message);
             await Messenger.RaiseAsync(message);
