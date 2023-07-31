@@ -47,29 +47,56 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
         // 設計管理登録チェックボックス
         AddingDesignManagementIsChecked = _model.AddingDesignManagementIsChecked
+            .ToReactiveProperty()
+            .AddTo(Disposables);
+
+        ValidationErrors = new ReactiveCollection<IValidationResultCollectionViewModel>().AddTo(Disposables);
+        ValidationErrorsWithOutDesignManagement = new ReactiveCollection<IValidationResultCollectionViewModel>().AddTo(Disposables);
+
+        HasError = ValidationErrors.ObserveProperty(x => x.Count)
+                                   .Select(x => x > 0)
+                                   .ToReactiveProperty()
+                                   .AddTo(Disposables);
+        
+        HasErrorWithOutDesignManagement = ValidationErrorsWithOutDesignManagement
+            .ObserveProperty(x => x.Count)
+            .Select(x => x > 0)
+            .ToReactiveProperty()
             .AddTo(Disposables);
 
         // 登録ボタン
         EntryCommand = new[]
         {
-            AchievementCollections.ObserveProperty(x => x.Count).Select(x => x <= 0),
-            // エラーがあったら無効 　　出来ないから保留
-            //AddingDesignManagementIsChecked.Value
-            //? AchievementCollections.ObserveProperty(
-            //    x => x.Select(y => y.ValidationResults.Where(z => z.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel))
-            //                            .Any())
-            //    .Any())
-            
-            //: AchievementCollections.Select(x => x.ValidationResults.Any()).ToObservable(),
+            /*
+             * ListViewが0件以上
+             * 設計管理に登録するチェックボックスがOFF
+             * エラーがない
+             */
+            _model.AchievementCollections.ObserveProperty(x => x.Count)
+                                         .Select(x => x > 0)
+                                         .CombineLatest(
+                AddingDesignManagementIsChecked.CombineLatest(HasError, (x, y) => !x & !y),
+                (x, y) => x & y),
+            /*
+             * ListViewが0件以上
+             * 設計管理に登録するチェックボックスがON
+             * 設計管理未登録以外のエラーがない
+             */
+            _model.AchievementCollections.ObserveProperty(x => x.Count)
+                                         .Select(x => x > 0)
+                                         .CombineLatest(
+                AddingDesignManagementIsChecked.CombineLatest(HasErrorWithOutDesignManagement, (x, y) => x & !y),
+                (x, y) => x & y),
         }
-        .CombineLatestValuesAreAllFalse()
+        // フラグが1でも有効の場合のみコマンドを有効にする
+        .CombineLatest(x => x.Any(y => y))
         .ToAsyncReactiveCommand()
         .WithSubscribe(() => AddWorkRecordAsync())
         .AddTo(Disposables);
 
         // クリアボタン
-        ClearCommand = new AsyncReactiveCommand()
-            .WithSubscribe(() => Task.Run(() => _model.Clear()))
+        ClearCommand = new ReactiveCommand()
+            .WithSubscribe(() => _model.Clear())
             .AddTo(Disposables);
     }
 
@@ -111,6 +138,8 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                  x.EmployeeNumber,
                                                  x.EmployeeName,
                                                  x.WorkingNumber,
+                                                 x.JigCode,
+                                                 x.Note,
                                                  x.ManHour)));
             }
             catch (WorkRecordValidatorException ex)
@@ -172,7 +201,16 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                     x.EmployeeName,
                                                     x.ValidationResults));
             _model.AchievementCollections.AddRange(
-                collectionModels.Select(x => new AchievementCollectionViewModel(x)));
+                collectionModels.Select(x => AchievementCollectionViewModel.Create(x)));
+
+            // 登録ボタンの有効判定に利用
+            ValidationErrors.Clear();
+            ValidationErrors.AddRange(aggregates.Select(x => x.ValidationResults).SelectMany(x => x));
+            ValidationErrorsWithOutDesignManagement.Clear();
+            ValidationErrorsWithOutDesignManagement.AddRange(
+                aggregates.Select(x => x.ValidationResults)
+                          .SelectMany(x => x)
+                          .Where(x => x.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel)));
         }
         finally
         {
@@ -191,14 +229,14 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
             return workRecords;
         }
-        catch (FileStreamOpenerException ex)
+        catch (AchieveTrackIOException ex)
         {
             var message = MessageNotificationViaLivet.MakeErrorMessage(ex.Message);
             await Messenger.RaiseAsync(message);
             Environment.Exit(0);
             return null;
         }
-        catch (Exception ex) when (ex is DomainException or ReadAchieveTrackUseCaseException)
+        catch (ReadAchieveTrackUseCaseException ex)
         {
             var message = MessageNotificationViaLivet.MakeExclamationMessage(ex.Message);
             await Messenger.RaiseAsync(message);
@@ -217,47 +255,30 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             return;
         }
 
-        if (_model.AddingDesignManagementIsChecked.Value)
-        {
-            if (_model.AchievementCollections.Where(x => x.CheckedItem.Value)
-                                             .Select(
-                x => x.ValidationResults.Where(
-                    y => y.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel))
-                                        .Any())
-                                             .Any(x => x))
-            {
-                var message = MessageNotificationViaLivet.MakeExclamationMessage(
-                    "エラーがあるため実行できません");
-                await Messenger.RaiseAsync(message);
-                return;
-            }
-        }
-        else
-        {
-            if (_model.AchievementCollections.Where(x => x.CheckedItem.Value)
-                                             .Select(
-                x => x.ValidationResults.Any())
-                                             .Any(x => x))
-            {
-                var message = MessageNotificationViaLivet.MakeExclamationMessage(
-                    "エラーがあるため実行できません");
-                await Messenger.RaiseAsync(message);
-                return;
-            }
-        }
-
         // 引数作成
-        var param = _model.WorkRecords.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
+        var param = _model.WorkRecords.Join(
+            _model.AchievementCollections.Where(x => x.CheckedItem.Value),
+            w => new { w.WorkingDate, w.EmployeeNumber },
+            a => new { WorkingDate = a.AchievementDate.Value, EmployeeNumber = a.EmployeeNumber.Value },
+            (w, _) => new
+            {
+                w.WorkingDate,
+                w.EmployeeNumber,
+                w.WorkingNumber,
+                w.ManHour,
+            })
+            .GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
             .Select(x => new AchievementParam(x.Key.WorkingDate,
                                               x.Key.EmployeeNumber,
-                                              x.Select(y => new AchievementDetailParam(
-                                                  y.WorkingNumber,
-                                                  y.ManHour))));
+                                              x.GroupBy(y => y.WorkingNumber).Select(y => new AchievementDetailParam(
+                                                  y.Key,
+                                                  y.Sum(z => z.ManHour)))));
+
         try
         {
             Mouse.OverrideCursor = Cursors.Wait;
             await _writeWorkRecordUseCase.ExecuteAsync(param, AddingDesignManagementIsChecked.Value);
-            
+
             var message = MessageNotificationViaLivet.MakeInformationMessage("登録しました");
             await Messenger.RaiseAsync(message);
         }
@@ -283,7 +304,15 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
     public AsyncReactiveCommand EntryCommand { get; }
 
-    public AsyncReactiveCommand ClearCommand { get; }
+    private ReactiveCollection<IValidationResultCollectionViewModel> ValidationErrors { get; }
+
+    private ReactiveCollection<IValidationResultCollectionViewModel> ValidationErrorsWithOutDesignManagement { get; }
+
+    private ReactiveProperty<bool> HasError { get; }
+
+    private ReactiveProperty<bool> HasErrorWithOutDesignManagement { get; }
+
+    public ReactiveCommand ClearCommand { get; }
 
     /// <summary>
     /// 日報エクセルリスト
@@ -293,5 +322,5 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
     /// <summary>
     /// 設計情報に追加するチェックボックス
     /// </summary>
-    public ReactivePropertySlim<bool> AddingDesignManagementIsChecked { get; }
+    public ReactiveProperty<bool> AddingDesignManagementIsChecked { get; }
 }

@@ -1,6 +1,6 @@
 ﻿using Wada.AchieveTrackService.EmployeeAggregation;
 
-namespace Wada.WriteWorkRecordApplication;
+namespace Wada.AchieveTrackService;
 
 public interface IEmployeeReader
 {

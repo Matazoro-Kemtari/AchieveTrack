@@ -42,7 +42,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             {
                 new IValidationResult[]
                 {
-                    WorkDateExpiredResult.Create(),
+                    TestWorkDateExpiredResultFactory.Create(),
                 },
             };
             validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
@@ -71,7 +71,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             {
                 new IValidationResult[]
                 {
-                    InvalidWorkNumberResult.Create(),
+                    TestInvalidWorkNumberResultFactory.Create(),
                 },
             };
             validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
@@ -100,7 +100,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             {
                 new IValidationResult[]
                 {
-                    DuplicateWorkDateEmployeeResult.Create(),
+                    TestDuplicateWorkDateEmployeeResultFactory.Create(),
                 },
             };
             validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
@@ -129,7 +129,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             {
                 new IValidationResult[]
                 {
-                    UnregisteredWorkNumberResult.Create(),
+                    TestUnregisteredWorkNumberResultFactory.Create(),
                 },
             };
             validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))

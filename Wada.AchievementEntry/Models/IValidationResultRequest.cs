@@ -1,4 +1,5 @@
 ﻿using System;
+using Wada.AchieveTrackService.ValueObjects;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
 
@@ -10,9 +11,12 @@ public interface IValidationResultRequest : IValidationResultAttempt
 
 public record class InvalidWorkNumberResultRequest : InvalidWorkNumberResultAttempt, IValidationResultRequest
 {
-    private InvalidWorkNumberResultRequest() { }
+    private InvalidWorkNumberResultRequest(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new InvalidWorkNumberResultRequest Create() => new();
+    private static new InvalidWorkNumberResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static InvalidWorkNumberResultRequest Parse(IValidationResultAttempt validationResult)
     {
@@ -21,18 +25,20 @@ public record class InvalidWorkNumberResultRequest : InvalidWorkNumberResultAtte
                 $"引数には{nameof(InvalidWorkNumberResultAttempt)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 
-    // グルーピングされるのでふさわしいメッセージに書き換え
     public new string Message => "作業台帳に未登録の作業番号があります";
 }
 
 public record class DuplicateWorkDateEmployeeResultRequest : DuplicateWorkDateEmployeeResultAttempt, IValidationResultRequest
 {
-    private DuplicateWorkDateEmployeeResultRequest() { }
+    private DuplicateWorkDateEmployeeResultRequest(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new DuplicateWorkDateEmployeeResultRequest Create() => new();
+    private static new DuplicateWorkDateEmployeeResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static DuplicateWorkDateEmployeeResultRequest Parse(IValidationResultAttempt validationResult)
     {
@@ -41,15 +47,18 @@ public record class DuplicateWorkDateEmployeeResultRequest : DuplicateWorkDateEm
                 $"引数には{nameof(DuplicateWorkDateEmployeeResultAttempt)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 }
 
 public record class UnregisteredWorkNumberResultRequest : UnregisteredWorkNumberResultAttempt, IValidationResultRequest
 {
-    private UnregisteredWorkNumberResultRequest() { }
+    private UnregisteredWorkNumberResultRequest(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new UnregisteredWorkNumberResultRequest Create() => new();
+    private static new UnregisteredWorkNumberResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static UnregisteredWorkNumberResultRequest Parse(IValidationResultAttempt validationResult)
     {
@@ -58,7 +67,7 @@ public record class UnregisteredWorkNumberResultRequest : UnregisteredWorkNumber
                 $"引数には{nameof(UnregisteredWorkNumberResultAttempt)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 
     // グルーピングされるのでふさわしいメッセージに書き換え
@@ -67,9 +76,12 @@ public record class UnregisteredWorkNumberResultRequest : UnregisteredWorkNumber
 
 public record class WorkDateExpiredResultRequest : WorkDateExpiredResultAttempt, IValidationResultRequest
 {
-    private WorkDateExpiredResultRequest() { }
+    private WorkDateExpiredResultRequest(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new WorkDateExpiredResultRequest Create() => new();
+    private static new WorkDateExpiredResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static WorkDateExpiredResultRequest Parse(IValidationResultAttempt validationResult)
     {
@@ -78,7 +90,7 @@ public record class WorkDateExpiredResultRequest : WorkDateExpiredResultAttempt,
                 $"引数には{nameof(WorkDateExpiredResultAttempt)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 
     // グルーピングされるのでふさわしいメッセージに書き換え

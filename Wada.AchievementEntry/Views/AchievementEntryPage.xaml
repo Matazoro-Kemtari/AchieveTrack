@@ -60,15 +60,15 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ListView Margin="5"
-                     x:Name="XlsxPath"
-                     ToolTip="日報をドロップしてください"
-                     ItemsSource="{Binding AchievementCollections}"
-                     d:ItemsSource="{d:SampleData}"
-                     VirtualizingPanel.IsVirtualizing="True"
-                     VirtualizingPanel.VirtualizationMode="Recycling"
-                     VirtualizingPanel.ScrollUnit="Pixel"
-                     dd:DragDrop.IsDropTarget="True"
-                     dd:DragDrop.DropHandler="{Binding}">
+                      x:Name="XlsxPath"
+                      ToolTip="日報をドロップしてください"
+                      ItemsSource="{Binding AchievementCollections}"
+                      d:ItemsSource="{d:SampleData}"
+                      VirtualizingPanel.IsVirtualizing="True"
+                      VirtualizingPanel.VirtualizationMode="Recycling"
+                      VirtualizingPanel.ScrollUnit="Pixel"
+                      dd:DragDrop.IsDropTarget="True"
+                      dd:DragDrop.DropHandler="{Binding}">
                 <ListView.View>
                     <GridView>
                         <!-- GridViewColumnにCheckBoxを追加する -->
@@ -88,7 +88,26 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
-                                                    <TextBlock Text="{Binding Message.Value}"
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Margin="0,0,5,0"
+                                                               Text="{Binding Message.Value}"
+                                                               Foreground="Red"/>
+                                                    <TextBlock Grid.Column="1"
+                                                               Margin="0,0,5,0"
+                                                               Text="{Binding WorkingNumber.Value}"
+                                                               Foreground="Red"/>
+                                                    <TextBlock Grid.Column="2"
+                                                               Margin="0,0,5,0"
+                                                               Text="{Binding JigCode.Value}"
+                                                               Foreground="Red"/>
+                                                    <TextBlock Grid.Column="3"
+                                                               Margin="0,0,5,0"
+                                                               Text="{Binding Note.Value}"
                                                                Foreground="Red"/>
                                                 </Grid>
                                             </DataTemplate>

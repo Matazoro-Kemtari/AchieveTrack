@@ -1,13 +1,17 @@
-﻿using Wada.AchieveTrackService.WorkRecordValidator;
+﻿using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.VerifyAchievementRecordContentApplication;
 
 namespace Wada.VerifyWorkRecordApplication;
 
 public record class InvalidWorkNumberResultAttempt : InvalidWorkNumberResult, IValidationResultAttempt
 {
-    protected InvalidWorkNumberResultAttempt() { }
+    protected InvalidWorkNumberResultAttempt(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new InvalidWorkNumberResultAttempt Create() => new();
+    private static new InvalidWorkNumberResultAttempt Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static InvalidWorkNumberResultAttempt Parse(IValidationResult validationResult)
     {
@@ -16,6 +20,6 @@ public record class InvalidWorkNumberResultAttempt : InvalidWorkNumberResult, IV
                 $"引数には{nameof(InvalidWorkNumberResult)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 }

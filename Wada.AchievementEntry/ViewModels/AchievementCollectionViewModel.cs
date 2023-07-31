@@ -3,6 +3,7 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
 using Wada.AchievementEntry.Models;
 
@@ -12,10 +13,10 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
 {
     private readonly AchievementCollectionModel _model;
 
-    public AchievementCollectionViewModel(AchievementCollectionModel achievementCollectionModel)
+    private AchievementCollectionViewModel()
     {
 
-        _model = achievementCollectionModel;
+        _model = new();
 
         CheckedItem = _model.CheckedItem.ToReactivePropertyAsSynchronized(x => x.Value)
                                         .AddTo(Disposables);
@@ -33,6 +34,23 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
                                                     .AddTo(Disposables);
     }
 
+    internal static AchievementCollectionViewModel Create(AchievementCollectionModel achievementCollectionModel)
+    {
+        var vm = new AchievementCollectionViewModel();
+        vm.Apply(achievementCollectionModel);
+        return vm;
+    }
+
+    private void Apply(AchievementCollectionModel achievementCollectionModel)
+    {
+        _model.CheckedItem.Value = achievementCollectionModel.CheckedItem.Value;
+        _model.AchievementDate.Value = achievementCollectionModel.AchievementDate.Value;
+        _model.EmployeeNumber.Value = achievementCollectionModel.EmployeeNumber.Value;
+        _model.EmployeeName.Value = achievementCollectionModel.EmployeeName.Value;
+        _model.ValidationResults.Clear();
+        _model.ValidationResults.AddRange(achievementCollectionModel.ValidationResults);
+    }
+
     public void Destroy() => Disposables.Dispose();
 
     /// <summary>
@@ -45,7 +63,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
     public ReactiveProperty<DateTime> AchievementDate { get; }
 
     public ReactiveProperty<uint> EmployeeNumber { get; }
-    
+
     public ReactiveProperty<string?> EmployeeName { get; }
 
     public ReadOnlyReactiveCollection<IValidationResultCollectionViewModel> ValidationResults { get; }

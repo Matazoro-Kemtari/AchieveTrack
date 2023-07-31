@@ -1,7 +1,7 @@
-﻿using Wada.AchieveTrackService.EmployeeAggregation;
+﻿using Wada.AchieveTrackService;
+using Wada.AchieveTrackService.EmployeeAggregation;
 using Wada.AOP.Logging;
 using Wada.Data.OrderManagement.Models;
-using Wada.WriteWorkRecordApplication;
 
 namespace Wada.DataSource.OrderManagement;
 

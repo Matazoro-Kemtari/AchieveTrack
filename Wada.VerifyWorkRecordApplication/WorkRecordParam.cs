@@ -8,6 +8,8 @@ public record class WorkRecordParam(DateTime WorkingDate,
                                     uint EmployeeNumber,
                                     string EmployeeName,
                                     string WorkingNumber,
+                                    string? JigCode,
+                                    string? Note,
                                     decimal ManHour)
 {
     [Logging]
@@ -17,6 +19,8 @@ public record class WorkRecordParam(DateTime WorkingDate,
                    workRecordAttempt.EmployeeNumber,
                    workRecordAttempt.EmployeeName,
                    workRecordAttempt.WorkingNumber,
+                   workRecordAttempt.JigCode,
+                   workRecordAttempt.Note,
                    workRecordAttempt.ManHour);
     }
 
@@ -27,6 +31,8 @@ public record class WorkRecordParam(DateTime WorkingDate,
             EmployeeNumber,
             EmployeeName,
             AchieveTrackService.ValueObjects.WorkingNumber.Create(WorkingNumber),
+            JigCode,
+            Note,
             AchieveTrackService.ValueObjects.ManHour.Create(ManHour));
 }
 
@@ -37,6 +43,8 @@ public class TestAchievementRecordParamFactory
                                                 uint employeeNumber = 4001u,
                                                 string employeeName = "無人",
                                                 string workingNumber = "23Z-1",
+                                                string jigCode = "11A",
+                                                string note = "特記事項",
                                                 decimal manHour = 4)
     {
         workingDate ??= new DateTime(2023, 4, 1);
@@ -44,6 +52,8 @@ public class TestAchievementRecordParamFactory
                                    employeeNumber,
                                    employeeName,
                                    workingNumber,
+                                   jigCode,
+                                   note,
                                    manHour);
     }
 }

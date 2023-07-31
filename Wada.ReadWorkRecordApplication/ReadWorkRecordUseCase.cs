@@ -28,21 +28,32 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
     [Logging]
     public async Task<IEnumerable<WorkRecordAttempt>> ExecuteAsync(IEnumerable<string> paths)
     {
-        var results = await Task.WhenAll(
-            paths.Select(async path =>
-            {
-                // エクセルを開く
-                var stream = _fileStreamOpener.Open(path);
+        try
+        {
+            var results = await Task.WhenAll(
+                paths.Select(async path =>
+                {
+                    // エクセルを開く
+                    using var stream = _fileStreamOpener.Open(path);
 
-                if (stream.Length == 0)
-                    throw new ReadAchieveTrackUseCaseException(
-                        $"ファイルサイズが不正です パス: {path}");
+                    if (stream.Length == 0)
+                        throw new ReadAchieveTrackUseCaseException(
+                            $"ファイルサイズが不正です パス: {path}");
 
-                // 日報オブジェクトを作成する
-                return await _workRecordReader.ReadWorkRecordsAsync(stream);
-            }));
+                    // 日報オブジェクトを作成する
+                    return await _workRecordReader.ReadWorkRecordsAsync(stream);
+                }));
 
-        return results.SelectMany(x => x)
-                      .Select(x => WorkRecordAttempt.Parse(x));
+            return results.SelectMany(x => x)
+                          .Select(x => WorkRecordAttempt.Parse(x));
+        }
+        catch (FileStreamOpenerException ex)
+        {
+            throw new AchieveTrackIOException(ex.Message, ex);
+        }
+        catch (DomainException ex)
+        {
+            throw new ReadAchieveTrackUseCaseException(ex.Message, ex);
+        }
     }
 }

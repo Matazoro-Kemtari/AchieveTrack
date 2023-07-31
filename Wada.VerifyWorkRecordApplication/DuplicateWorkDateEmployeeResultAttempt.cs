@@ -1,13 +1,17 @@
-﻿using Wada.AchieveTrackService.WorkRecordValidator;
+﻿using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.VerifyAchievementRecordContentApplication;
 
 namespace Wada.VerifyWorkRecordApplication;
 
 public record class DuplicateWorkDateEmployeeResultAttempt : DuplicateWorkDateEmployeeResult, IValidationResultAttempt
 {
-    protected DuplicateWorkDateEmployeeResultAttempt() { }
+    protected DuplicateWorkDateEmployeeResultAttempt(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new DuplicateWorkDateEmployeeResultAttempt Create() => new();
+    private static new DuplicateWorkDateEmployeeResultAttempt Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static DuplicateWorkDateEmployeeResultAttempt Parse(IValidationResult validationResult)
     {
@@ -16,6 +20,6 @@ public record class DuplicateWorkDateEmployeeResultAttempt : DuplicateWorkDateEm
                 $"引数には{nameof(DuplicateWorkDateEmployeeResult)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 }

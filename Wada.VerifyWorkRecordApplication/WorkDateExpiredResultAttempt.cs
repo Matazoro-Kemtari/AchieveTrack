@@ -1,13 +1,17 @@
-﻿using Wada.AchieveTrackService.WorkRecordValidator;
+﻿using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.VerifyAchievementRecordContentApplication;
 
 namespace Wada.VerifyWorkRecordApplication;
 
 public record class WorkDateExpiredResultAttempt : WorkDateExpiredResult, IValidationResultAttempt
 {
-    protected WorkDateExpiredResultAttempt() { }
+    protected WorkDateExpiredResultAttempt(WorkingNumber workingNumber, string jigCode, string note)
+        : base(workingNumber, jigCode, note)
+    { }
 
-    private static new WorkDateExpiredResultAttempt Create() => new();
+    private static new WorkDateExpiredResultAttempt Create(WorkingNumber workingNumber, string jigCode, string note)
+        => new(workingNumber, jigCode, note);
 
     public static WorkDateExpiredResultAttempt Parse(IValidationResult validationResult)
     {
@@ -16,6 +20,6 @@ public record class WorkDateExpiredResultAttempt : WorkDateExpiredResult, IValid
                 $"引数には{nameof(WorkDateExpiredResult)}を渡してください",
                 nameof(validationResult));
 
-        return Create();
+        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
     }
 }

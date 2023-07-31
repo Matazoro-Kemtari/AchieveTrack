@@ -1,21 +1,25 @@
 ﻿using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Wada.AchievementEntry.ViewModels;
 
 namespace Wada.AchievementEntry.Models;
 
 public class AchievementCollectionModel
 {
-    public AchievementCollectionModel(DateTime achievementDate,
-                                      uint employeeNumber,
-                                      string? employeeName,
-                                      IEnumerable<IValidationResultCollectionViewModel> validationResults)
+    internal AchievementCollectionModel()
+    { }
+
+    internal AchievementCollectionModel(DateTime achievementDate,
+                                        uint employeeNumber,
+                                        string? employeeName,
+                                        IEnumerable<IValidationResultCollectionViewModel> validationResults)
     {
         AchievementDate.Value = achievementDate;
         EmployeeNumber.Value = employeeNumber;
         EmployeeName.Value = employeeName;
-        ValidationResults.AddRangeOnScheduler(validationResults);
+        ValidationResults.AddRange(validationResults);
     }
 
     public ReactivePropertySlim<bool> CheckedItem { get; } = new(true);
