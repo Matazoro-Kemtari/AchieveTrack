@@ -32,7 +32,7 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
             paths.Select(async path =>
             {
                 // エクセルを開く
-                var stream = _fileStreamOpener.Open(path);
+                using var stream = _fileStreamOpener.Open(path);
 
                 if (stream.Length == 0)
                     throw new ReadAchieveTrackUseCaseException(
