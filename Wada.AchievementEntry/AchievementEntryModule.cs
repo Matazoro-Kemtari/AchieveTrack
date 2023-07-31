@@ -9,12 +9,13 @@ namespace Wada.AchievementEntry
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
-
+            var regionManager = containerProvider.Resolve<IRegionManager>();
+            regionManager?.RequestNavigate("ContentRegion", nameof(AchievementEntryPage));
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterForNavigation<AchievementEntryPage>();
         }
     }
 }

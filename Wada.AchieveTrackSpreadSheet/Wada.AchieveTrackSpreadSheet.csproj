@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.101.0" />
     <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
-    <PackageReference Include="NLog" Version="5.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wada.AchieveTrackService\Wada.AchieveTrackService.csproj" />
   </ItemGroup>
 
 </Project>

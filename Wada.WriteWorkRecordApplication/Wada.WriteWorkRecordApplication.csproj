@@ -8,7 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
-    <PackageReference Include="NLog" Version="5.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wada.AchieveTrackService\Wada.AchieveTrackService.csproj" />
+    <ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
   </ItemGroup>
 
 </Project>
