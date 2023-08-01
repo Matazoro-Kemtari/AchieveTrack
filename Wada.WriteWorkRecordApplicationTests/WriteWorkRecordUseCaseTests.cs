@@ -12,14 +12,16 @@ namespace Wada.WriteWorkRecordApplication.Tests
     public class WriteWorkRecordUseCaseTests
     {
         [DataTestMethod()]
-        [DataRow(true)]
-        [DataRow(false)]
-        public async Task 正常系_例外なく更新処理が終わること(bool canAdd)
+        [DataRow(true, 1)]
+        [DataRow(false, 1)]
+        [DataRow(true, 2)]  // 実績工程 2 = CAD
+        [DataRow(false, 2)]
+        public async Task 正常系_例外なく更新処理が終わること(bool canAdd, int achievementClassificationId)
         {
             // given
             Mock<IEmployeeReader> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
-                .ReturnsAsync(TestEmployeeFactory.Create());
+                .ReturnsAsync(TestEmployeeFactory.Create(achievementClassificationId: (uint?)achievementClassificationId));
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-1")))
@@ -65,7 +67,10 @@ namespace Wada.WriteWorkRecordApplication.Tests
             workingLedgerMock.Verify(
                 x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(achievements.Sum(x => x.AchievementDetails.Count())));
             achievementMock.Verify(x => x.Add(It.IsAny<AchievementLedger>()), Times.Exactly(achievements.Count));
-            designMock.Verify(x => x.Add(It.IsAny<uint>()), Times.Exactly(canAdd ? achievements.Count : 0));
+            if (canAdd && achievementClassificationId == 2)
+                designMock.Verify(x => x.Add(It.IsAny<uint>()), Times.Exactly(achievements.Count));
+            else
+                designMock.Verify(x => x.Add(It.IsAny<uint>()), Times.Exactly(0));
         }
 
         [TestMethod()]
