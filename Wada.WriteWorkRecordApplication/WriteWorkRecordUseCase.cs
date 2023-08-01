@@ -16,6 +16,7 @@ public interface IWriteWorkRecordUseCase
 
 public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
 {
+    private const uint CadAchievementClassificationId = 2u;
     private readonly IEmployeeReader _employeeReader;
     private readonly IWorkingLedgerRepository _workingLedgerRepository;
     private readonly IAchievementLedgerRepository _achievementLedgerRepository;
@@ -51,7 +52,16 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
             try
             {
                 // 作業番号の重複を取り除く
-                var workingNumbers = achievements.Select(achievement => achievement.AchievementDetails.Select(x => x.WorkingNumber))
+                var workingNumbers = achievements.Join(employees,
+                                                       a => a.EmployeeNumber,
+                                                       e => e.EmployeeNumber,
+                                                       (a, e) => new
+                                                       {
+                                                           e.AchievementClassificationId,
+                                                           a.AchievementDetails,
+                                                       })
+                                                 .Where(x => x.AchievementClassificationId == CadAchievementClassificationId)
+                                                 .Select(achievement => achievement.AchievementDetails.Select(x => x.WorkingNumber))
                                                  .SelectMany(x => x)
                                                  .Distinct();
                 // 設計管理に登録する
@@ -106,7 +116,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                             x.ManHour)));
 
             });
-        
+
         int addedCount = 0;
         try
         {
