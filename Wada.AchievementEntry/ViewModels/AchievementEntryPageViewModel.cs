@@ -117,6 +117,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
         try
         {
+            var actionMessage = MessageNotificationViaLivet.MakeWindowActiveMessage();
+            await Messenger.RaiseAsync(actionMessage);
+
             Mouse.OverrideCursor = Cursors.Wait;
             _model.Clear();
 

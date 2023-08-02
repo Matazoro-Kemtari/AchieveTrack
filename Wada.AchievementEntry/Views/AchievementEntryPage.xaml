@@ -35,6 +35,15 @@
         <l:InteractionMessageTrigger MessageKey="Confirm" Messenger="{Binding Messenger}">
             <l:ConfirmationDialogInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"/>
         </l:InteractionMessageTrigger>
+        
+        <!-- ウィンドウをアクティブにする -->
+        <l:InteractionMessageTrigger MessageKey="Active" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False">
+                <l:DirectInteractionMessage>
+                    <l:WindowActionMessage Action="Active" />
+                </l:DirectInteractionMessage>
+            </l:WindowInteractionMessageAction>
+        </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
     <DockPanel>

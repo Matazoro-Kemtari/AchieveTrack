@@ -1,4 +1,5 @@
-﻿using Livet.Messaging;
+﻿using Livet.Behaviors.Messaging.Windows;
+using Livet.Messaging;
 using Livet.Messaging.IO;
 using System.Windows;
 using Wada.AOP.Logging;
@@ -26,4 +27,7 @@ public class MessageNotificationViaLivet
 
     [Logging]
     public static SavingFileSelectionMessage MakeSaveFileDialog() => new("SaveFiling");
+
+    [Logging]
+    public static InteractionMessage MakeWindowActiveMessage() => new("Active");
 }
