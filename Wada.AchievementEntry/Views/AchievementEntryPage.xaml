@@ -29,10 +29,11 @@
 
     <i:Interaction.Triggers>
         <l:InteractionMessageTrigger MessageKey="Info" Messenger="{Binding Messenger}">
-            <l:InformationDialogInteractionMessageAction/>
+            <!-- [Livet]非アクティブ時におけるWindowInteractionMessageActionの注意点 https://todosoft.net/blog/?p=487 -->
+            <l:InformationDialogInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"/>
         </l:InteractionMessageTrigger>
         <l:InteractionMessageTrigger MessageKey="Confirm" Messenger="{Binding Messenger}">
-            <l:ConfirmationDialogInteractionMessageAction/>
+            <l:ConfirmationDialogInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False"/>
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
 
