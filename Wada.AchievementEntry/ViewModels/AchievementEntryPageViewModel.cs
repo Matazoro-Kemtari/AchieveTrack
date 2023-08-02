@@ -15,9 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Wada.AchievementEntry.Models;
-using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.WorkRecordValidator;
-using Wada.IO;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
@@ -119,6 +117,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
         try
         {
+            var actionMessage = MessageNotificationViaLivet.MakeWindowActiveMessage();
+            await Messenger.RaiseAsync(actionMessage);
+
             Mouse.OverrideCursor = Cursors.Wait;
             _model.Clear();
 
