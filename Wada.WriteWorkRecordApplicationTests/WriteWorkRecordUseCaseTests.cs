@@ -48,11 +48,19 @@ namespace Wada.WriteWorkRecordApplication.Tests
             var achievements = new List<AchievementParam>
             {
                 TestAchievementParamFactory.Create(
+                    workingDate: new DateTime(2023, 4, 1),
                     achievementDetails: new[]
                     {
                         TestAchievementDetailParamFactory.Create(workingNumber: "23Z-1")
                     }),
                 TestAchievementParamFactory.Create(
+                    workingDate: new DateTime(2023, 12, 1),
+                    achievementDetails: new[]
+                    {
+                        TestAchievementDetailParamFactory.Create(workingNumber: "23Z-1")
+                    }),
+                TestAchievementParamFactory.Create(
+                    workingDate: new DateTime(2023, 5, 1),
                     achievementDetails: new[]
                     {
                         TestAchievementDetailParamFactory.Create(workingNumber: "23Z-2")
@@ -68,9 +76,13 @@ namespace Wada.WriteWorkRecordApplication.Tests
                 x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(achievements.Sum(x => x.AchievementDetails.Count())));
             achievementMock.Verify(x => x.Add(It.IsAny<AchievementLedger>()), Times.Exactly(achievements.Count));
             if (canAdd && achievementClassificationId == 2)
-                designMock.Verify(x => x.Add(It.IsAny<uint>()), Times.Exactly(achievements.Count));
+            {
+                designMock.Verify(x => x.Add(It.IsAny<uint>(), new DateTime(2023, 4, 1)), Times.Once);
+                designMock.Verify(x => x.Add(It.IsAny<uint>(), new DateTime(2023, 5, 1)), Times.Once);
+                designMock.Verify(x => x.Add(It.IsAny<uint>(), new DateTime(2023, 12, 1)), Times.Never);
+            }
             else
-                designMock.Verify(x => x.Add(It.IsAny<uint>()), Times.Exactly(0));
+                designMock.Verify(x => x.Add(It.IsAny<uint>(), It.IsAny<DateTime>()), Times.Exactly(0));
         }
 
         [TestMethod()]
