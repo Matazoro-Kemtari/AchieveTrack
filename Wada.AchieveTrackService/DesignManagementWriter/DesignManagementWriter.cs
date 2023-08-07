@@ -11,7 +11,7 @@ public class DesignManagementWriter : IDesignManagementWriter
         _designManagementRepository = designManagementRepository;
     }
 
-    public int Add(uint ownCompanyNumber)
+    public int Add(uint ownCompanyNumber, DateTime workingDate)
     {
         try
         {
@@ -25,7 +25,7 @@ public class DesignManagementWriter : IDesignManagementWriter
         try
         {
             var model = DesignManagement.Create(
-                ownCompanyNumber, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1), "岡田");
+                ownCompanyNumber, new DateTime(workingDate.Year, workingDate.Month, 1), "岡田");
             return _designManagementRepository.Add(model);
         }
         catch (DesignManagementAggregationException ex)

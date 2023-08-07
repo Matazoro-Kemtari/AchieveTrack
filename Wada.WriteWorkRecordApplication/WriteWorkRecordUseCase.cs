@@ -58,18 +58,34 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                                                        (a, e) => new
                                                        {
                                                            e.AchievementClassificationId,
+                                                           a.WorkingDate,
                                                            a.AchievementDetails,
                                                        })
                                                  .Where(x => x.AchievementClassificationId == CadAchievementClassificationId)
-                                                 .Select(achievement => achievement.AchievementDetails.Select(x => x.WorkingNumber))
+                                                 .Select(achievement => achievement.AchievementDetails.Select(x => new
+                                                 {
+                                                     achievement.WorkingDate,
+                                                     x.WorkingNumber
+                                                 }))
                                                  .SelectMany(x => x)
-                                                 .Distinct();
+                                                 .GroupBy(x => x.WorkingNumber)
+                                                 .Select(x => new
+                                                 {
+                                                     WorkingNumber = x.Key,
+                                                     WorkingDate = x.Min(y => y.WorkingDate)
+                                                 });
+
+
                 // 設計管理に登録する
                 workingNumbers.Join(workingLedgers,
-                                    a => a,
+                                    a => a.WorkingNumber,
                                     w => w.WorkingNumber.Value,
-                                    (a, w) => w.OwnCompanyNumber)
-                              .ToList().ForEach(x => _ = _designManagementWriter.Add(x));
+                                    (a, w) => new
+                                    {
+                                        w.OwnCompanyNumber,
+                                        a.WorkingDate,
+                                    })
+                              .ToList().ForEach(x => _ = _designManagementWriter.Add(x.OwnCompanyNumber, x.WorkingDate));
             }
             catch (DesignManagementWriterException ex)
             {
