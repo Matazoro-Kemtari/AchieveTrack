@@ -1,5 +1,4 @@
-﻿using Livet.Behaviors.Messaging.Windows;
-using Livet.Messaging;
+﻿using Livet.Messaging;
 using Livet.Messaging.IO;
 using System.Windows;
 using Wada.AOP.Logging;

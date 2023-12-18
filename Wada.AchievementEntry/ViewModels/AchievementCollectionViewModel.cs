@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using Wada.AchievementEntry.Models;
+using Wada.AOP.Logging;
 
 namespace Wada.AchievementEntry.ViewModels;
 
@@ -36,6 +37,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
                                                     .AddTo(Disposables);
     }
 
+    [Logging]
     internal static AchievementCollectionViewModel Create(AchievementCollectionModel achievementCollectionModel)
     {
         var vm = new AchievementCollectionViewModel();
@@ -43,6 +45,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         return vm;
     }
 
+    [Logging]
     private void Apply(AchievementCollectionModel achievementCollectionModel)
     {
         _model.CheckedItem.Value = achievementCollectionModel.CheckedItem.Value;

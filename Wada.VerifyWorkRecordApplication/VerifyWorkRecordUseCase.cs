@@ -1,5 +1,6 @@
 ﻿using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.WorkRecordValidator;
+using Wada.AOP.Logging;
 using Wada.VerifyWorkRecordApplication;
 
 namespace Wada.VerifyAchievementRecordContentApplication;
@@ -18,6 +19,7 @@ public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
         _workRecordValidator = workRecordValidator;
     }
 
+    [Logging]
     public async Task<IEnumerable<IEnumerable<IValidationResultAttempt>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams)
     {
         var parser = new Dictionary<Type, Func<IValidationResult, IValidationResultAttempt>>

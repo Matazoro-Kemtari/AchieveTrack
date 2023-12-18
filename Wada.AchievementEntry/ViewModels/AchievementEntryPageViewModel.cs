@@ -98,6 +98,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
     public void Destroy() => Disposables.Dispose();
 
+    [Logging]
     public void DragOver(IDropInfo dropInfo)
     {
         var dragFiles = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
@@ -106,6 +107,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             : DragDropEffects.None;
     }
 
+    [Logging]
     public async void Drop(IDropInfo dropInfo)
     {
         var dragFiles = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
@@ -208,6 +210,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         }
     }
 
+    [Logging]
     private async Task<IEnumerable<WorkRecordAttempt>?> ReadAchieveTrack(IEnumerable<string> paths)
     {
         try
@@ -234,6 +237,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         }
     }
 
+    [Logging]
     private async Task AddWorkRecordAsync()
     {
         // 引数作成
