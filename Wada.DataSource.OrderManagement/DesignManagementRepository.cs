@@ -26,6 +26,7 @@ public class DesignManagementRepository : IDesignManagementRepository
         }
     }
 
+    [Logging]
     public DesignManagement FindByOwnCompanyNumber(uint ownCompanyNumber)
     {
         try

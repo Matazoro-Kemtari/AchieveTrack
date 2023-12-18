@@ -1,4 +1,5 @@
 ﻿using Wada.AchieveTrackService.DesignManagementAggregation;
+using Wada.AOP.Logging;
 
 namespace Wada.AchieveTrackService.DesignManagementWriter;
 
@@ -11,6 +12,7 @@ public class DesignManagementWriter : IDesignManagementWriter
         _designManagementRepository = designManagementRepository;
     }
 
+    [Logging]
     public int Add(uint ownCompanyNumber, DateTime workingDate)
     {
         try
