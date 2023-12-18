@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Input;
 using Wada.AchievementEntry.Models;
 using Wada.AchieveTrackService.WorkRecordValidator;
+using Wada.AOP.Logging;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
@@ -47,47 +48,16 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         AddingDesignManagementIsChecked = _model.AddingDesignManagementIsChecked
             .ToReactiveProperty()
             .AddTo(Disposables);
+        _ = AddingDesignManagementIsChecked.Subscribe(_ => CanRegister()).AddTo(Disposables);
 
-        ValidationErrors = new ReactiveCollection<IValidationResultCollectionViewModel>().AddTo(Disposables);
-        ValidationErrorsWithOutDesignManagement = new ReactiveCollection<IValidationResultCollectionViewModel>().AddTo(Disposables);
-
-        HasError = ValidationErrors.ObserveProperty(x => x.Count)
-                                   .Select(x => x > 0)
-                                   .ToReactiveProperty()
-                                   .AddTo(Disposables);
-        
-        HasErrorWithOutDesignManagement = ValidationErrorsWithOutDesignManagement
-            .ObserveProperty(x => x.Count)
-            .Select(x => x > 0)
-            .ToReactiveProperty()
+        // 選択チェックを購読
+        _ = _model.AchievementCollections
+            .ObserveElementObservableProperty(x => x.CheckedItem)
+            .Subscribe(x => CanRegister())
             .AddTo(Disposables);
 
         // 登録ボタン
-        EntryCommand = new[]
-        {
-            /*
-             * ListViewが0件以上
-             * 設計管理に登録するチェックボックスがOFF
-             * エラーがない
-             */
-            _model.AchievementCollections.ObserveProperty(x => x.Count)
-                                         .Select(x => x > 0)
-                                         .CombineLatest(
-                AddingDesignManagementIsChecked.CombineLatest(HasError, (x, y) => !x & !y),
-                (x, y) => x & y),
-            /*
-             * ListViewが0件以上
-             * 設計管理に登録するチェックボックスがON
-             * 設計管理未登録以外のエラーがない
-             */
-            _model.AchievementCollections.ObserveProperty(x => x.Count)
-                                         .Select(x => x > 0)
-                                         .CombineLatest(
-                AddingDesignManagementIsChecked.CombineLatest(HasErrorWithOutDesignManagement, (x, y) => x & !y),
-                (x, y) => x & y),
-        }
-        // フラグが1でも有効の場合のみコマンドを有効にする
-        .CombineLatest(x => x.Any(y => y))
+        EntryCommand = AchievementsAnySelected
         .ToAsyncReactiveCommand()
         .WithSubscribe(() => AddWorkRecordAsync())
         .AddTo(Disposables);
@@ -96,6 +66,34 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
         ClearCommand = new ReactiveCommand()
             .WithSubscribe(() => _model.Clear())
             .AddTo(Disposables);
+    }
+
+    [Logging]
+    private void CanRegister()
+    {
+        if (_model.AchievementCollections.Any(x => x.CheckedItem.Value))
+        {
+            // 1つ以上選択のチェックが入っている
+
+            if (AddingDesignManagementIsChecked.Value)
+            {
+                // 設計管理に登録する
+
+                // 選択チェックはONで、設計管理に未登録を除いたエラー内容がある
+                var hasError = _model.AchievementCollections.Where(x => x.CheckedItem.Value)
+                                                            .Any(x => x.HasErrorsWithOutDesignManagement.Value);
+                AchievementsAnySelected.Value = !hasError;
+            }
+            else
+            {
+                // いずれかのエラー内容がある
+                var hasError = _model.AchievementCollections.Where(x => x.CheckedItem.Value)
+                                                            .Any(x => x.HasErrors.Value);
+                AchievementsAnySelected.Value = !hasError;
+            }
+        }
+        else
+            AchievementsAnySelected.Value = false;
     }
 
     public void Destroy() => Disposables.Dispose();
@@ -203,15 +201,6 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                     x.ValidationResults));
             _model.AchievementCollections.AddRange(
                 collectionModels.Select(x => AchievementCollectionViewModel.Create(x)));
-
-            // 登録ボタンの有効判定に利用
-            ValidationErrors.Clear();
-            ValidationErrors.AddRange(aggregates.Select(x => x.ValidationResults).SelectMany(x => x));
-            ValidationErrorsWithOutDesignManagement.Clear();
-            ValidationErrorsWithOutDesignManagement.AddRange(
-                aggregates.Select(x => x.ValidationResults)
-                          .SelectMany(x => x)
-                          .Where(x => x.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel)));
         }
         finally
         {
@@ -247,15 +236,6 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
     private async Task AddWorkRecordAsync()
     {
-        // ボタンの有効判定で実現したい
-        if (!_model.AchievementCollections.Any(x => x.CheckedItem.Value))
-        {
-            var message = MessageNotificationViaLivet.MakeExclamationMessage(
-                "1つも選択されていないため実行できません");
-            await Messenger.RaiseAsync(message);
-            return;
-        }
-
         // 引数作成
         var param = _model.WorkRecords.Join(
             _model.AchievementCollections.Where(x => x.CheckedItem.Value),
@@ -305,14 +285,6 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
 
     public AsyncReactiveCommand EntryCommand { get; }
 
-    private ReactiveCollection<IValidationResultCollectionViewModel> ValidationErrors { get; }
-
-    private ReactiveCollection<IValidationResultCollectionViewModel> ValidationErrorsWithOutDesignManagement { get; }
-
-    private ReactiveProperty<bool> HasError { get; }
-
-    private ReactiveProperty<bool> HasErrorWithOutDesignManagement { get; }
-
     public ReactiveCommand ClearCommand { get; }
 
     /// <summary>
@@ -324,4 +296,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
     /// 設計情報に追加するチェックボックス
     /// </summary>
     public ReactiveProperty<bool> AddingDesignManagementIsChecked { get; }
+
+    /// <summary>
+    /// 転送可能な実績内容が選択されているか
+    /// </summary>
+    private ReactiveProperty<bool> AchievementsAnySelected { get; } = new(false);
 }

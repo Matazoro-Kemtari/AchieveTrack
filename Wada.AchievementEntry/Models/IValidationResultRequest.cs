@@ -18,6 +18,9 @@ public record class InvalidWorkNumberResultRequest : InvalidWorkNumberResultAtte
     private static new InvalidWorkNumberResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
         => new(workingNumber, jigCode, note);
 
+    internal static InvalidWorkNumberResultRequest Create(string workingNumber, string jigCode, string note)
+        => new(WorkingNumber.Create(workingNumber), jigCode, note);
+
     public static InvalidWorkNumberResultRequest Parse(IValidationResultAttempt validationResult)
     {
         if (validationResult is not InvalidWorkNumberResultAttempt)
@@ -40,6 +43,9 @@ public record class DuplicateWorkDateEmployeeResultRequest : DuplicateWorkDateEm
     private static new DuplicateWorkDateEmployeeResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
         => new(workingNumber, jigCode, note);
 
+    internal static DuplicateWorkDateEmployeeResultRequest Create(string workingNumber, string jigCode, string note)
+        => new(WorkingNumber.Create(workingNumber), jigCode, note);
+
     public static DuplicateWorkDateEmployeeResultRequest Parse(IValidationResultAttempt validationResult)
     {
         if (validationResult is not DuplicateWorkDateEmployeeResultAttempt)
@@ -59,6 +65,9 @@ public record class UnregisteredWorkNumberResultRequest : UnregisteredWorkNumber
 
     private static new UnregisteredWorkNumberResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
         => new(workingNumber, jigCode, note);
+
+    internal static UnregisteredWorkNumberResultRequest Create(string workingNumber, string jigCode, string note)
+        => new(WorkingNumber.Create(workingNumber), jigCode, note);
 
     public static UnregisteredWorkNumberResultRequest Parse(IValidationResultAttempt validationResult)
     {
@@ -82,6 +91,9 @@ public record class WorkDateExpiredResultRequest : WorkDateExpiredResultAttempt,
 
     private static new WorkDateExpiredResultRequest Create(WorkingNumber workingNumber, string jigCode, string note)
         => new(workingNumber, jigCode, note);
+
+    internal static WorkDateExpiredResultRequest Create(string workingNumber, string jigCode, string note)
+        => new(WorkingNumber.Create(workingNumber), jigCode, note);
 
     public static WorkDateExpiredResultRequest Parse(IValidationResultAttempt validationResult)
     {
