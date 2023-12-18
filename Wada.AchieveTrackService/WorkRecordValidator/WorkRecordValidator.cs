@@ -3,6 +3,7 @@ using Wada.AchieveTrackService.DesignManagementAggregation;
 using Wada.AchieveTrackService.ValueObjects;
 using Wada.AchieveTrackService.WorkingLedgerAggregation;
 using Wada.AchieveTrackService.WorkRecordReader;
+using Wada.AOP.Logging;
 
 namespace Wada.AchieveTrackService.WorkRecordValidator;
 
@@ -21,6 +22,7 @@ public class WorkRecordValidator : IWorkRecordValidator
         _employeeReader = employeeReader;
     }
 
+    [Logging]
     public async Task<IEnumerable<IEnumerable<IValidationResult>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
     {
         if (!workRecords.Any())
@@ -58,6 +60,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// </summary>
     /// <param name="workingNumber"></param>
     /// <returns>存在する場合: true</returns>
+    [Logging]
     private async Task<bool> IsWorkNumberInWorkingLedgerAsync(WorkingNumber workingNumber)
     {
         try
@@ -76,6 +79,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// </summary>
     /// <param name="workingDate">過ぎている場合: true</param>
     /// <returns></returns>
+    [Logging]
     private async Task<bool> IsWorkingDatePastCompletionAsync(WorkingNumber workingNumber, DateTime workingDate)
     {
         try
@@ -95,6 +99,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// </summary>
     /// <param name="workNumber"></param>
     /// <returns>存在する場合: true</returns>
+    [Logging]
     private async Task<bool> IsRecordInAchievementLedgerAsync(DateTime workingDate, uint employeeNumber)
     {
         try
@@ -113,6 +118,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// </summary>
     /// <param name="workNumber"></param>
     /// <returns>存在する場合: true</returns>
+    [Logging]
     private async Task<bool> IsWorkNumberInDesignManagementLedgerAsync(WorkingNumber workNumber)
     {
         try

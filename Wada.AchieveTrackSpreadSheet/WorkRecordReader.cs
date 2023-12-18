@@ -76,6 +76,7 @@ public class WorkRecordReader : IWorkRecordReader
         }
     }
 
+    [Logging]
     private static ColumnNumbers SearchSubjects(IXLRangeRow subjectRow)
     {
         const string workingDateSubject = "日付";

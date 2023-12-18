@@ -3,9 +3,12 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Disposables;
 using Wada.AchievementEntry.Models;
+using Wada.AOP.Logging;
 
 namespace Wada.AchievementEntry.ViewModels;
 
@@ -34,6 +37,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
                                                     .AddTo(Disposables);
     }
 
+    [Logging]
     internal static AchievementCollectionViewModel Create(AchievementCollectionModel achievementCollectionModel)
     {
         var vm = new AchievementCollectionViewModel();
@@ -41,14 +45,28 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         return vm;
     }
 
+    [Logging]
     private void Apply(AchievementCollectionModel achievementCollectionModel)
     {
         _model.CheckedItem.Value = achievementCollectionModel.CheckedItem.Value;
         _model.AchievementDate.Value = achievementCollectionModel.AchievementDate.Value;
         _model.EmployeeNumber.Value = achievementCollectionModel.EmployeeNumber.Value;
         _model.EmployeeName.Value = achievementCollectionModel.EmployeeName.Value;
-        _model.ValidationResults.Clear();
-        _model.ValidationResults.AddRange(achievementCollectionModel.ValidationResults);
+
+        var vmCreater = new Dictionary<Type, Func<IValidationResultCollectionViewModel, IValidationResultCollectionViewModel>>
+        {
+            { typeof(InvalidWorkNumberResultCollectionViewModel), InvalidWorkNumberResultCollectionViewModel.Create },
+            { typeof(DuplicateWorkDateEmployeeResultCollectionViewModel), DuplicateWorkDateEmployeeResultCollectionViewModel.Create },
+            { typeof(UnregisteredWorkNumberResultCollectionViewModel), UnregisteredWorkNumberResultCollectionViewModel.Create },
+            { typeof(WorkDateExpiredResultCollectionViewModel), WorkDateExpiredResultCollectionViewModel.Create },
+        };
+
+        _model.ValidationResults.AddRange(achievementCollectionModel.ValidationResults.Select(x => vmCreater[x.GetType()](x)));
+
+        HasErrors.Value = _model.ValidationResults.Any();
+        HasErrorsWithOutDesignManagement.Value =
+            _model.ValidationResults.Any(
+                x => x.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel));
     }
 
     public void Destroy() => Disposables.Dispose();
@@ -67,4 +85,8 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
     public ReactiveProperty<string?> EmployeeName { get; }
 
     public ReadOnlyReactiveCollection<IValidationResultCollectionViewModel> ValidationResults { get; }
+
+    public ReactivePropertySlim<bool> HasErrors { get; } = new();
+
+    public ReactivePropertySlim<bool> HasErrorsWithOutDesignManagement { get; } = new();
 }

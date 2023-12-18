@@ -1,6 +1,7 @@
 ﻿using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.ValueObjects;
 using Wada.AchieveTrackService.WorkingLedgerAggregation;
+using Wada.AOP.Logging;
 
 namespace Wada.DataSource.OrderManagement;
 
@@ -13,6 +14,7 @@ public class WorkingLedgerRepository : IWorkingLedgerRepository
         _workingLedgerRepository = workingLedgerRepository;
     }
 
+    [Logging]
     public async Task<WorkingLedger> FindByWorkingNumberAsync(WorkingNumber workingNumber)
     {
         try

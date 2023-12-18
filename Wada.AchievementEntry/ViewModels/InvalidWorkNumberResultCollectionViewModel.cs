@@ -4,6 +4,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Reactive.Disposables;
 using Wada.AchievementEntry.Models;
+using Wada.AOP.Logging;
 
 namespace Wada.AchievementEntry.ViewModels;
 
@@ -36,8 +37,16 @@ public class InvalidWorkNumberResultCollectionViewModel : BindableBase, IDestruc
             .AddTo(Disposables);
     }
 
+    [Logging]
     internal static InvalidWorkNumberResultCollectionViewModel Create(IValidationResultRequest validationResult)
         => new(validationResult);
+
+    [Logging]
+    internal static InvalidWorkNumberResultCollectionViewModel Create(IValidationResultCollectionViewModel validationResult)
+    {
+        var _model = InvalidWorkNumberResultRequest.Create(validationResult.WorkingNumber.Value, validationResult.JigCode.Value, validationResult.Note.Value);
+        return Create(_model);
+    }
 
     public void Destroy() => Disposables.Dispose();
 
@@ -76,8 +85,16 @@ public class DuplicateWorkDateEmployeeResultCollectionViewModel : BindableBase, 
             .AddTo(Disposables);
     }
 
+    [Logging]
     internal static DuplicateWorkDateEmployeeResultCollectionViewModel Create(IValidationResultRequest validationResult)
         => new(validationResult);
+
+    [Logging]
+    internal static DuplicateWorkDateEmployeeResultCollectionViewModel Create(IValidationResultCollectionViewModel validationResult)
+    {
+        var _model = DuplicateWorkDateEmployeeResultRequest.Create(validationResult.WorkingNumber.Value, validationResult.JigCode.Value, validationResult.Note.Value);
+        return Create(_model);
+    }
 
     public void Destroy() => Disposables.Dispose();
 
@@ -116,8 +133,16 @@ public class UnregisteredWorkNumberResultCollectionViewModel : BindableBase, IDe
             .AddTo(Disposables);
     }
 
+    [Logging]
     internal static UnregisteredWorkNumberResultCollectionViewModel Create(IValidationResultRequest validationResult)
         => new(validationResult);
+
+    [Logging]
+    internal static UnregisteredWorkNumberResultCollectionViewModel Create(IValidationResultCollectionViewModel validationResult)
+    {
+        var _model = UnregisteredWorkNumberResultRequest.Create(validationResult.WorkingNumber.Value, validationResult.JigCode.Value, validationResult.Note.Value);
+        return Create(_model);
+    }
 
     public void Destroy() => Disposables.Dispose();
 
@@ -158,6 +183,12 @@ public class WorkDateExpiredResultCollectionViewModel : BindableBase, IDestructi
 
     internal static WorkDateExpiredResultCollectionViewModel Create(IValidationResultRequest validationResult)
         => new(validationResult);
+
+    internal static WorkDateExpiredResultCollectionViewModel Create(IValidationResultCollectionViewModel validationResult)
+    {
+        var _model = WorkDateExpiredResultRequest.Create(validationResult.WorkingNumber.Value, validationResult.JigCode.Value, validationResult.Note.Value);
+        return Create(_model);
+    }
 
     public void Destroy() => Disposables.Dispose();
 
