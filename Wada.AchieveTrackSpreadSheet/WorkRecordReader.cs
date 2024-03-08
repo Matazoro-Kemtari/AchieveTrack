@@ -47,6 +47,11 @@ public class WorkRecordReader : IWorkRecordReader
 
                             var jigCode = row.Cell(columnNumbers.JigCodeNumberColumnNumber).GetString();
 
+                            if (!row.Cell(columnNumbers.AchievementClassificationColumnNumber).TryGetValue(out string achievementClassification)
+                                || achievementClassification == string.Empty)
+                                throw new DomainException(
+                                    $"作業名が取得できませんでした 行: {row.RowNumber()}");
+
                             var note = row.Cell(columnNumbers.NoteColumnNumber).GetString();
 
                             if (!row.Cell(columnNumbers.ManHourColumnNumber).TryGetValue(out decimal manHour))
@@ -58,6 +63,7 @@ public class WorkRecordReader : IWorkRecordReader
                                                      employeeName,
                                                      WorkingNumber.Create(workingNumber),
                                                      jigCode,
+                                                     achievementClassification,
                                                      note,
                                                      ManHour.Create(manHour));
                         })));
@@ -84,19 +90,29 @@ public class WorkRecordReader : IWorkRecordReader
         const string employeeNameSubject = "氏名";
         const string workingNumberSubject = "作業番号";
         const string jigCodeNumberSubject = "コード";
+        const string AchievementClassificationSubject = "作業名";
         const string noteSubject = "特記事項";
         const string manHourSubject = "工数";
 
         try
         {
             return new ColumnNumbers(
-                subjectRow.Cells().Where(cell => cell.GetString() == workingDateSubject).First().Address.ColumnNumber,
-                subjectRow.Cells().Where(cell => cell.GetString() == employeeNumberSubject).First().Address.ColumnNumber,
-                subjectRow.Cells().Where(cell => cell.GetString() == employeeNameSubject).First().Address.ColumnNumber,
-                subjectRow.Cells().Where(cell => cell.GetString() == workingNumberSubject).First().Address.ColumnNumber,
-                subjectRow.Cells().Where(cell => cell.GetString() == jigCodeNumberSubject).First().Address.ColumnNumber,
-                subjectRow.Cells().Where(cell => cell.GetString() == noteSubject).First().Address.ColumnNumber,
-                subjectRow.Cells().Where(cell => cell.GetString() == manHourSubject).First().Address.ColumnNumber);
+                WorkingDateColumnNumber: subjectRow.Cells()
+                                                   .First(cell => cell.GetString() == workingDateSubject).Address.ColumnNumber,
+                EmployeeNumberColumnNumber: subjectRow.Cells()
+                                                      .First(cell => cell.GetString() == employeeNumberSubject).Address.ColumnNumber,
+                EmployeeNameColumnNumber: subjectRow.Cells()
+                                                    .First(cell => cell.GetString() == employeeNameSubject).Address.ColumnNumber,
+                WorkingNumberColumnNumber: subjectRow.Cells()
+                                                     .First(cell => cell.GetString() == workingNumberSubject).Address.ColumnNumber,
+                JigCodeNumberColumnNumber: subjectRow.Cells()
+                                                     .First(cell => cell.GetString() == jigCodeNumberSubject).Address.ColumnNumber,
+                AchievementClassificationColumnNumber: subjectRow.Cells()
+                                                                 .First(cell => cell.GetString() == AchievementClassificationSubject).Address.ColumnNumber,
+                NoteColumnNumber: subjectRow.Cells()
+                                            .First(cell => cell.GetString() == noteSubject).Address.ColumnNumber,
+                ManHourColumnNumber: subjectRow.Cells()
+                                               .First(cell => cell.GetString() == manHourSubject).Address.ColumnNumber);
         }
         catch (InvalidOperationException ex)
         {
@@ -110,6 +126,7 @@ public class WorkRecordReader : IWorkRecordReader
         int EmployeeNameColumnNumber,
         int WorkingNumberColumnNumber,
         int JigCodeNumberColumnNumber,
+        int AchievementClassificationColumnNumber,
         int NoteColumnNumber,
         int ManHourColumnNumber);
 }

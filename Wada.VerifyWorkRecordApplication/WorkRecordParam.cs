@@ -9,6 +9,7 @@ public record class WorkRecordParam(DateTime WorkingDate,
                                     string EmployeeName,
                                     string WorkingNumber,
                                     string? JigCode,
+                                    string AchievementClassification,
                                     string? Note,
                                     decimal ManHour)
 {
@@ -20,6 +21,7 @@ public record class WorkRecordParam(DateTime WorkingDate,
                    workRecordAttempt.EmployeeName,
                    workRecordAttempt.WorkingNumber,
                    workRecordAttempt.JigCode,
+                   workRecordAttempt.AchievementClassification,
                    workRecordAttempt.Note,
                    workRecordAttempt.ManHour);
     }
@@ -32,6 +34,7 @@ public record class WorkRecordParam(DateTime WorkingDate,
             EmployeeName,
             AchieveTrackService.ValueObjects.WorkingNumber.Create(WorkingNumber),
             JigCode,
+            AchievementClassification,
             Note,
             AchieveTrackService.ValueObjects.ManHour.Create(ManHour));
 }
@@ -44,6 +47,7 @@ public class TestAchievementRecordParamFactory
                                                 string employeeName = "無人",
                                                 string workingNumber = "23Z-1",
                                                 string jigCode = "11A",
+                                                string achievementClassification = "NC",
                                                 string note = "特記事項",
                                                 decimal manHour = 4)
     {
@@ -53,6 +57,7 @@ public class TestAchievementRecordParamFactory
                                    employeeName,
                                    workingNumber,
                                    jigCode,
+                                   achievementClassification,
                                    note,
                                    manHour);
     }
