@@ -28,7 +28,7 @@ public class WorkRecordValidator : IWorkRecordValidator
         if (!workRecords.Any())
             throw new ArgumentNullException(nameof(workRecords));
 
-        const string CadAchievementClassification = "CAD";
+        const string CadProcessFlow = "CAD";
 
         return await Task.WhenAll((IEnumerable<Task<List<IValidationResult>>>)workRecords.Select(
             async x =>
@@ -40,7 +40,7 @@ public class WorkRecordValidator : IWorkRecordValidator
                     if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
                         validationResults.Add(WorkDateExpiredResult.Create(x.WorkingNumber, x.JigCode, x.Note));
 
-                    if (x.AchievementClassification == CadAchievementClassification
+                    if (x.ProcessFlow == CadProcessFlow
                         && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
                         validationResults.Add(UnregisteredWorkNumberResult.Create(x.WorkingNumber, x.JigCode, x.Note));
                 }

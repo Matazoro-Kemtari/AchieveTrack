@@ -10,7 +10,7 @@ public record class WorkRecord
                        string employeeName,
                        WorkingNumber workingNumber,
                        string? jigCode,
-                       string achievementClassification,
+                       string processFlow,
                        string? note,
                        ManHour manHour)
     {
@@ -20,7 +20,7 @@ public record class WorkRecord
         EmployeeName = employeeName;
         WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));
         JigCode = jigCode;
-        AchievementClassification = achievementClassification;
+        ProcessFlow = processFlow;
         Note = note;
         ManHour = manHour ?? throw new ArgumentNullException(nameof(manHour));
     }
@@ -31,7 +31,7 @@ public record class WorkRecord
                        string employeeName,
                        WorkingNumber workingNumber,
                        string? jigCode,
-                       string achievementClassification,
+                       string processFlow,
                        string? note,
                        ManHour manHour)
     {
@@ -41,7 +41,7 @@ public record class WorkRecord
         EmployeeName = employeeName;
         WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));
         JigCode = jigCode;
-        AchievementClassification = achievementClassification;
+        ProcessFlow = processFlow;
         Note = note;
         ManHour = manHour ?? throw new ArgumentNullException(nameof(manHour));
     }
@@ -52,10 +52,10 @@ public record class WorkRecord
                                     string employeeName,
                                     WorkingNumber workingNumber,
                                     string? jigCode,
-                                    string achievementClassification,
+                                    string processFlow,
                                     string? note,
                                     ManHour manHour)
-        => new(workingDate, employeeNumber, employeeName, workingNumber, jigCode, achievementClassification, note, manHour);
+        => new(workingDate, employeeNumber, employeeName, workingNumber, jigCode, processFlow, note, manHour);
 
     [Logging]
     public static WorkRecord Reconstruct(Ulid id,
@@ -64,10 +64,10 @@ public record class WorkRecord
                                          string employeeName,
                                          WorkingNumber workingNumber,
                                          string jigCode,
-                                         string achievementClassification,
+                                         string processFlow,
                                          string note,
                                          ManHour manHour)
-        => new(id, workingDate, employeeNumber, employeeName, workingNumber, jigCode, achievementClassification, note, manHour);
+        => new(id, workingDate, employeeNumber, employeeName, workingNumber, jigCode, processFlow, note, manHour);
 
     public Ulid Id { get; init; }
 
@@ -81,7 +81,7 @@ public record class WorkRecord
 
     public string? JigCode { get; init; }
 
-    public string AchievementClassification { get; init; }
+    public string ProcessFlow { get; init; }
 
     public string? Note { get; init; }
 
@@ -96,13 +96,13 @@ public class TestWorkRecordFactory
                                     string employeeName = "本社　無人",
                                     WorkingNumber? workingNumber = default,
                                     string jigCode = "11A",
-                                    string achievementClassification = "NC",
+                                    string processFlow = "NC",
                                     string note = "特記事項",
                                     ManHour? manHour = default)
     {
         workingDate ??= new DateTime(2023, 4, 1);
         workingNumber ??= TestWorkingNumberFactory.Create();
         manHour ??= ManHour.Create(4);
-        return WorkRecord.Create(workingDate.Value, employeeNumber, employeeName, workingNumber, jigCode, achievementClassification, note, manHour);
+        return WorkRecord.Create(workingDate.Value, employeeNumber, employeeName, workingNumber, jigCode, processFlow, note, manHour);
     }
 }

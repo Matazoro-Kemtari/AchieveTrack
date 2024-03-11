@@ -18,9 +18,9 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // given
             List<WorkRecord> workRecords = new()
             {
-                TestWorkRecordFactory.Create(),
-                TestWorkRecordFactory.Create(),
-                TestWorkRecordFactory.Create(),
+                TestWorkRecordFactory.Create(processFlow: "CAD"),
+                TestWorkRecordFactory.Create(processFlow: "CAD"),
+                TestWorkRecordFactory.Create(processFlow: "CAD"),
             };
 
             var workingLedger = TestWorkingLedgerFactory.Create();
@@ -111,7 +111,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingDate = new DateTime(2023, 4, 1);
             List<WorkRecord> workRecords = new()
             {
-                TestWorkRecordFactory.Create(workingDate: workingDate),
+                TestWorkRecordFactory.Create(workingDate: workingDate,
+                                             processFlow: "CAD"),
             };
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 
@@ -165,7 +166,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingDate = new DateTime(2023, 4, 1);
             List<WorkRecord> workRecords = new()
             {
-                TestWorkRecordFactory.Create(workingDate: workingDate),
+                TestWorkRecordFactory.Create(workingDate: workingDate,
+                                             processFlow: "CAD"),
             };
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 

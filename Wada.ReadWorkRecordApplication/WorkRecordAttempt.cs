@@ -17,7 +17,7 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
                workRecord.EmployeeName,
                workRecord.WorkingNumber.Value,
                workRecord.JigCode,
-               workRecord.AchievementClassification,
+               workRecord.ProcessFlow,
                workRecord.Note,
                workRecord.ManHour.Value);
 }
