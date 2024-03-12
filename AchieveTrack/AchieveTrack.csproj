@@ -3,7 +3,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <VersionPrefix>1.1.1.11</VersionPrefix>
+    <VersionPrefix>1.1.2.0</VersionPrefix>
     <ApplicationIcon>tape.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
