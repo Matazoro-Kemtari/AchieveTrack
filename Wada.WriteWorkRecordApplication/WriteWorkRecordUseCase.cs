@@ -63,7 +63,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
         if (canAddingDesignManagement)
             WriteDesignManagement(achievements, processFlow, workingLedgers);
 
-        var addedCount = WriteAchievementLedgers(achievements, maxAchievementLedger, employees, workingLedgers);
+        var addedCount = WriteAchievementLedgers(achievements, maxAchievementLedger, employees, processFlow, workingLedgers);
 
         scope.Complete();
         return addedCount;
@@ -79,7 +79,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     /// <exception cref="WriteWorkRecordUseCaseException"></exception>
-    private int WriteAchievementLedgers(IEnumerable<AchievementParam> achievements, AchievementLedger maxAchievementLedger, IEnumerable<Employee> employees, IEnumerable<WorkingLedger> workingLedgers)
+    private int WriteAchievementLedgers(IEnumerable<AchievementParam> achievements, AchievementLedger maxAchievementLedger, IEnumerable<Employee> employees, IEnumerable<ProcessFlow> processFlow, IEnumerable<WorkingLedger> workingLedgers)
     {
         // Entity作成
         var achievementLedgers = achievements.Join(
@@ -91,7 +91,6 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 a.WorkingDate,
                 a.EmployeeNumber,
                 e.DepartmentId,
-                e.ProcessFlowId,
                 AchievementDetails = a.AchievementDetails.Join(
                     workingLedgers,
                     a => a.WorkingNumber,
@@ -101,7 +100,18 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                         w.OwnCompanyNumber,
                         a.WorkingNumber,
                         a.ManHour,
-                    }),
+                        a.ProcessFlow,
+                    })
+                .Join(processFlow,
+                a => a.ProcessFlow,
+                p => p.Name,
+                (a, p) => new
+                {
+                    a.OwnCompanyNumber,
+                    a.WorkingNumber,
+                    a.ManHour,
+                    ProcessFlowId = p.Id,
+                }),
             })
             .Select((achievement, index) =>
             {
@@ -115,7 +125,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                         x => AchievementDetail.Create(
                             nextAchievementId,
                             x.OwnCompanyNumber,
-                            achievement.ProcessFlowId ?? throw new NullReferenceException(),
+                            x.ProcessFlowId,
                             x.ManHour)));
 
             });

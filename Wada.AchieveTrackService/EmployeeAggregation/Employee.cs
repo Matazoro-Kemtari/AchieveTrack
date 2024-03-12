@@ -2,12 +2,11 @@
 
 public record class Employee
 {
-    private Employee(uint employeeNumber, string name, uint? departmentID, uint? achievementClassificationId)
+    private Employee(uint employeeNumber, string name, uint? departmentID)
     {
         EmployeeNumber = employeeNumber;
         Name = name;
         DepartmentId = departmentID;
-        ProcessFlowId = achievementClassificationId;
     }
 
     /// <summary>
@@ -17,8 +16,8 @@ public record class Employee
     /// <param name="departmentID"></param>
     /// <param name="processFlowId"></param>
     /// <returns></returns>
-    public static Employee Reconstruct(uint employeeNumber, string name, uint? departmentID, uint? processFlowId)
-        => new(employeeNumber, name, departmentID, processFlowId);
+    public static Employee Reconstruct(uint employeeNumber, string name, uint? departmentID)
+        => new(employeeNumber, name, departmentID);
 
     /// <summary>
     /// 社員番号
@@ -34,11 +33,6 @@ public record class Employee
     /// 部署ID
     /// </summary>
     public uint? DepartmentId { get; }
-
-    /// <summary>
-    /// 実績工程ID
-    /// </summary>
-    public uint? ProcessFlowId { get; }
 }
 
 public class TestEmployeeFactory
@@ -46,7 +40,6 @@ public class TestEmployeeFactory
     public static Employee Create(
         uint employeeNumber = 4001u,
         string name = "本社　無人",
-        uint? departmentID = 4,
-        uint? processFlowId = 3u)
-        => Employee.Reconstruct(employeeNumber, name, departmentID, processFlowId);
+        uint? departmentID = 4)
+        => Employee.Reconstruct(employeeNumber, name, departmentID);
 }

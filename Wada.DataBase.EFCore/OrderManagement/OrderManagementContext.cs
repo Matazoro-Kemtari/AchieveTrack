@@ -43,7 +43,7 @@ public class OrderManagementContext : DbContext
 
         // 複合キーを定義する
         modelBuilder.Entity<AchievementDetail>()
-            .HasKey(x => new { x.AchievementLedgerId, x.OwnCompanyNumber, x.AchievementProcessId });
+            .HasKey(x => new { x.AchievementLedgerId, x.OwnCompanyNumber, x.ProcessFlowId });
     }
 
     public DbSet<Employee> Employees { get; set; }

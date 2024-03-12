@@ -32,7 +32,7 @@ public class AchievementLedgerRepository(IConfiguration configuration) : IAchiev
                     {
                         AchievementLedgerId = (int)x.Id,
                         OwnCompanyNumber = (int)x.OwnCompanyNumber,
-                        AchievementProcessId = (int)x.AchievementProcessId,
+                        ProcessFlowId = (int)x.ProcessFlowId,
                         TargetManHour = (double?)x.ManHour,
                         ActualManHour = (double?)x.ManHour,
                     }));
@@ -97,7 +97,7 @@ public class AchievementLedgerRepository(IConfiguration configuration) : IAchiev
                 x => AchievementDetail.Reconstruct(
                     (uint)x.AchievementLedgerId,
                     (uint)x.OwnCompanyNumber,
-                    (uint)x.AchievementProcessId,
+                    (uint)x.ProcessFlowId,
                     (decimal?)x.ActualManHour)));
 
     [Logging]

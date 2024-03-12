@@ -20,8 +20,7 @@ public class EmployeeRepository(IConfiguration configuration) : IEmployeeReposit
             var employee = await dbContext.Employees.SingleAsync(x => x.EmployeeNumber == (int)employeeNumber);
             return Employee.Reconstruct((uint)employee.EmployeeNumber,
                                         employee.Name,
-                                        (uint?)employee.DepartmentID,
-                                        (uint?)employee.ProcessFlowId);
+                                        (uint?)employee.DepartmentID);
         }
         catch (InvalidOperationException ex)
         {

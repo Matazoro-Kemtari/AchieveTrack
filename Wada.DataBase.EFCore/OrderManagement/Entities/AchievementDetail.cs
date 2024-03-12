@@ -6,14 +6,16 @@ namespace Wada.DataBase.EFCore.OrderManagement.Entities;
 [Table("M実績台帳明細")]
 public record class AchievementDetail
 {
-    [Key, Required, Column("実績ID")]
+    // Contextで複合Keyの設定をしている
+
+    [Required, Column("実績ID")]
     public int AchievementLedgerId { get; set; } 
 
-    [Key, Required, Column("自社NO")]
+    [Required, Column("自社NO")]
     public int OwnCompanyNumber { get; set; }
 
-    [Key, Required, Column("実績工程ID")]
-    public int AchievementProcessId { get; set; }
+    [Required, Column("実績工程ID")]
+    public int ProcessFlowId { get; set; }
 
     [Column("目標工数")]
     public double? TargetManHour { get; set; }

@@ -35,7 +35,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            var employee = TestEmployeeFactory.Create(processFlowId: 2u);
+            var employee = TestEmployeeFactory.Create();
             Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
@@ -126,7 +126,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
                 .ThrowsAsync(new DesignManagementNotFoundException());
 
-            var employee = TestEmployeeFactory.Create(processFlowId: 2u);
+            var employee = TestEmployeeFactory.Create();
             Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
@@ -179,7 +179,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            var employee = TestEmployeeFactory.Create(processFlowId: 2u);
+            var employee = TestEmployeeFactory.Create();
             Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);

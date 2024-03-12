@@ -7,7 +7,7 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
                                       string EmployeeName,
                                       string WorkingNumber,
                                       string? JigCode,
-                                      string AchievementClassification,
+                                      string ProcessFlow,
                                       string? Note,
                                       decimal ManHour)
 {

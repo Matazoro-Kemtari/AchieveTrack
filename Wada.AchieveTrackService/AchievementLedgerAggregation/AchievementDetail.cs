@@ -2,25 +2,25 @@
 
 public record class AchievementDetail
 {
-    private AchievementDetail(uint id, uint ownCompanyNumber, uint achievementProcessId, decimal? manHour)
+    private AchievementDetail(uint id, uint ownCompanyNumber, uint processFlowId, decimal? manHour)
     {
         Id = id;
         OwnCompanyNumber = ownCompanyNumber;
-        AchievementProcessId = achievementProcessId;
+        ProcessFlowId = processFlowId;
         ManHour = manHour;
     }
 
     public static AchievementDetail Create(uint id,
                                            uint ownCompanyNumber,
-                                           uint achievementProcessId,
+                                           uint processFlowId,
                                            decimal? manHour)
-        => new(id, ownCompanyNumber, achievementProcessId, manHour);
+        => new(id, ownCompanyNumber, processFlowId, manHour);
 
     public static AchievementDetail Reconstruct(uint id,
                                                 uint ownCompanyNumber,
-                                                uint achievementProcessId,
+                                                uint processFlowId,
                                                 decimal? manHour)
-        => new(id, ownCompanyNumber, achievementProcessId, manHour);
+        => new(id, ownCompanyNumber, processFlowId, manHour);
 
     /// <summary>
     /// 実績ID
@@ -35,7 +35,7 @@ public record class AchievementDetail
     /// <summary>
     /// 実績工程ID
     /// </summary>
-    public uint AchievementProcessId { get; }
+    public uint ProcessFlowId { get; }
 
     /// <summary>
     /// 工数
@@ -47,7 +47,7 @@ public class TestAchievementDetailFactory
 {
     public static AchievementDetail Create(uint id = int.MaxValue,
                                            uint ownCompanyNumber = int.MaxValue,
-                                           uint achievementProcessId = int.MaxValue,
+                                           uint processFlowId = int.MaxValue,
                                            decimal? manHour = 10m)
-        => AchievementDetail.Create(id, ownCompanyNumber, achievementProcessId, manHour);
+        => AchievementDetail.Create(id, ownCompanyNumber, processFlowId, manHour);
 }
