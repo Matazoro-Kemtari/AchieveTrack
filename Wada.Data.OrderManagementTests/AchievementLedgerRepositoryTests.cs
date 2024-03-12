@@ -1,10 +1,8 @@
-﻿using Wada.Data.OrderManagement;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+using System.Transactions;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.AchievementLedgerAggregation;
-using Microsoft.Extensions.Configuration;
-using System.Transactions;
 
 namespace Wada.Data.OrderManagement.Tests
 {

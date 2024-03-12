@@ -50,6 +50,7 @@ namespace Wada.Data.OrderManagement.Tests
             // then
             var ex = await Assert.ThrowsExceptionAsync<EmployeeNotFoundException>(target);
             var message = $"社員情報が見つかりません 社員番号: {employeeNumber}";
+            Assert.AreEqual(message, ex.Message);
         }
     }
 }
