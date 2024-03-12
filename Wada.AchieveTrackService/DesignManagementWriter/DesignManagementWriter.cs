@@ -21,7 +21,7 @@ public class DesignManagementWriter : IDesignManagementWriter
             _ = _designManagementRepository.FindByOwnCompanyNumber(ownCompanyNumber);
             return default;
         }
-        catch (DesignManagementAggregationException)
+        catch (DesignManagementNotFoundException)
         { /* 既存レコードなし */ }
 
         try

@@ -31,7 +31,7 @@ public class WorkRecordReader : IWorkRecordReader
         {
             throw new DomainException("ワークシートが見つかりません", ex);
         }
-        catch (Data.OrderManagement.Models.ValueObjects.WorkingNumberException ex)
+        catch (WorkingNumberException ex)
         {
             throw new DomainException(ex.Message, ex);
         }

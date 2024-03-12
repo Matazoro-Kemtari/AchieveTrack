@@ -12,6 +12,12 @@ public interface IAchievementLedgerRepository
     int Add(AchievementLedger achievementLedger);
 
     /// <summary>
+    /// 実績台帳を取得する
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<AchievementLedger> FindAll();
+
+    /// <summary>
     /// 実績台帳を作業日と社員番号で検索する
     /// </summary>
     /// <param name="workingDate"></param>

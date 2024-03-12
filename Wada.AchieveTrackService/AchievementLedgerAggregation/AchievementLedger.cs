@@ -2,77 +2,37 @@
 
 public record class AchievementLedger
 {
-    private AchievementLedger(uint achievementId,
+    private AchievementLedger(uint id,
                               DateTime workingDate,
                               uint employeeNumber,
                               uint? departmentID,
                               IEnumerable<AchievementDetail> achievementDetails)
     {
-        Id = Ulid.NewUlid();
-        AchievementId = achievementId;
+        Id = id;
         WorkingDate = workingDate;
         EmployeeNumber = employeeNumber;
         DepartmentID = departmentID;
         AchievementDetails = achievementDetails;
     }
 
-    private AchievementLedger(string id,
-                              uint achievementId,
-                              DateTime workingDate,
-                              uint employeeNumber,
-                              uint? departmentID,
-                              IEnumerable<AchievementDetail> achievementDetails)
-    {
-        Id = Ulid.Parse(id);
-        AchievementId = achievementId;
-        WorkingDate = workingDate;
-        EmployeeNumber = employeeNumber;
-        DepartmentID = departmentID;
-        AchievementDetails = achievementDetails;
-    }
-
-    public static AchievementLedger Create(uint achievementId,
+    public static AchievementLedger Create(uint id,
                                            DateTime workingDate,
                                            uint employeeNumber,
                                            uint? departmentID,
                                            IEnumerable<AchievementDetail> achievementDetails)
-        => new(achievementId, workingDate, employeeNumber, departmentID, achievementDetails);
+        => new(id, workingDate, employeeNumber, departmentID, achievementDetails);
 
-    public static AchievementLedger Reconstruct(string id,
-                                                uint achievementId,
+    public static AchievementLedger Reconstruct(uint id,
                                                 DateTime workingDate,
                                                 uint employeeNumber,
                                                 uint? departmentID,
                                                 IEnumerable<AchievementDetail> achievementDetails)
-        => new(id, achievementId, workingDate, employeeNumber, departmentID, achievementDetails);
-
-    public Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedger Convert()
-        => Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedger.Reconstruct(
-            Id.ToString(),
-            AchievementId,
-            WorkingDate,
-            EmployeeNumber,
-            DepartmentID,
-            (double?)AchievementDetails.Select(x => x.ManHour).Sum(),
-            AchievementDetails.Select(x => x.Convert()));
-
-    public static AchievementLedger Parse(Data.OrderManagement.Models.AchievementLedgerAggregation.AchievementLedger achievementLedger)
-        => new(achievementLedger.Id.ToString(),
-               achievementLedger.AchievementId,
-               achievementLedger.WorkingDate,
-               achievementLedger.EmployeeNumber,
-               achievementLedger.DepartmentID,
-               achievementLedger.AchievementDetails.Select(x => AchievementDetail.Parse(x)));
-
-    /// <summary>
-    /// EntityのID
-    /// </summary>
-    public Ulid Id { get; }
+        => new(id, workingDate, employeeNumber, departmentID, achievementDetails);
 
     /// <summary>
     /// 実績ID
     /// </summary>
-    public uint AchievementId { get; }
+    public uint Id { get; }
 
     /// <summary>
     /// 作業日
@@ -97,21 +57,19 @@ public record class AchievementLedger
 
 public class TestAchievementLedgerFacroty
 {
-    public static AchievementLedger Create(uint achievementId = int.MaxValue,
+    public static AchievementLedger Create(uint id = int.MaxValue,
                                            DateTime? workingDate = default,
                                            uint employeeNumber = 4001,
                                            uint? departmentID = default,
                                            IEnumerable<AchievementDetail>? achievementDetails = default)
     {
-        var id = Ulid.NewUlid();
         workingDate ??= new DateTime(2023, 4, 1);
         achievementDetails ??= new List<AchievementDetail>
         {
-            TestAchievementDetailFactory.Create(),
+            TestAchievementDetailFactory.Create(id: id),
         };
         return AchievementLedger.Reconstruct(
-            id.ToString(),
-            achievementId,
+            id,
             workingDate.Value,
             employeeNumber,
             departmentID,

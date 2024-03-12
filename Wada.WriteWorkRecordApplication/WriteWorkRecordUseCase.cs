@@ -16,13 +16,13 @@ public interface IWriteWorkRecordUseCase
 
 public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
 {
-    private const uint CadAchievementClassificationId = 2u;
-    private readonly IEmployeeReader _employeeReader;
+    private const uint CadProcessFlowId = 2u;
+    private readonly IEmployeeRepository _employeeReader;
     private readonly IWorkingLedgerRepository _workingLedgerRepository;
     private readonly IAchievementLedgerRepository _achievementLedgerRepository;
     private readonly IDesignManagementWriter _designManagementWriter;
 
-    public WriteWorkRecordUseCase(IEmployeeReader employeeReader, IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementWriter designManagementWriter)
+    public WriteWorkRecordUseCase(IEmployeeRepository employeeReader, IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementWriter designManagementWriter)
     {
         _employeeReader = employeeReader;
         _workingLedgerRepository = workingLedgerRepository;
@@ -58,11 +58,11 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                                                        e => e.EmployeeNumber,
                                                        (a, e) => new
                                                        {
-                                                           e.AchievementClassificationId,
+                                                           e.ProcessFlowId,
                                                            a.WorkingDate,
                                                            a.AchievementDetails,
                                                        })
-                                                 .Where(x => x.AchievementClassificationId == CadAchievementClassificationId)
+                                                 .Where(x => x.ProcessFlowId == CadProcessFlowId)
                                                  .Select(achievement => achievement.AchievementDetails.Select(x => new
                                                  {
                                                      achievement.WorkingDate,
@@ -105,7 +105,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 a.WorkingDate,
                 a.EmployeeNumber,
                 e.DepartmentId,
-                e.AchievementClassificationId,
+                e.ProcessFlowId,
                 AchievementDetails = a.AchievementDetails.Join(
                     workingLedgers,
                     a => a.WorkingNumber,
@@ -119,7 +119,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
             })
             .Select((achievement, index) =>
             {
-                var nextAchievementId = maxAchievementLedger.AchievementId + 1u + (uint)index;
+                var nextAchievementId = maxAchievementLedger.Id + 1u + (uint)index;
                 return AchievementLedger.Create(
                     nextAchievementId,
                     achievement.WorkingDate,
@@ -129,7 +129,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                         x => AchievementDetail.Create(
                             nextAchievementId,
                             x.OwnCompanyNumber,
-                            achievement.AchievementClassificationId ?? throw new NullReferenceException(),
+                            achievement.ProcessFlowId ?? throw new NullReferenceException(),
                             x.ManHour)));
 
             });
@@ -164,7 +164,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
             var employees = await Task.WhenAll(achievements.Select(async x => await _employeeReader.FindByEmployeeNumberAsync(x.EmployeeNumber)));
             return employees.Distinct();
         }
-        catch (EmployeeAggregationException ex)
+        catch (EmployeeNotFoundException ex)
         {
             throw new WriteWorkRecordUseCaseException(
                 $"実績を登録中に問題が発生しました\n{ex.Message}");
@@ -182,11 +182,15 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     {
         try
         {
-            var WorkingLedgers = await Task.WhenAll(achievements.Select(async (achievement, i) => await Task.WhenAll(achievement.AchievementDetails.Select(
-                async x => await _workingLedgerRepository.FindByWorkingNumberAsync(WorkingNumber.Create(x.WorkingNumber))))));
+            var WorkingLedgers = await Task.WhenAll(
+                achievements.Select(
+                    async (achievement, i) => await Task.WhenAll(
+                        achievement.AchievementDetails.Select(
+                            async x => await _workingLedgerRepository.FindByWorkingNumberAsync(
+                                WorkingNumber.Create(x.WorkingNumber))))));
             return WorkingLedgers.SelectMany(x => x).Distinct();
         }
-        catch (WorkingLedgerAggregationException ex)
+        catch (WorkingLedgerNotFoundException ex)
         {
             throw new WriteWorkRecordUseCaseException(
                 $"実績を登録中に問題が発生しました\n{ex.Message}");

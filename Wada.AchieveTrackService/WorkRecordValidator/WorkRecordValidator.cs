@@ -12,9 +12,9 @@ public class WorkRecordValidator : IWorkRecordValidator
     private readonly IWorkingLedgerRepository _workingLedgerRepository;
     private readonly IAchievementLedgerRepository _achievementLedgerRepository;
     private readonly IDesignManagementRepository _designManagementRepository;
-    private readonly IEmployeeReader _employeeReader;
+    private readonly IEmployeeRepository _employeeReader;
 
-    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository, IEmployeeReader employeeReader)
+    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository, IEmployeeRepository employeeReader)
     {
         _workingLedgerRepository = workingLedgerRepository;
         _achievementLedgerRepository = achievementLedgerRepository;
@@ -67,7 +67,7 @@ public class WorkRecordValidator : IWorkRecordValidator
             _ = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
             return true;
         }
-        catch (WorkingLedgerAggregationException)
+        catch (WorkingLedgerNotFoundException)
         {
             return false;
         }
@@ -87,7 +87,7 @@ public class WorkRecordValidator : IWorkRecordValidator
             return result.CompletionDate != null
                    && workingDate.CompareTo(result.CompletionDate) > 0;
         }
-        catch (WorkingLedgerAggregationException ex)
+        catch (WorkingLedgerNotFoundException ex)
         {
             throw new WorkRecordValidatorException(ex.Message, ex);
         }
@@ -126,7 +126,7 @@ public class WorkRecordValidator : IWorkRecordValidator
             _ = await _designManagementRepository.FindByOwnCompanyNumberAsync(workingLedger.OwnCompanyNumber);
             return true;
         }
-        catch (DesignManagementAggregationException)
+        catch (Exception ex) when (ex is WorkingLedgerNotFoundException or DesignManagementNotFoundException)
         {
             return false;
         }

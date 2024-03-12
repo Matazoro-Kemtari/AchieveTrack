@@ -35,8 +35,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
-            Mock<IEmployeeReader> employeeMock = new();
+            var employee = TestEmployeeFactory.Create(processFlowId: 2u);
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
 
@@ -69,13 +69,13 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ThrowsAsync(new WorkingLedgerAggregationException());
+                .ThrowsAsync(new WorkingLedgerNotFoundException());
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            Mock<IEmployeeReader> employeeMock = new();
+            Mock<IEmployeeRepository> employeeMock = new();
 
             // when
             IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object,
@@ -124,10 +124,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
             designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
-                .ThrowsAsync(new DesignManagementAggregationException());
+                .ThrowsAsync(new DesignManagementNotFoundException());
 
-            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
-            Mock<IEmployeeReader> employeeMock = new();
+            var employee = TestEmployeeFactory.Create(processFlowId: 2u);
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
 
@@ -179,8 +179,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
-            Mock<IEmployeeReader> employeeMock = new();
+            var employee = TestEmployeeFactory.Create(processFlowId: 2u);
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
 

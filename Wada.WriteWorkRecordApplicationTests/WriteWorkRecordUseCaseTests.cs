@@ -19,9 +19,9 @@ namespace Wada.WriteWorkRecordApplication.Tests
         public async Task 正常系_例外なく更新処理が終わること(bool canAdd, int achievementClassificationId)
         {
             // given
-            Mock<IEmployeeReader> employeeMock = new();
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
-                .ReturnsAsync(TestEmployeeFactory.Create(achievementClassificationId: (uint?)achievementClassificationId));
+                .ReturnsAsync(TestEmployeeFactory.Create(processFlowId: (uint?)achievementClassificationId));
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-1")))
@@ -89,10 +89,10 @@ namespace Wada.WriteWorkRecordApplication.Tests
         public async Task 異常系_社員が見つからないとき例外を返すこと()
         {
             // given
-            Mock<IEmployeeReader> employeeMock = new();
+            Mock<IEmployeeRepository> employeeMock = new();
             string employeeMessage = "社員番号が見つかりません";
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
-                .ThrowsAsync(new EmployeeAggregationException(employeeMessage));
+                .ThrowsAsync(new EmployeeNotFoundException(employeeMessage));
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
@@ -125,12 +125,12 @@ namespace Wada.WriteWorkRecordApplication.Tests
         public async Task 異常系_作業台帳が見つからないとき例外を返すこと()
         {
             // given
-            Mock<IEmployeeReader> employeeMock = new();
+            Mock<IEmployeeRepository> employeeMock = new();
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             string workingLedgerMessage = "作業台帳が見つかりません";
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ThrowsAsync(new WorkingLedgerAggregationException(workingLedgerMessage));
+                .ThrowsAsync(new WorkingLedgerNotFoundException(workingLedgerMessage));
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
 
@@ -159,7 +159,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
         public async Task 異常系_実績台帳に登録できなかったとき例外を返すこと()
         {
             // given
-            Mock<IEmployeeReader> employeeMock = new();
+            Mock<IEmployeeRepository> employeeMock = new();
             var testEmployee = TestEmployeeFactory.Create();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(testEmployee);

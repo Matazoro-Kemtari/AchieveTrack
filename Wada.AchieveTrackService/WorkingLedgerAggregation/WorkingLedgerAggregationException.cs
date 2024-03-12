@@ -3,7 +3,7 @@
 namespace Wada.AchieveTrackService.WorkingLedgerAggregation
 {
     [Serializable]
-    public class WorkingLedgerAggregationException : DomainException
+    public partial class WorkingLedgerAggregationException : DomainException
     {
         public WorkingLedgerAggregationException()
         {

@@ -7,7 +7,7 @@ public record class Employee
         EmployeeNumber = employeeNumber;
         Name = name;
         DepartmentId = departmentID;
-        AchievementClassificationId = achievementClassificationId;
+        ProcessFlowId = achievementClassificationId;
     }
 
     /// <summary>
@@ -15,13 +15,10 @@ public record class Employee
     /// </summary>
     /// <param name="employeeNumber"></param>
     /// <param name="departmentID"></param>
-    /// <param name="achievementClassificationId"></param>
+    /// <param name="processFlowId"></param>
     /// <returns></returns>
-    public static Employee Reconstruct(uint employeeNumber, string name, uint? departmentID, uint? achievementClassificationId)
-        => new(employeeNumber, name, departmentID, achievementClassificationId);
-
-    public static Employee Parse(Data.OrderManagement.Models.EmployeeAggregation.Employee employee)
-        => new(employee.EmployeeNumber, employee.Name, employee.DepartmentId, employee.AchievementClassificationId);
+    public static Employee Reconstruct(uint employeeNumber, string name, uint? departmentID, uint? processFlowId)
+        => new(employeeNumber, name, departmentID, processFlowId);
 
     /// <summary>
     /// 社員番号
@@ -41,15 +38,15 @@ public record class Employee
     /// <summary>
     /// 実績工程ID
     /// </summary>
-    public uint? AchievementClassificationId { get; }
+    public uint? ProcessFlowId { get; }
 }
 
 public class TestEmployeeFactory
 {
     public static Employee Create(
         uint employeeNumber = 4001u,
-        string name = "無人",
+        string name = "本社　無人",
         uint? departmentID = 4,
-        uint? achievementClassificationId = 3u)
-        => Employee.Reconstruct(employeeNumber, name, departmentID, achievementClassificationId);
+        uint? processFlowId = 3u)
+        => Employee.Reconstruct(employeeNumber, name, departmentID, processFlowId);
 }
