@@ -1,23 +1,63 @@
-﻿namespace Wada.AchieveTrackService.ValueObjects;
+﻿using System.Text.RegularExpressions;
 
-public record class WorkingNumber : Data.OrderManagement.Models.ValueObjects.WorkingNumber
+namespace Wada.AchieveTrackService.ValueObjects;
+
+public record class WorkingNumber
 {
-    private WorkingNumber(string value) : base(value)
-    { }
+    private WorkingNumber(string value)
+    {
+        Value = Validate(value);
+        Header = DivideHeader(value);
+        Symbol = DivideSymbol(value);
+        Number = DivideNumber(value);
+    }
+
+    public string Value { get; } 
+
+    public string Header { get; }
+
+    public string Symbol { get; }
+
+    public uint Number { get; } 
+
+    public override string ToString() => Value;
+
 
     public static WorkingNumber Create(string Value) => new(Value);
 
-    public static WorkingNumber Reconstruct(string Value) => new(Value);
+    private static string Validate(string value)
+    {
+        if (value is null)
+            throw new ArgumentNullException(nameof(value));
 
-    public Data.OrderManagement.Models.ValueObjects.WorkingNumber Convert()
-        => new(Value);
+        if (!Regex.IsMatch(value, @"^X?\d{1,2}[A-Z]-\d{1,4}$"))
+            throw new WorkingNumberException(
+                $"正しい作業番号の形式を入力してください 値: {value}");
 
-    public static WorkingNumber Parse(Data.OrderManagement.Models.ValueObjects.WorkingNumber workingNumber)
-        => Create(workingNumber.Value);
+        return value;
+    }
+
+    private static string DivideHeader(string value)
+    {
+        var match = Regex.Match(value, @"\d{1,2}[A-Z]");
+        return match.Success ? match.Value : string.Empty;
+    }
+
+    private static string DivideSymbol(string value)
+    {
+        var match = Regex.Match(value, @"(?<=\d{1,2})[A-Z]");
+        return match.Success ? match.Value : string.Empty;
+    }
+
+    private static uint DivideNumber(string value)
+    {
+        var match = Regex.Match(value, @"(?<=-)\d{1,4}");
+        return match.Success ? uint.Parse(match.Value) : default;
+    }
 }
 
 public class TestWorkingNumberFactory
 {
     public static WorkingNumber Create(string value = "22Z-1")
-        => WorkingNumber.Reconstruct(value);
+        => WorkingNumber.Create(value);
 }

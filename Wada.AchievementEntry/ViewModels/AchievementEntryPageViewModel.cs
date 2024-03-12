@@ -140,6 +140,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                  x.EmployeeName,
                                                  x.WorkingNumber,
                                                  x.JigCode,
+                                                 x.ProcessFlow,
                                                  x.Note,
                                                  x.ManHour)));
             }
@@ -250,6 +251,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                 w.WorkingDate,
                 w.EmployeeNumber,
                 w.WorkingNumber,
+                w.ProcessFlow,
                 w.ManHour,
             })
             .GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
@@ -257,6 +259,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                               x.Key.EmployeeNumber,
                                               x.GroupBy(y => y.WorkingNumber).Select(y => new AchievementDetailParam(
                                                   y.Key,
+                                                  y.Select(z => z.ProcessFlow).First(), // ここでエラーが起こるなら取込時に処理に問題あり
                                                   y.Sum(z => z.ManHour)))));
 
         try

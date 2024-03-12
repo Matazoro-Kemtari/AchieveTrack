@@ -16,6 +16,7 @@ namespace Wada.AchieveTrackService.WorkRecordReader.Tests
                                                    "無人",
                                                    null!,
                                                    "11A",
+                                                   "NC",
                                                    "特記事項",
                                                    TestManHourFactory.Create());
 
@@ -33,6 +34,7 @@ namespace Wada.AchieveTrackService.WorkRecordReader.Tests
                                                    "無人",
                                                    TestWorkingNumberFactory.Create(),
                                                    "11A",
+                                                   "NC",
                                                    "特記事項",
                                                    null!);
 

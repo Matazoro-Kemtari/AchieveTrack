@@ -7,6 +7,7 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
                                       string EmployeeName,
                                       string WorkingNumber,
                                       string? JigCode,
+                                      string ProcessFlow,
                                       string? Note,
                                       decimal ManHour)
 {
@@ -16,6 +17,7 @@ public record class WorkRecordAttempt(DateTime WorkingDate,
                workRecord.EmployeeName,
                workRecord.WorkingNumber.Value,
                workRecord.JigCode,
+               workRecord.ProcessFlow,
                workRecord.Note,
                workRecord.ManHour.Value);
 }

@@ -15,13 +15,6 @@ public record class DesignManagement
     public static DesignManagement Reconstruct(uint ownCompanyNumber, DateTime? startDate, string? designLead)
         => new(ownCompanyNumber, startDate, designLead);
 
-    public Data.OrderManagement.Models.DesignManagementAggregation.DesignManagement Convert()
-        => Data.OrderManagement.Models.DesignManagementAggregation.DesignManagement.Reconstruct(
-            OwnCompanyNumber, StartDate, DesignLead );
-
-    public static DesignManagement Parse(Data.OrderManagement.Models.DesignManagementAggregation.DesignManagement designManagement)
-        => Reconstruct(designManagement.OwnCompanyNumber, designManagement.StartDate, designManagement.DesignLead);
-
     /// <summary>
     /// 自社NO
     /// </summary>
