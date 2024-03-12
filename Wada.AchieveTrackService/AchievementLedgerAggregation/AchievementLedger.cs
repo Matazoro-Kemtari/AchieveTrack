@@ -55,7 +55,7 @@ public record class AchievementLedger
     public IEnumerable<AchievementDetail> AchievementDetails { get; }
 }
 
-public class TestAchievementLedgerFacroty
+public class TestAchievementLedgerFactory
 {
     public static AchievementLedger Create(uint id = int.MaxValue,
                                            DateTime? workingDate = default,

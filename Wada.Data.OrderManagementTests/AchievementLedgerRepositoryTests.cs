@@ -34,7 +34,7 @@ namespace Wada.Data.OrderManagement.Tests
             var before = repository.FindAll();
 
             var newId = before.Max(x => x.Id) + 1;
-            var record = TestAchievementLedgerFacroty.Create(id: newId);
+            var record = TestAchievementLedgerFactory.Create(id: newId);
 
             var count = repository.Add(record);
             var response = repository.FindAll();
@@ -65,7 +65,7 @@ namespace Wada.Data.OrderManagement.Tests
             var newId = before.Max(x => x.Id);
 
             // when
-            var achievementLedger = TestAchievementLedgerFacroty.Create(id: newId);
+            var achievementLedger = TestAchievementLedgerFactory.Create(id: newId);
             void target() => repository.Add(achievementLedger);
 
             // then
@@ -84,7 +84,7 @@ namespace Wada.Data.OrderManagement.Tests
 
             var workingDate = DateTime.Now.Date;
             var employeeNumber = 4001u;
-            var expected = TestAchievementLedgerFacroty.Create(workingDate: workingDate, employeeNumber: employeeNumber);
+            var expected = TestAchievementLedgerFactory.Create(workingDate: workingDate, employeeNumber: employeeNumber);
 
             _ = repository.Add(expected);
 
@@ -109,7 +109,7 @@ namespace Wada.Data.OrderManagement.Tests
             // given
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
 
-            var achievementLedger = TestAchievementLedgerFacroty.Create();
+            var achievementLedger = TestAchievementLedgerFactory.Create();
 
             // when
             IAchievementLedgerRepository repository = new AchievementLedgerRepository(_configuration!);
