@@ -39,4 +39,5 @@ AchieveTrack
 
 ## 3. 技術情報
 
-![sudo図](images/sudoDiagram.svg)
+![su図](images/suDiagram.svg)
+![do図](images/doDiagram.svg)
