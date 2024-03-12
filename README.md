@@ -5,6 +5,7 @@ AchieveTrack
 - [1. 使用方法](#1-使用方法)
 - [2. エラーメッセージ内容](#2-エラーメッセージ内容)
 - [3. 技術情報](#3-技術情報)
+  - [3.1. データクラスの suffix](#31-データクラスの-suffix)
 
 ## 1. 使用方法
 
@@ -41,3 +42,64 @@ AchieveTrack
 
 ![su図](images/suDiagram.svg)
 ![do図](images/doDiagram.svg)
+
+### 3.1. データクラスの suffix
+
+```plantuml
+@startuml
+rectangle 通常 {
+    object "プレゼンテーション層" as Presentation
+    object "インフラ層" as Infra
+    object "ユースケース層" as Application
+    object "ドメイン層" as Domain
+
+    Presentation -[hidden] Infra
+    Presentation --[hidden] Application
+    Application --[hidden] Domain
+
+    Presentation -[#red]-> Application : XxxParam
+    Application -[#red]-> Presentation : XxxResult
+
+    Application -[#blue]-> Domain : プリミティブ型/Entity
+    Domain .[#blue].> Infra : インターフェイス経由
+    Infra .[#blue].> Application : Entity
+    Domain -[#blue]-> Application : Entity
+}
+@enduml
+```
+
+```plantuml
+@startuml
+rectangle クエリサービス {
+    object "プレゼンテーション層" as Presentation
+    object "インフラ層" as Infra
+    object "ユースケース層" as Application
+    object "ドメイン層" as Domain
+
+    Presentation -[hidden] Infra
+    Presentation --[hidden] Application
+    Application --[hidden] Domain
+
+    Application -[#green]-> Infra : XxxAttempt
+    Infra -[#green]-> Application : XxxRecord/Entity
+}
+@enduml
+```
+
+```plantuml
+@startuml
+rectangle ドメインサービス {
+    object "プレゼンテーション層" as Presentation
+    object "インフラ層" as Infra
+    object "ユースケース層" as Application
+    object "ドメイン層" as Domain
+
+    Presentation -[hidden] Infra
+    Presentation --[hidden] Application
+    Application --[hidden] Domain
+
+    Application -[#orange]-> Domain : プリミティブ型/Entity
+    Domain -[#orange]-> Application : プリミティブ型/Entity
+}
+@enduml
+```
