@@ -4,13 +4,21 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <VersionPrefix>1.1.2.0</VersionPrefix>
-    <ApplicationIcon>tape.ico</ApplicationIcon>
+    <ApplicationIcon>Material-Cassette.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="tape.ico" />
+    <None Remove="SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DotNetEnv" Version="2.5.0" />
+    <Content Include="Material-Cassette.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.0.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+    <PackageReference Include="MaterialDesignColors" Version="3.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="1.0.0" />
     <PackageReference Include="NLog" Version="5.2.8" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
@@ -27,6 +35,9 @@
     <ProjectReference Include="..\Wada.ReadWorkRecordApplication\Wada.ReadWorkRecordApplication.csproj" />
     <ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
     <ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
     <None Update=".env">

@@ -14,7 +14,4 @@ public record class Employee
 
     [Column("部署ID")]
     public int? DepartmentID { get; set; }
-
-    [Column("実績工程ID")]
-    public int? ProcessFlowId { get; set; }
 }

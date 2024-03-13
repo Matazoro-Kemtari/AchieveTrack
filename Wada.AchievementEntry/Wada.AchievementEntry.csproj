@@ -7,9 +7,13 @@
   <ItemGroup>
     <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
     <PackageReference Include="LivetCask.Messaging" Version="4.0.2" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MaterialDesignColors" Version="3.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="1.0.0" />
     <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-    <PackageReference Include="ReactiveProperty.WPF" Version="9.2.0" />
+    <PackageReference Include="ReactiveProperty.WPF" Version="9.5.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
