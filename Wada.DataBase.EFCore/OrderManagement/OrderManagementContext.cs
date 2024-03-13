@@ -48,19 +48,10 @@ public class OrderManagementContext : DbContext
 
     public DbSet<Employee> Employees { get; set; }
     public DbSet<WorkingLedger> WorkingLedgers { get; set; }
-    public DbSet<Client> Clients { get; set; }
-    public DbSet<Symbol> Symbols { get; set; }
     public DbSet<DesignManagement> DesignManagements { get; set; }
     public DbSet<AchievementLedger> AchievementLedgers { get; set; }
     public DbSet<AchievementDetail> AchievementDetails { get; set; }
     public DbSet<ProcessFlow> ProcessFlows { get; set; }
-    public DbSet<PartDetailLedger> PartDetailLedgers { get; set; }
-    public DbSet<PartDetailLedgerForMaterial> PartDetailLedgerForMaterials { get; set; }
-    public DbSet<PartDetailLedgerForOutsourcing> PartDetailLedgerForOutsourcings { get; set; }
-    public DbSet<PartDetailLedgerForPurchaseItem> PartDetailLedgerForPurchaseItems { get; set; }
-    public DbSet<PartDetailLedgerForTreatment> PartDetailLedgerForTreatments { get; set; }
-    public DbSet<Processing> Processings { get; set; }
-    public DbSet<Supplier> Suppliers { get; set; }
 
     /// <summary>
     /// データベース接続情報
