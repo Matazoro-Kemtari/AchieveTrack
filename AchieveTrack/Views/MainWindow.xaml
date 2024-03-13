@@ -6,6 +6,7 @@
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
                    metro:DialogParticipation.Register="{Binding}"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                   TitleCharacterCasing="Normal"
                    Title="{Binding Title}" Height="600" Width="800" >
     <metro:MetroWindow.IconTemplate>
         <DataTemplate>
