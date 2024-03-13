@@ -4,7 +4,21 @@
                    xmlns:prism="http://prismlibrary.com/"
                    prism:ViewModelLocator.AutoWireViewModel="True"
                    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+                   metro:DialogParticipation.Register="{Binding}"
+                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    Title="{Binding Title}" Height="600" Width="800" >
+    <metro:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <iconPacks:PackIconMaterial Kind="Cassette" 
+                                        Width="30" 
+                                        Height="30"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Margin="4"
+                                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"/>
+        </DataTemplate>
+    </metro:MetroWindow.IconTemplate>
+
     <Grid>
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </Grid>
