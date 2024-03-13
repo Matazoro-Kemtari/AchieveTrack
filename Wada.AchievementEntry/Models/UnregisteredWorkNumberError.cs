@@ -1,13 +1,12 @@
 ﻿using System;
-using Wada.AchieveTrackService.ValueObjects;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
 
 namespace Wada.AchievementEntry.Models;
 
-public record class UnregisteredWorkNumberError :  IValidationError
+internal record class UnregisteredWorkNumberError :  IValidationError
 {
-    private UnregisteredWorkNumberError(WorkingNumber workingNumber, string jigCode, string note)
+    private UnregisteredWorkNumberError(string workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
         JigCode = jigCode;
@@ -17,17 +16,14 @@ public record class UnregisteredWorkNumberError :  IValidationError
 
     public string Message => "設計管理に未登録の作業番号があります";
 
-    public WorkingNumber WorkingNumber { get; }
+    public string WorkingNumber { get; }
 
     public string JigCode { get; }
 
     public string Note { get; }
 
-    private static new UnregisteredWorkNumberError Create(WorkingNumber workingNumber, string jigCode, string note)
+    internal static  UnregisteredWorkNumberError Create(string workingNumber, string jigCode, string note)
         => new(workingNumber, jigCode, note);
-
-    internal static UnregisteredWorkNumberError Create(string workingNumber, string jigCode, string note)
-        => new(WorkingNumber.Create(workingNumber), jigCode, note);
 
     public static UnregisteredWorkNumberError Parse(IValidationErrorResult validationError)
     {

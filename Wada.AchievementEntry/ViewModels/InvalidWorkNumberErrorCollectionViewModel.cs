@@ -19,7 +19,7 @@ public class InvalidWorkNumberErrorCollectionViewModel : BindableBase, IDestruct
         Message = new ReactivePropertySlim<string>(_model.Message)
             .AddTo(Disposables);
 
-        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber.Value)
+        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber)
             .AddTo(Disposables);
 
         JigCode = new ReactivePropertySlim<string>(_model.JigCode)

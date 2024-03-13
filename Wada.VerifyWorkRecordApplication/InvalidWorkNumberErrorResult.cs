@@ -1,12 +1,11 @@
-﻿using Wada.AchieveTrackService.ValueObjects;
-using Wada.AchieveTrackService.WorkRecordValidator;
+﻿using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.VerifyAchievementRecordContentApplication;
 
 namespace Wada.VerifyWorkRecordApplication;
 
 public record class InvalidWorkNumberErrorResult : IValidationErrorResult
 {
-    private InvalidWorkNumberErrorResult(WorkingNumber workingNumber, string jigCode, string note)
+    private InvalidWorkNumberErrorResult(string workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
         JigCode = jigCode;
@@ -15,13 +14,13 @@ public record class InvalidWorkNumberErrorResult : IValidationErrorResult
 
     public string Message => "作業台帳にない作業番号です";
 
-    public WorkingNumber WorkingNumber { get; }
+    public string WorkingNumber { get; }
 
     public string JigCode { get; }
 
     public string Note { get; }
 
-    private static InvalidWorkNumberErrorResult Create(WorkingNumber workingNumber, string jigCode, string note)
+    private static InvalidWorkNumberErrorResult Create(string workingNumber, string jigCode, string note)
         => new(workingNumber, jigCode, note);
 
     public static InvalidWorkNumberErrorResult Parse(IValidationError validationResult)
@@ -31,6 +30,6 @@ public record class InvalidWorkNumberErrorResult : IValidationErrorResult
                 $"引数には{nameof(InvalidWorkNumberError)}を渡してください",
                 nameof(validationResult));
 
-        return Create(validationResult.WorkingNumber, validationResult.JigCode, validationResult.Note);
+        return Create(validationResult.WorkingNumber.Value, validationResult.JigCode, validationResult.Note);
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
-using Wada.AchieveTrackService.ValueObjects;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
 
 namespace Wada.AchievementEntry.Models;
 
-public record class WorkDateExpiredError : IValidationError
+internal record class WorkDateExpiredError : IValidationError
 {
-    private WorkDateExpiredError(WorkingNumber workingNumber, string jigCode, string note)
+    private WorkDateExpiredError(string workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
         JigCode = jigCode;
@@ -16,17 +15,14 @@ public record class WorkDateExpiredError : IValidationError
 
     public string Message => "作業日が完成日を過ぎた作業番号があります";
 
-    public WorkingNumber WorkingNumber { get; }
+    public string WorkingNumber { get; }
 
     public string JigCode { get; }
 
     public string Note { get; }
 
-    private static WorkDateExpiredError Create(WorkingNumber workingNumber, string jigCode, string note)
-        => new(workingNumber, jigCode, note);
-
     internal static WorkDateExpiredError Create(string workingNumber, string jigCode, string note)
-        => new(WorkingNumber.Create(workingNumber), jigCode, note);
+        => new(workingNumber, jigCode, note);
 
     public static WorkDateExpiredError Parse(IValidationErrorResult validationError)
     {
