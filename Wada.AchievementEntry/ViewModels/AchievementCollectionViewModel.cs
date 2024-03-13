@@ -53,12 +53,12 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         _model.EmployeeNumber.Value = achievementCollectionModel.EmployeeNumber.Value;
         _model.EmployeeName.Value = achievementCollectionModel.EmployeeName.Value;
 
-        var vmCreater = new Dictionary<Type, Func<IValidationResultCollectionViewModel, IValidationResultCollectionViewModel>>
+        var vmCreater = new Dictionary<Type, Func<IValidationErrorCollectionViewModel, IValidationErrorCollectionViewModel>>
         {
-            { typeof(InvalidWorkNumberResultCollectionViewModel), InvalidWorkNumberResultCollectionViewModel.Create },
-            { typeof(DuplicateWorkDateEmployeeResultCollectionViewModel), DuplicateWorkDateEmployeeResultCollectionViewModel.Create },
-            { typeof(UnregisteredWorkNumberResultCollectionViewModel), UnregisteredWorkNumberResultCollectionViewModel.Create },
-            { typeof(WorkDateExpiredResultCollectionViewModel), WorkDateExpiredResultCollectionViewModel.Create },
+            { typeof(InvalidWorkNumberErrorCollectionViewModel), InvalidWorkNumberErrorCollectionViewModel.Create },
+            { typeof(DuplicateWorkDateEmployeeErrorCollectionViewModel), DuplicateWorkDateEmployeeErrorCollectionViewModel.Create },
+            { typeof(UnregisteredWorkNumberErrorCollectionViewModel), UnregisteredWorkNumberErrorCollectionViewModel.Create },
+            { typeof(WorkDateExpiredErrorCollectionViewModel), WorkDateExpiredErrorCollectionViewModel.Create },
         };
 
         _model.ValidationResults.AddRange(achievementCollectionModel.ValidationResults.Select(x => vmCreater[x.GetType()](x)));
@@ -66,7 +66,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         HasErrors.Value = _model.ValidationResults.Any();
         HasErrorsWithOutDesignManagement.Value =
             _model.ValidationResults.Any(
-                x => x.GetType() != typeof(UnregisteredWorkNumberResultCollectionViewModel));
+                x => x.GetType() != typeof(UnregisteredWorkNumberErrorCollectionViewModel));
     }
 
     public void Destroy() => Disposables.Dispose();
@@ -84,7 +84,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
 
     public ReactiveProperty<string?> EmployeeName { get; }
 
-    public ReadOnlyReactiveCollection<IValidationResultCollectionViewModel> ValidationResults { get; }
+    public ReadOnlyReactiveCollection<IValidationErrorCollectionViewModel> ValidationResults { get; }
 
     public ReactivePropertySlim<bool> HasErrors { get; } = new();
 

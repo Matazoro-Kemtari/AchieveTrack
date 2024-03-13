@@ -44,7 +44,7 @@ namespace Wada.ReadWorkRecordApplication.Tests
             var actual = await useCase.ExecuteAsync(paths);
 
             // then
-            var expected = paths.Select(_ => res.Select(x => WorkRecordAttempt.Parse(x)))
+            var expected = paths.Select(_ => res.Select(x => WorkRecordResult.Parse(x)))
                                 .SelectMany(x => x);
             CollectionAssert.AreEquivalent(expected.ToList(), actual.ToList());
             streamMock.Verify(x => x.Open(It.IsAny<string>()), Times.Exactly(2));

@@ -7,7 +7,7 @@ namespace Wada.VerifyAchievementRecordContentApplication;
 
 public interface IVerifyWorkRecordUseCase
 {
-    Task<IEnumerable<IEnumerable<IValidationResultAttempt>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams);
+    Task<IEnumerable<IEnumerable<IValidationErrorResult>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams);
 }
 
 public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
@@ -20,14 +20,14 @@ public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
     }
 
     [Logging]
-    public async Task<IEnumerable<IEnumerable<IValidationResultAttempt>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams)
+    public async Task<IEnumerable<IEnumerable<IValidationErrorResult>>> ExecuteAsync(IEnumerable<WorkRecordParam> achievementRecordParams)
     {
-        var parser = new Dictionary<Type, Func<IValidationResult, IValidationResultAttempt>>
+        var parser = new Dictionary<Type, Func<IValidationError, IValidationErrorResult>>
         {
-            { typeof(DuplicateWorkDateEmployeeResult), DuplicateWorkDateEmployeeResultAttempt.Parse },
-            { typeof(InvalidWorkNumberResult), InvalidWorkNumberResultAttempt.Parse },
-            { typeof(UnregisteredWorkNumberResult), UnregisteredWorkNumberResultAttempt.Parse },
-            { typeof(WorkDateExpiredResult), WorkDateExpiredResultAttempt.Parse },
+            { typeof(DuplicateWorkDateEmployeeError), DuplicateWorkDateEmployeeErrorResult.Parse },
+            { typeof(InvalidWorkNumberError), InvalidWorkNumberErrorResult.Parse },
+            { typeof(UnregisteredWorkNumberError), UnregisteredWorkNumberErrorResult.Parse },
+            { typeof(WorkDateExpiredError), WorkDateExpiredErrorResult.Parse },
         };
 
         var results = await _workRecordValidator.ValidateWorkRecordsAsync(

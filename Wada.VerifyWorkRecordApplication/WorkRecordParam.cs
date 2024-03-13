@@ -14,7 +14,7 @@ public record class WorkRecordParam(DateTime WorkingDate,
                                     decimal ManHour)
 {
     [Logging]
-    public static WorkRecordParam Parse(WorkRecordAttempt workRecordAttempt)
+    public static WorkRecordParam Parse(WorkRecordResult workRecordAttempt)
     {
         return new(workRecordAttempt.WorkingDate,
                    workRecordAttempt.EmployeeNumber,

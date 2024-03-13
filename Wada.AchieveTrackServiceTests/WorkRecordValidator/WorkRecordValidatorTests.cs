@@ -87,8 +87,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // then
             var expected = workRecords.First();
             var actual = results.SelectMany(x => x);
-            Assert.IsTrue(actual.Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
-            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(InvalidWorkNumberError) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeError) == x.GetType()));
             actual.ToList().ForEach(x =>
             {
                 Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
@@ -141,9 +141,9 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // then
             var expected = workRecords.First();
             var actual = results.SelectMany(x => x);
-            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
-            Assert.IsTrue(actual.Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
-            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredError) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(UnregisteredWorkNumberError) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeError) == x.GetType()));
             actual.ToList().ForEach(x =>
             {
                 Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
@@ -194,7 +194,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // then
             var expected = workRecords.First();
             var actual = results.SelectMany(x => x);
-            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredError) == x.GetType()));
             actual.ToList().ForEach(x =>
             {
                 Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);

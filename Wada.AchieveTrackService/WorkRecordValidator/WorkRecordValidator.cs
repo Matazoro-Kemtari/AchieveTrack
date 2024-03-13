@@ -23,32 +23,32 @@ public class WorkRecordValidator : IWorkRecordValidator
     }
 
     [Logging]
-    public async Task<IEnumerable<IEnumerable<IValidationResult>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
+    public async Task<IEnumerable<IEnumerable<IValidationError>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
     {
         if (!workRecords.Any())
             throw new ArgumentNullException(nameof(workRecords));
 
         const string CadProcessFlow = "CAD";
 
-        return await Task.WhenAll((IEnumerable<Task<List<IValidationResult>>>)workRecords.Select(
+        return await Task.WhenAll((IEnumerable<Task<List<IValidationError>>>)workRecords.Select(
             async x =>
             {
-                var validationResults = new List<IValidationResult>();
+                var validationResults = new List<IValidationError>();
 
                 if (await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
                 {
                     if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
-                        validationResults.Add(WorkDateExpiredResult.Create(x.WorkingNumber, x.JigCode, x.Note));
+                        validationResults.Add(WorkDateExpiredError.Create(x.WorkingNumber, x.JigCode, x.Note));
 
                     if (x.ProcessFlow == CadProcessFlow
                         && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
-                        validationResults.Add(UnregisteredWorkNumberResult.Create(x.WorkingNumber, x.JigCode, x.Note));
+                        validationResults.Add(UnregisteredWorkNumberError.Create(x.WorkingNumber, x.JigCode, x.Note));
                 }
                 else
-                    validationResults.Add(InvalidWorkNumberResult.Create(x.WorkingNumber, x.JigCode, x.Note));
+                    validationResults.Add(InvalidWorkNumberError.Create(x.WorkingNumber, x.JigCode, x.Note));
 
                 if (await IsRecordInAchievementLedgerAsync(x.WorkingDate, x.EmployeeNumber))
-                    validationResults.Add(DuplicateWorkDateEmployeeResult.Create(x.WorkingNumber, x.JigCode, x.Note));
+                    validationResults.Add(DuplicateWorkDateEmployeeError.Create(x.WorkingNumber, x.JigCode, x.Note));
 
                 return validationResults;
             }));
