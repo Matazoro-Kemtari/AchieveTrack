@@ -11,7 +11,7 @@ public interface IReadAchieveTrackUseCase
     /// </summary>
     /// <param name="paths"></param>
     /// <returns></returns>
-    Task<IEnumerable<WorkRecordAttempt>> ExecuteAsync(IEnumerable<string> paths);
+    Task<IEnumerable<WorkRecordResult>> ExecuteAsync(IEnumerable<string> paths);
 }
 
 public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
@@ -26,7 +26,7 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
     }
 
     [Logging]
-    public async Task<IEnumerable<WorkRecordAttempt>> ExecuteAsync(IEnumerable<string> paths)
+    public async Task<IEnumerable<WorkRecordResult>> ExecuteAsync(IEnumerable<string> paths)
     {
         try
         {
@@ -45,7 +45,7 @@ public class ReadAchieveTrackUseCase : IReadAchieveTrackUseCase
                 }));
 
             return results.SelectMany(x => x)
-                          .Select(x => WorkRecordAttempt.Parse(x));
+                          .Select(x => WorkRecordResult.Parse(x));
         }
         catch (FileStreamOpenerException ex)
         {

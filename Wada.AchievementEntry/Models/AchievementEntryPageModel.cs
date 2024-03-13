@@ -17,7 +17,7 @@ class AchievementEntryPageModel
 
     public ReactiveCollection<AchievementCollectionViewModel> AchievementCollections { get; } = new();
 
-    public ReactiveCollection<WorkRecordAttempt> WorkRecords { get; } = new();
+    public ReactiveCollection<WorkRecordResult> WorkRecords { get; } = new();
 
     public ReactivePropertySlim<bool> AddingDesignManagementIsChecked { get; } = new();
 }

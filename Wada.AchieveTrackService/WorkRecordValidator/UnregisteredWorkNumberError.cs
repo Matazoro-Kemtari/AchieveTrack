@@ -5,16 +5,16 @@ namespace Wada.AchieveTrackService.WorkRecordValidator;
 /// <summary>
 /// 設計管理に未登録の作業番号の結果
 /// </summary>
-public record class UnregisteredWorkNumberResult : IValidationResult
+public record class UnregisteredWorkNumberError : IValidationError
 {
-    protected UnregisteredWorkNumberResult(WorkingNumber workingNumber, string jigCode, string note)
+    protected UnregisteredWorkNumberError(WorkingNumber workingNumber, string jigCode, string note)
     {
         WorkingNumber = workingNumber;
         JigCode = jigCode;
         Note = note;
     }
 
-    public static UnregisteredWorkNumberResult Create(WorkingNumber workingNumber, string jigCode, string note) => new(workingNumber, jigCode, note);
+    public static UnregisteredWorkNumberError Create(WorkingNumber workingNumber, string jigCode, string note) => new(workingNumber, jigCode, note);
 
     public string Message => "設計管理に未登録の作業番号です";
 
@@ -27,11 +27,11 @@ public record class UnregisteredWorkNumberResult : IValidationResult
 
 public class TestUnregisteredWorkNumberResultFactory
 {
-    public static UnregisteredWorkNumberResult Create(WorkingNumber? workingNumber = default,
+    public static UnregisteredWorkNumberError Create(WorkingNumber? workingNumber = default,
                                                       string jigCode = "11A",
                                                       string note = "特記事項")
     {
         workingNumber ??= TestWorkingNumberFactory.Create();
-        return UnregisteredWorkNumberResult.Create(workingNumber, jigCode, note);
+        return UnregisteredWorkNumberError.Create(workingNumber, jigCode, note);
     }
 }

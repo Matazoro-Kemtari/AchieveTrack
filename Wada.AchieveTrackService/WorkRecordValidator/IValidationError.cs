@@ -2,7 +2,7 @@
 
 namespace Wada.AchieveTrackService.WorkRecordValidator;
 
-public interface IValidationResult
+public interface IValidationError
 {
     string Message { get; }
 
