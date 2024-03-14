@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.ProcessFlowAggregation
+﻿namespace Wada.AchieveTrackService.ProcessFlowAggregation
 {
-    [Serializable]
     public class ProcessFlowAggregationException : DomainException
     {
         public ProcessFlowAggregationException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.ProcessFlowAggregation
         }
 
         public ProcessFlowAggregationException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ProcessFlowAggregationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

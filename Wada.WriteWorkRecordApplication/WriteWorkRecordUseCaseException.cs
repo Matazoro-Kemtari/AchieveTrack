@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.WriteWorkRecordApplication
+﻿namespace Wada.WriteWorkRecordApplication
 {
-    [Serializable]
     public class WriteWorkRecordUseCaseException : Exception
     {
         public WriteWorkRecordUseCaseException()
@@ -14,10 +11,6 @@ namespace Wada.WriteWorkRecordApplication
         }
 
         public WriteWorkRecordUseCaseException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected WriteWorkRecordUseCaseException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

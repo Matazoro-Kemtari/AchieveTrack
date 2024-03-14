@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.DesignManagementAggregation
+﻿namespace Wada.AchieveTrackService.DesignManagementAggregation
 {
-    [Serializable]
     public class DesignManagementNotFoundException : DesignManagementAggregationException
     {
         public DesignManagementNotFoundException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.DesignManagementAggregation
         }
 
         public DesignManagementNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected DesignManagementNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

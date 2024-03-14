@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.WorkingLedgerAggregation
+﻿namespace Wada.AchieveTrackService.WorkingLedgerAggregation
 {
-    [Serializable]
     public partial class WorkingLedgerAggregationException : DomainException
     {
         public WorkingLedgerAggregationException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.WorkingLedgerAggregation
         }
 
         public WorkingLedgerAggregationException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected WorkingLedgerAggregationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

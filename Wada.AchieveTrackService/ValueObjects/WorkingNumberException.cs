@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.ValueObjects
+﻿namespace Wada.AchieveTrackService.ValueObjects
 {
-    [Serializable]
     public class WorkingNumberException : DomainException
     {
         public WorkingNumberException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.ValueObjects
         }
 
         public WorkingNumberException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected WorkingNumberException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

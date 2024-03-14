@@ -1,9 +1,8 @@
 ﻿using Prism.Mvvm;
 using Prism.Regions;
-using System;
 using System.Reflection;
 
-namespace VerifyAttendanceCSV.ViewModels
+namespace AchieveTrack.ViewModels
 {
     public class MainWindowViewModel : BindableBase, IDisposable
     {

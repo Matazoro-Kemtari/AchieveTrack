@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.ReadWorkRecordApplication
+﻿namespace Wada.ReadWorkRecordApplication
 {
-    [Serializable]
     public class ReadAchieveTrackUseCaseException : Exception
     {
         public ReadAchieveTrackUseCaseException()
@@ -14,10 +11,6 @@ namespace Wada.ReadWorkRecordApplication
         }
 
         public ReadAchieveTrackUseCaseException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ReadAchieveTrackUseCaseException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

@@ -4,7 +4,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using System.IO;
 using System.Windows;
-using VerifyAttendanceCSV.Views;
+using AchieveTrack.Views;
 using Wada.AchievementEntry;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.DesignManagementWriter;
@@ -16,7 +16,7 @@ using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.WriteWorkRecordApplication;
 
-namespace VerifyAttendanceCSV
+namespace AchieveTrack
 {
     /// <summary>
     /// Interaction logic for App.xaml

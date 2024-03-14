@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.AchievementLedgerAggregation
+﻿namespace Wada.AchieveTrackService.AchievementLedgerAggregation
 {
-    [Serializable]
     public class AchievementLedgerAggregationException : DomainException
     {
         public AchievementLedgerAggregationException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.AchievementLedgerAggregation
         }
 
         public AchievementLedgerAggregationException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected AchievementLedgerAggregationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

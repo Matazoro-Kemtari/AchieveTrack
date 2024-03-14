@@ -5,6 +5,7 @@
     <UseWPF>true</UseWPF>
     <VersionPrefix>1.2.0.0</VersionPrefix>
     <ApplicationIcon>Material-Cassette.ico</ApplicationIcon>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="SplashScreen.png" />

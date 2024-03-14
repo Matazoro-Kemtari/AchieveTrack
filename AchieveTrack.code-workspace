@@ -10,7 +10,8 @@
 			"markdown.css"
 		],
 		"markdownlint.config": {
-			"MD033": false
+			"MD033": false,
+			"MD045": false
 		},
 		"gopls": {
 			"analyses": {

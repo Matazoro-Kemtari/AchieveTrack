@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 
-namespace VerifyAttendanceCSV.Views
+namespace AchieveTrack.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

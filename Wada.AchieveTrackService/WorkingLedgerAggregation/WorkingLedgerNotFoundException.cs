@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.WorkingLedgerAggregation
+﻿namespace Wada.AchieveTrackService.WorkingLedgerAggregation
 {
-    [Serializable]
     public class WorkingLedgerNotFoundException : WorkingLedgerAggregationException
     {
         public WorkingLedgerNotFoundException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.WorkingLedgerAggregation
         }
 
         public WorkingLedgerNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected WorkingLedgerNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

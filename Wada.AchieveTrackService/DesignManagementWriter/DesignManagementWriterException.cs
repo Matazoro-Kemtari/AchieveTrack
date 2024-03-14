@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.DesignManagementWriter
+﻿namespace Wada.AchieveTrackService.DesignManagementWriter
 {
-    [Serializable]
     public class DesignManagementWriterException : DomainException
     {
         public DesignManagementWriterException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.DesignManagementWriter
         }
 
         public DesignManagementWriterException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected DesignManagementWriterException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
