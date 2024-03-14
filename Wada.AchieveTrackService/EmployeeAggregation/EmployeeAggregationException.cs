@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.EmployeeAggregation
+﻿namespace Wada.AchieveTrackService.EmployeeAggregation
 {
-    [Serializable]
     public class EmployeeAggregationException : DomainException
     {
         public EmployeeAggregationException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.EmployeeAggregation
         }
 
         public EmployeeAggregationException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected EmployeeAggregationException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

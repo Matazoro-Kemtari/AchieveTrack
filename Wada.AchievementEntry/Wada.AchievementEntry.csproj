@@ -1,26 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
-    <PackageReference Include="LivetCask.Messaging" Version="4.0.2" />
-    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
-    <PackageReference Include="MaterialDesignColors" Version="3.0.0" />
-    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
-    <PackageReference Include="MaterialDesignThemes.MahApps" Version="1.0.0" />
-    <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
-    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-    <PackageReference Include="ReactiveProperty.WPF" Version="9.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
-    <ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
-    <ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+		<PackageReference Include="LivetCask.Messaging" Version="4.0.2" />
+		<PackageReference Include="MahApps.Metro" Version="2.4.10">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="MaterialDesignColors" Version="3.0.0">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="MaterialDesignThemes" Version="5.0.0">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="MaterialDesignThemes.MahApps" Version="1.0.0">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="MethodDecorator.Fody" Version="1.1.1">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="Prism.Wpf" Version="8.1.97" />
+		<PackageReference Include="ReactiveProperty.WPF" Version="9.5.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Converters\" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
+		<ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
+		<ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
+	</ItemGroup>
 </Project>

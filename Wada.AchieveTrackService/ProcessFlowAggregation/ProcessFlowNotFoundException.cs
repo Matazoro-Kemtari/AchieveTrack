@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.ProcessFlowAggregation
+﻿namespace Wada.AchieveTrackService.ProcessFlowAggregation
 {
-    [Serializable]
     public class ProcessFlowNotFoundException : ProcessFlowAggregationException
     {
         public ProcessFlowNotFoundException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.ProcessFlowAggregation
         }
 
         public ProcessFlowNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ProcessFlowNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

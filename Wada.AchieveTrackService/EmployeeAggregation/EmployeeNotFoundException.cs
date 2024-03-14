@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.EmployeeAggregation
+﻿namespace Wada.AchieveTrackService.EmployeeAggregation
 {
-    [Serializable]
     public class EmployeeNotFoundException : EmployeeAggregationException
     {
         public EmployeeNotFoundException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.EmployeeAggregation
         }
 
         public EmployeeNotFoundException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected EmployeeNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

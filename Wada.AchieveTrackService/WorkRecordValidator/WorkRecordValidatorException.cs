@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
-
-namespace Wada.AchieveTrackService.WorkRecordValidator
+﻿namespace Wada.AchieveTrackService.WorkRecordValidator
 {
-    [Serializable]
     public class WorkRecordValidatorException : DomainException
     {
         public WorkRecordValidatorException()
@@ -14,10 +11,6 @@ namespace Wada.AchieveTrackService.WorkRecordValidator
         }
 
         public WorkRecordValidatorException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected WorkRecordValidatorException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
