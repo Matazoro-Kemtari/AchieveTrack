@@ -92,7 +92,8 @@
                         </GridViewColumn>
                         <GridViewColumn Header="実績日付" DisplayMemberBinding="{Binding AchievementDate.Value, StringFormat={}{0:yyyy/M/d(ddd)}}" d:DisplayMemberBinding="{d:Binding}"/>
                         <GridViewColumn Header="社員名" DisplayMemberBinding="{Binding EmployeeName.Value}" d:DisplayMemberBinding="{d:Binding}"/>
-                        <GridViewColumn Header="エラー">
+                        <!-- nugetパッケージ WPF.ListViewLayoutManager という手段もある -->
+                        <GridViewColumn Header="エラー" Width="{Binding ActualWidth, ElementName=XlsxPath}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <ListBox ItemsSource="{Binding ValidationResults}">
