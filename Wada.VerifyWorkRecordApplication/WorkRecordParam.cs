@@ -9,17 +9,19 @@ public record class WorkRecordParam(DateTime WorkingDate,
                                     string EmployeeName,
                                     string WorkingNumber,
                                     string? JigCode,
+                                    string ProcessFlow,
                                     string? Note,
                                     decimal ManHour)
 {
     [Logging]
-    public static WorkRecordParam Parse(WorkRecordAttempt workRecordAttempt)
+    public static WorkRecordParam Parse(WorkRecordResult workRecordAttempt)
     {
         return new(workRecordAttempt.WorkingDate,
                    workRecordAttempt.EmployeeNumber,
                    workRecordAttempt.EmployeeName,
                    workRecordAttempt.WorkingNumber,
                    workRecordAttempt.JigCode,
+                   workRecordAttempt.ProcessFlow,
                    workRecordAttempt.Note,
                    workRecordAttempt.ManHour);
     }
@@ -32,6 +34,7 @@ public record class WorkRecordParam(DateTime WorkingDate,
             EmployeeName,
             AchieveTrackService.ValueObjects.WorkingNumber.Create(WorkingNumber),
             JigCode,
+            ProcessFlow,
             Note,
             AchieveTrackService.ValueObjects.ManHour.Create(ManHour));
 }
@@ -44,6 +47,7 @@ public class TestAchievementRecordParamFactory
                                                 string employeeName = "無人",
                                                 string workingNumber = "23Z-1",
                                                 string jigCode = "11A",
+                                                string processFlow = "NC",
                                                 string note = "特記事項",
                                                 decimal manHour = 4)
     {
@@ -53,6 +57,7 @@ public class TestAchievementRecordParamFactory
                                    employeeName,
                                    workingNumber,
                                    jigCode,
+                                   processFlow,
                                    note,
                                    manHour);
     }

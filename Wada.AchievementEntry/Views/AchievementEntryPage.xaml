@@ -8,7 +8,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:prism="http://prismlibrary.com/"
-             d:DesignHeight="400" d:DesignWidth="400"
+             d:DesignHeight="400" d:DesignWidth="800"
              d:Background="LightGray"
              d:DataContext="{d:DesignInstance Type=viewmodels:AchievementEntryPageViewModel}"
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -61,6 +61,7 @@
                     MinWidth="70"
                     Margin="5"
                     Padding="5"
+                    Style="{StaticResource MaterialDesignRaisedSecondaryLightButton}"
                     Command="{Binding EntryCommand}"/>
         </StackPanel>
 
@@ -85,41 +86,37 @@
                         <GridViewColumn Header="選択">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox Margin="5,3,5,0" IsChecked="{Binding CheckedItem.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <CheckBox Margin="5,3,5,0" IsChecked="{Binding CheckedItem.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" d:IsChecked="True"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="実績日付" DisplayMemberBinding="{Binding AchievementDate.Value, StringFormat={}{0:yyyy/M/d(ddd)}}"/>
-                        <GridViewColumn Header="社員名" DisplayMemberBinding="{Binding EmployeeName.Value}"/>
-                        <GridViewColumn Header="エラー">
+                        <GridViewColumn Header="実績日付" DisplayMemberBinding="{Binding AchievementDate.Value, StringFormat={}{0:yyyy/M/d(ddd)}}" d:DisplayMemberBinding="{d:Binding}"/>
+                        <GridViewColumn Header="社員名" DisplayMemberBinding="{Binding EmployeeName.Value}" d:DisplayMemberBinding="{d:Binding}"/>
+                        <!-- nugetパッケージ WPF.ListViewLayoutManager という手段もある -->
+                        <GridViewColumn Header="エラー" Width="{Binding ActualWidth, ElementName=XlsxPath}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <ListBox ItemsSource="{Binding ValidationResults}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                        <ColumnDefinition/>
-                                                    </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal">
                                                     <TextBlock Margin="0,0,5,0"
                                                                Text="{Binding Message.Value}"
+                                                               d:Text="{d:Binding}"
                                                                Foreground="Red"/>
-                                                    <TextBlock Grid.Column="1"
-                                                               Margin="0,0,5,0"
+                                                    <TextBlock Margin="0,0,5,0"
                                                                Text="{Binding WorkingNumber.Value}"
+                                                               d:Text="{d:Binding}"
                                                                Foreground="Red"/>
-                                                    <TextBlock Grid.Column="2"
-                                                               Margin="0,0,5,0"
+                                                    <TextBlock Margin="0,0,5,0"
                                                                Text="{Binding JigCode.Value}"
+                                                               d:Text="{d:Binding}"
                                                                Foreground="Red"/>
-                                                    <TextBlock Grid.Column="3"
-                                                               Margin="0,0,5,0"
+                                                    <TextBlock Margin="0,0,5,0"
                                                                Text="{Binding Note.Value}"
+                                                               d:Text="{d:Binding}"
                                                                Foreground="Red"/>
-                                                </Grid>
+                                                </StackPanel>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>

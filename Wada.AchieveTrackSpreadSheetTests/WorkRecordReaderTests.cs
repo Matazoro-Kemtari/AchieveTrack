@@ -37,7 +37,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             CollectionAssert.AreEquivalent(
                 expected.ToArray(),
                 actual.Select(x => new
-                { 
+                {
                     x.WorkingDate,
                     x.EmployeeNumber,
                     x.EmployeeName,
@@ -70,6 +70,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                 sht.Cell(x.i + 2, "C").SetValue(x.item.EmployeeName);
                 sht.Cell(x.i + 2, "E").SetValue(x.item.WorkingNumber.Value);
                 sht.Cell(x.i + 2, "F").SetValue(x.item.JigCode);
+                sht.Cell(x.i + 2, "G").SetValue(x.item.ProcessFlow);
                 sht.Cell(x.i + 2, "H").SetValue(x.item.Note);
                 sht.Cell(x.i + 2, "J").SetValue(x.item.ManHour.Value);
             });
@@ -88,8 +89,8 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             TestWorkRecordFactory.Create(workingDate: new DateTime(2023,4,3), manHour: TestManHourFactory.Create(2.0m)),
         };
 
-        private static string[] MakeTestWorkRecordHeader() => new string[]
-        {
+        private static string[] MakeTestWorkRecordHeader() =>
+        [
             "日付",
             "社員番号",
             "氏名",
@@ -107,7 +108,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
             "直間区分",
             "大分類",
             "中分類",
-        };
+        ];
 
         [DataTestMethod]
         [DataRow(null)]

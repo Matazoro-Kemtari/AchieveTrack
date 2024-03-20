@@ -18,9 +18,9 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // given
             List<WorkRecord> workRecords = new()
             {
-                TestWorkRecordFactory.Create(),
-                TestWorkRecordFactory.Create(),
-                TestWorkRecordFactory.Create(),
+                TestWorkRecordFactory.Create(processFlow: "CAD"),
+                TestWorkRecordFactory.Create(processFlow: "CAD"),
+                TestWorkRecordFactory.Create(processFlow: "CAD"),
             };
 
             var workingLedger = TestWorkingLedgerFactory.Create();
@@ -35,8 +35,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
-            Mock<IEmployeeReader> employeeMock = new();
+            var employee = TestEmployeeFactory.Create();
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
 
@@ -69,13 +69,13 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IWorkingLedgerRepository> workingLedgerMock = new();
             workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ThrowsAsync(new WorkingLedgerAggregationException());
+                .ThrowsAsync(new WorkingLedgerNotFoundException());
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            Mock<IEmployeeReader> employeeMock = new();
+            Mock<IEmployeeRepository> employeeMock = new();
 
             // when
             IWorkRecordValidator validator = new WorkRecordValidator(workingLedgerMock.Object,
@@ -87,8 +87,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // then
             var expected = workRecords.First();
             var actual = results.SelectMany(x => x);
-            Assert.IsTrue(actual.Any(x => typeof(InvalidWorkNumberResult) == x.GetType()));
-            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(InvalidWorkNumberError) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeError) == x.GetType()));
             actual.ToList().ForEach(x =>
             {
                 Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
@@ -111,7 +111,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingDate = new DateTime(2023, 4, 1);
             List<WorkRecord> workRecords = new()
             {
-                TestWorkRecordFactory.Create(workingDate: workingDate),
+                TestWorkRecordFactory.Create(workingDate: workingDate,
+                                             processFlow: "CAD"),
             };
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 
@@ -123,10 +124,10 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
             designMock.Setup(x => x.FindByOwnCompanyNumberAsync(It.IsAny<uint>()))
-                .ThrowsAsync(new DesignManagementAggregationException());
+                .ThrowsAsync(new DesignManagementNotFoundException());
 
-            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
-            Mock<IEmployeeReader> employeeMock = new();
+            var employee = TestEmployeeFactory.Create();
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
 
@@ -140,9 +141,9 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // then
             var expected = workRecords.First();
             var actual = results.SelectMany(x => x);
-            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
-            Assert.IsTrue(actual.Any(x => typeof(UnregisteredWorkNumberResult) == x.GetType()));
-            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredError) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(UnregisteredWorkNumberError) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(DuplicateWorkDateEmployeeError) == x.GetType()));
             actual.ToList().ForEach(x =>
             {
                 Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);
@@ -165,7 +166,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             var workingDate = new DateTime(2023, 4, 1);
             List<WorkRecord> workRecords = new()
             {
-                TestWorkRecordFactory.Create(workingDate: workingDate),
+                TestWorkRecordFactory.Create(workingDate: workingDate,
+                                             processFlow: "CAD"),
             };
             var workingLedger = TestWorkingLedgerFactory.Create(completionDate: workingDate.AddDays(-1));
 
@@ -177,8 +179,8 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
 
             Mock<IDesignManagementRepository> designMock = new();
 
-            var employee = TestEmployeeFactory.Create(achievementClassificationId: 2u);
-            Mock<IEmployeeReader> employeeMock = new();
+            var employee = TestEmployeeFactory.Create();
+            Mock<IEmployeeRepository> employeeMock = new();
             employeeMock.Setup(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()))
                 .ReturnsAsync(employee);
 
@@ -192,7 +194,7 @@ namespace Wada.AchieveTrackService.WorkRecordValidator.Tests
             // then
             var expected = workRecords.First();
             var actual = results.SelectMany(x => x);
-            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredResult) == x.GetType()));
+            Assert.IsTrue(actual.Any(x => typeof(WorkDateExpiredError) == x.GetType()));
             actual.ToList().ForEach(x =>
             {
                 Assert.AreEqual(expected.WorkingNumber.Value, x.WorkingNumber.Value);

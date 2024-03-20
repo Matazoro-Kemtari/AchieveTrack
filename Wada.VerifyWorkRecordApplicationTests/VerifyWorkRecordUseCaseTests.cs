@@ -15,7 +15,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
-            IValidationResult[][] validationResults = Array.Empty<IValidationResult[]>();
+            IValidationError[][] validationResults = Array.Empty<IValidationError[]>();
             validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
                 .ReturnsAsync(validationResults);
 
@@ -38,9 +38,9 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
-            IValidationResult[][] validationResults = new IValidationResult[][]
+            IValidationError[][] validationResults = new IValidationError[][]
             {
-                new IValidationResult[]
+                new IValidationError[]
                 {
                     TestWorkDateExpiredResultFactory.Create(),
                 },
@@ -59,7 +59,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
 
             // then
             Assert.AreEqual(validationResults.Length, actual.Count());
-            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(WorkDateExpiredResultAttempt)));
+            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(WorkDateExpiredErrorResult)));
         }
 
         [TestMethod()]
@@ -67,9 +67,9 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
-            IValidationResult[][] validationResults = new IValidationResult[][]
+            IValidationError[][] validationResults = new IValidationError[][]
             {
-                new IValidationResult[]
+                new IValidationError[]
                 {
                     TestInvalidWorkNumberResultFactory.Create(),
                 },
@@ -88,7 +88,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
 
             // then
             Assert.AreEqual(validationResults.Length, actual.Count());
-            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(InvalidWorkNumberResultAttempt)));
+            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(InvalidWorkNumberErrorResult)));
         }
 
         [TestMethod()]
@@ -96,9 +96,9 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
-            IValidationResult[][] validationResults = new IValidationResult[][]
+            IValidationError[][] validationResults = new IValidationError[][]
             {
-                new IValidationResult[]
+                new IValidationError[]
                 {
                     TestDuplicateWorkDateEmployeeResultFactory.Create(),
                 },
@@ -117,7 +117,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
 
             // then
             Assert.AreEqual(validationResults.Length, actual.Count());
-            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(DuplicateWorkDateEmployeeResultAttempt)));
+            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(DuplicateWorkDateEmployeeErrorResult)));
         }
 
         [TestMethod()]
@@ -125,9 +125,9 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
         {
             // given
             Mock<IWorkRecordValidator> validatorMock = new();
-            IValidationResult[][] validationResults = new IValidationResult[][]
+            IValidationError[][] validationResults = new IValidationError[][]
             {
-                new IValidationResult[]
+                new IValidationError[]
                 {
                     TestUnregisteredWorkNumberResultFactory.Create(),
                 },
@@ -146,7 +146,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
 
             // then
             Assert.AreEqual(validationResults.Length, actual.Count());
-            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(UnregisteredWorkNumberResultAttempt)));
+            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(UnregisteredWorkNumberErrorResult)));
         }
     }
 }

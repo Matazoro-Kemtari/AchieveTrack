@@ -4,19 +4,19 @@ using Prism.Ioc;
 using Prism.Modularity;
 using System.IO;
 using System.Windows;
-using VerifyAttendanceCSV.Views;
+using AchieveTrack.Views;
 using Wada.AchievementEntry;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.DesignManagementWriter;
 using Wada.AchieveTrackService.WorkRecordValidator;
 using Wada.AchieveTrackSpreadSheet;
-using Wada.DataSource.OrderManagement;
+using Wada.Data.OrderManagement;
 using Wada.IO;
 using Wada.ReadWorkRecordApplication;
 using Wada.VerifyAchievementRecordContentApplication;
 using Wada.WriteWorkRecordApplication;
 
-namespace VerifyAttendanceCSV
+namespace AchieveTrack
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -38,12 +38,6 @@ namespace VerifyAttendanceCSV
             // DI logger
             _ = containerRegistry.RegisterSingleton<ILogger>(_ => LogManager.GetCurrentClassLogger());
 
-            // DBライブラリ
-            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IWorkingLedgerRepository, Wada.Data.OrderManagement.WorkingLedgerRepository>();
-            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IAchievementLedgerRepository, Wada.Data.OrderManagement.AchievementLedgerRepository>();
-            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IDesignManagementRepository, Wada.Data.OrderManagement.DesignManagementRepository>();
-            _ = containerRegistry.Register<Wada.Data.OrderManagement.Models.IEmployeeRepository, Wada.Data.OrderManagement.EmployeeRepository>();
-
             // Wada.IO
             _ = containerRegistry.Register<IFileStreamOpener, FileStreamOpener>();
 
@@ -58,7 +52,8 @@ namespace VerifyAttendanceCSV
             _ = containerRegistry.Register<IVerifyWorkRecordUseCase, VerifyWorkRecordUseCase>();
 
             // 日報書き込み
-            _ = containerRegistry.Register<IEmployeeReader, EmployeeReader>();
+            _ = containerRegistry.Register<IEmployeeRepository, EmployeeRepository>();
+            _ = containerRegistry.Register<IProcessFlowRepository, ProcessFlowRepository>();
             _ = containerRegistry.Register<IAchievementLedgerRepository, AchievementLedgerRepository>();
             _ = containerRegistry.Register<IDesignManagementWriter, DesignManagementWriter>();
             _ = containerRegistry.Register<IWriteWorkRecordUseCase, WriteWorkRecordUseCase>();

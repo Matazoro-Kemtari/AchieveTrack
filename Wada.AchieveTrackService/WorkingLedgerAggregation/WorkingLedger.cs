@@ -30,11 +30,6 @@ public record class WorkingLedger
             workingNumber,
             completionDate);
 
-    public static WorkingLedger Parse(Data.OrderManagement.Models.WorkingLedgerAggregation.WorkingLedger workingLedger)
-        => Reconstruct(workingLedger.OwnCompanyNumber,
-                       WorkingNumber.Parse(workingLedger.WorkingNumber),
-                       workingLedger.CompletionDate);
-
     /// <summary>
     /// 自社NO
     /// </summary>

@@ -1,9 +1,8 @@
 ﻿using Prism.Mvvm;
 using Prism.Regions;
-using System;
 using System.Reflection;
 
-namespace VerifyAttendanceCSV.ViewModels
+namespace AchieveTrack.ViewModels
 {
     public class MainWindowViewModel : BindableBase, IDisposable
     {
@@ -11,7 +10,7 @@ namespace VerifyAttendanceCSV.ViewModels
 
         private static readonly Version version = Assembly.GetExecutingAssembly().GetName().Version;
         private static readonly string assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-        private string _title = $"受注管理実績登録-{assemblyName} {version}";
+        private string _title = $"受注管理実績登録 - {assemblyName} {version}";
 
         public string Title
         {

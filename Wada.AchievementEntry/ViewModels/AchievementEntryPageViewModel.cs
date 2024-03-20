@@ -4,14 +4,10 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Wada.AchievementEntry.Models;
@@ -124,12 +120,12 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             _model.Clear();
 
             // 日報を読み込む
-            IEnumerable<WorkRecordAttempt>? workRecords = await ReadAchieveTrack(dragFiles);
+            IEnumerable<WorkRecordResult>? workRecords = await ReadAchieveTrack(dragFiles);
             if (workRecords == null)
                 return;
 
             // 検証
-            IEnumerable<IEnumerable<IValidationResultAttempt>> validationResults;
+            IEnumerable<IEnumerable<IValidationErrorResult>> validationResults;
             try
             {
                 Mouse.OverrideCursor ??= Cursors.Wait;
@@ -140,6 +136,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                                  x.EmployeeName,
                                                  x.WorkingNumber,
                                                  x.JigCode,
+                                                 x.ProcessFlow,
                                                  x.Note,
                                                  x.ManHour)));
             }
@@ -152,12 +149,12 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             }
 
             // 集計
-            var parser = new Dictionary<Type, Func<IValidationResultAttempt, IValidationResultRequest>>
+            var parser = new Dictionary<Type, Func<IValidationErrorResult, Models.IValidationError>>
             {
-                { typeof(DuplicateWorkDateEmployeeResultAttempt), DuplicateWorkDateEmployeeResultRequest.Parse },
-                { typeof(InvalidWorkNumberResultAttempt), InvalidWorkNumberResultRequest.Parse },
-                { typeof(UnregisteredWorkNumberResultAttempt), UnregisteredWorkNumberResultRequest.Parse },
-                { typeof(WorkDateExpiredResultAttempt), WorkDateExpiredResultRequest.Parse },
+                { typeof(DuplicateWorkDateEmployeeErrorResult), Models.DuplicateWorkDateEmployeeError.Parse },
+                { typeof(InvalidWorkNumberErrorResult), Models.InvalidWorkNumberError.Parse },
+                { typeof(UnregisteredWorkNumberErrorResult), Models.UnregisteredWorkNumberError.Parse },
+                { typeof(WorkDateExpiredErrorResult), Models.WorkDateExpiredError.Parse },
             };
 
             // 日報と検証結果を結合する
@@ -176,12 +173,12 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                  });
 
             // 集計する
-            var vmCreater = new Dictionary<Type, Func<IValidationResultRequest, IValidationResultCollectionViewModel>>
+            var vmCreater = new Dictionary<Type, Func<Models.IValidationError, IValidationErrorCollectionViewModel>>
             {
-                { typeof(InvalidWorkNumberResultRequest), InvalidWorkNumberResultCollectionViewModel.Create },
-                { typeof(DuplicateWorkDateEmployeeResultRequest), DuplicateWorkDateEmployeeResultCollectionViewModel.Create },
-                { typeof(UnregisteredWorkNumberResultRequest), UnregisteredWorkNumberResultCollectionViewModel.Create },
-                { typeof(WorkDateExpiredResultRequest), WorkDateExpiredResultCollectionViewModel.Create },
+                { typeof(Models.InvalidWorkNumberError), InvalidWorkNumberErrorCollectionViewModel.Create },
+                { typeof(Models.DuplicateWorkDateEmployeeError), DuplicateWorkDateEmployeeErrorCollectionViewModel.Create },
+                { typeof(Models.UnregisteredWorkNumberError), UnregisteredWorkNumberErrorCollectionViewModel.Create },
+                { typeof(Models.WorkDateExpiredError), WorkDateExpiredErrorCollectionViewModel.Create },
             };
 
             var aggregates = merge.GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
@@ -211,7 +208,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
     }
 
     [Logging]
-    private async Task<IEnumerable<WorkRecordAttempt>?> ReadAchieveTrack(IEnumerable<string> paths)
+    private async Task<IEnumerable<WorkRecordResult>?> ReadAchieveTrack(IEnumerable<string> paths)
     {
         try
         {
@@ -250,6 +247,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                 w.WorkingDate,
                 w.EmployeeNumber,
                 w.WorkingNumber,
+                w.ProcessFlow,
                 w.ManHour,
             })
             .GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
@@ -257,6 +255,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                                               x.Key.EmployeeNumber,
                                               x.GroupBy(y => y.WorkingNumber).Select(y => new AchievementDetailParam(
                                                   y.Key,
+                                                  y.Select(z => z.ProcessFlow).First(), // ここでエラーが起こるなら取込時に処理に問題あり
                                                   y.Sum(z => z.ManHour)))));
 
         try

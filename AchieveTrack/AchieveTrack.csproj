@@ -1,46 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows</TargetFramework>
-		<UseWPF>true</UseWPF>
-		<VersionPrefix>1.1.1.11</VersionPrefix>
-		<ApplicationIcon>tape.ico</ApplicationIcon>
-	</PropertyGroup>
-	<ItemGroup>
-		<Content Include="tape.ico" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="DotNetEnv" Version="2.5.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-		<PackageReference Include="NLog" Version="5.2.0" />
-		<PackageReference Include="Prism.DryIoc" Version="8.1.97" />
-		<PackageReference Include="Wada.Data.DesignDepartmentDataBase" Version="1.0.11" />
-		<PackageReference Include="Wada.Data.DesignDepartmentDataBase.Models" Version="1.0.16" />
-		<PackageReference Include="Wada.Data.OrderManagement" Version="1.1.0-rc-9.0.9" />
-		<PackageReference Include="Wada.Data.OrderManagement.Models" Version="1.1.0-rc-9.1.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Wada.AchievementEntry\Wada.AchievementEntry.csproj" />
-		<ProjectReference Include="..\Wada.AchieveTrackService\Wada.AchieveTrackService.csproj" />
-		<ProjectReference Include="..\Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj" />
-		<ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
-		<ProjectReference Include="..\Wada.DataSource.OrderManagement\Wada.DataSource.OrderManagement.csproj" />
-		<ProjectReference Include="..\Wada.ReadWorkRecordApplication\Wada.ReadWorkRecordApplication.csproj" />
-		<ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
-		<ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Update=".env">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="appsettings.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="NLog.config">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <VersionPrefix>1.2.1</VersionPrefix>
+    <ApplicationIcon>Material-Cassette.ico</ApplicationIcon>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="SplashScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Material-Cassette.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.0.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+    <PackageReference Include="MaterialDesignColors" Version="3.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="1.0.0" />
+    <PackageReference Include="NLog" Version="5.2.8" />
+    <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Wada.AchievementEntry\Wada.AchievementEntry.csproj" />
+    <ProjectReference Include="..\Wada.AchieveTrackService\Wada.AchieveTrackService.csproj" />
+    <ProjectReference Include="..\Wada.AchieveTrackSpreadSheet\Wada.AchieveTrackSpreadSheet.csproj" />
+    <ProjectReference Include="..\Wada.AOP.Logging\Wada.AOP.Logging.csproj" />
+    <ProjectReference Include="..\Wada.Data.OrderManagement\Wada.Data.OrderManagement.csproj" />
+    <ProjectReference Include="..\Wada.ReadWorkRecordApplication\Wada.ReadWorkRecordApplication.csproj" />
+    <ProjectReference Include="..\Wada.VerifyWorkRecordApplication\Wada.VerifyWorkRecordApplication.csproj" />
+    <ProjectReference Include="..\Wada.WriteWorkRecordApplication\Wada.WriteWorkRecordApplication.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="SplashScreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update=".env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

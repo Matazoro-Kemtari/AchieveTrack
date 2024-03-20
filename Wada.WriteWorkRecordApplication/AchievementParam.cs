@@ -19,11 +19,13 @@ public class TestAchievementParamFactory
     }
 }
 public record class AchievementDetailParam(string WorkingNumber,
+                                           string ProcessFlow,
                                            decimal ManHour);
 
 public class TestAchievementDetailParamFactory
 {
     public static AchievementDetailParam Create(string workingNumber = "22Z-1",
+                                                string processFlow = "NC",
                                                 decimal manHour = 10m)
-        => new(workingNumber, manHour);
+        => new(workingNumber, processFlow, manHour);
 }

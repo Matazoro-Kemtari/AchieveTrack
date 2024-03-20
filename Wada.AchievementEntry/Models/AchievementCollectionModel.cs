@@ -14,7 +14,7 @@ public class AchievementCollectionModel
     internal AchievementCollectionModel(DateTime achievementDate,
                                         uint employeeNumber,
                                         string? employeeName,
-                                        IEnumerable<IValidationResultCollectionViewModel> validationResults)
+                                        IEnumerable<IValidationErrorCollectionViewModel> validationResults)
     {
         AchievementDate.Value = achievementDate;
         EmployeeNumber.Value = employeeNumber;
@@ -30,5 +30,5 @@ public class AchievementCollectionModel
 
     public ReactivePropertySlim<string?> EmployeeName { get; } = new();
 
-    public ReactiveCollection<IValidationResultCollectionViewModel> ValidationResults { get; } = new();
+    public ReactiveCollection<IValidationErrorCollectionViewModel> ValidationResults { get; } = new();
 }
