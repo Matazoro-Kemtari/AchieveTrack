@@ -382,7 +382,7 @@ Asciidocs/**/*.pdf
 logs/
 *.log
 
-.env
+*.env
 
 README.pdf
 
