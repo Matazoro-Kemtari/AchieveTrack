@@ -10,10 +10,14 @@
   <ItemGroup>
     <None Remove=".env" />
     <None Remove="debug.env" />
+    <None Remove="NLog.config" />
     <None Remove="SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Material-Cassette.ico" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include=".env">
@@ -49,10 +53,5 @@
   </ItemGroup>
   <ItemGroup>
     <SplashScreen Include="SplashScreen.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>
