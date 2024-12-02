@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using NLog;
-using Prism.Ioc;
-using Prism.Modularity;
 using System.IO;
 using System.Windows;
 using AchieveTrack.Views;
@@ -18,10 +16,13 @@ using Wada.WriteWorkRecordApplication;
 
 namespace AchieveTrack
 {
+	using Prism.Ioc;
+	using Prism.Modularity;
+	
     /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App
     {
         protected override Window CreateShell()
         {

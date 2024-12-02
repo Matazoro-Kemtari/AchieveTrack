@@ -2,6 +2,9 @@
 
 namespace AchieveTrack.ViewModels
 {
+    using Prism.Mvvm;
+    using Prism.Navigation.Regions;
+
 	public class MainWindowViewModel : BindableBase, IDisposable
     {
         private readonly IRegionManager regionManager;
