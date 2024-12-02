@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.102.2" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="MethodDecorator.Fody" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>

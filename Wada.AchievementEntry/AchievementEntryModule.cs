@@ -1,11 +1,8 @@
-﻿using Prism.Ioc;
-using Prism.Modularity;
-using Prism.Regions;
-using Wada.AchievementEntry.Views;
+﻿using Wada.AchievementEntry.Views;
 
 namespace Wada.AchievementEntry
 {
-    public class AchievementEntryModule : IModule
+	public class AchievementEntryModule : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
