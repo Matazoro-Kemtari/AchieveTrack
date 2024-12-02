@@ -1,10 +1,8 @@
-﻿using Prism.Mvvm;
-using Prism.Regions;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace AchieveTrack.ViewModels
 {
-    public class MainWindowViewModel : BindableBase, IDisposable
+	public class MainWindowViewModel : BindableBase, IDisposable
     {
         private readonly IRegionManager regionManager;
 
