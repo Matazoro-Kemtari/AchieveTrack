@@ -91,7 +91,7 @@ public partial class App
 		=> new ConfigurationBuilder()
 			.AddEnvironmentVariables()
 			.Build();
-	
+
 
 	private static void InitializeDotEnv()
 	{
@@ -99,12 +99,12 @@ public partial class App
 		if (info.Directory != null && !info.Directory.Exists)
 			info.Directory.Create();
 
-		if (!info.Exists)
-		{
-			using var templateStream = GetResourceStream(_dotEnvResourceName);
-			using var newStream = info.Create();
-			templateStream.CopyTo(newStream);
-		}
+		if (info.Exists)
+			info.Delete();
+
+		using var templateStream = GetResourceStream(_dotEnvResourceName);
+		using var newStream = info.Create();
+		templateStream.CopyTo(newStream);
 	}
 
 	private static Stream GetResourceStream(string resourceName)
