@@ -13,10 +13,10 @@ public class WorkOrderIdTests
     {
         // given
         // when
-        var workingnumber = WorkOrderId.Create(value);
+        var workOrderId = WorkOrderId.Create(value);
 
         // then
-        Assert.IsNotNull(workingnumber);
+        Assert.IsNotNull(workOrderId);
     }
 
     [DataTestMethod]
