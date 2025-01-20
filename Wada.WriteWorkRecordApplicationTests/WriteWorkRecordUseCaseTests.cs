@@ -5,7 +5,7 @@ using Wada.AchieveTrackService.AchievementLedgerAggregation;
 using Wada.AchieveTrackService.EmployeeAggregation;
 using Wada.AchieveTrackService.ProcessFlowAggregation;
 using Wada.AchieveTrackService.ValueObjects;
-using Wada.AchieveTrackService.WorkingLedgerAggregation;
+using Wada.AchieveTrackService.WorkOrderAggregation;
 
 namespace Wada.WriteWorkRecordApplication.Tests
 {
@@ -28,13 +28,13 @@ namespace Wada.WriteWorkRecordApplication.Tests
             processMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(TestProcessFlowFactory.Create(id: (uint)processFlowId));
 
-            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-1")))
-                .ReturnsAsync(TestWorkingLedgerFactory.Create(ownCompanyNumber: 101u,
-                                                              workingNumber: TestWorkingNumberFactory.Create("23Z-1")));
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(TestWorkingNumberFactory.Create("23Z-2")))
-                .ReturnsAsync(TestWorkingLedgerFactory.Create(ownCompanyNumber: 102u,
-                                                              workingNumber: TestWorkingNumberFactory.Create("23Z-2")));
+            Mock<IWorkOrderRepository> workOrderMock = new();
+            workOrderMock.Setup(x => x.FindByWorkOrderIdAsync(TestWorkOrderIdFactory.Create("23Z-1")))
+                .ReturnsAsync(TestWorkOrderFactory.Create(ownCompanyNumber: 101u,
+                                                              workOrderId: TestWorkOrderIdFactory.Create("23Z-1")));
+            workOrderMock.Setup(x => x.FindByWorkOrderIdAsync(TestWorkOrderIdFactory.Create("23Z-2")))
+                .ReturnsAsync(TestWorkOrderFactory.Create(ownCompanyNumber: 102u,
+                                                              workOrderId: TestWorkOrderIdFactory.Create("23Z-2")));
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
             achievementMock.Setup(x => x.MaxByAchievementIdAsync())
@@ -48,7 +48,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 processMock.Object,
-                workingLedgerMock.Object,
+                workOrderMock.Object,
                 achievementMock.Object,
                 designMock.Object);
             var achievements = new List<AchievementParam>
@@ -57,19 +57,19 @@ namespace Wada.WriteWorkRecordApplication.Tests
                     workingDate: new DateTime(2023, 4, 1),
                     achievementDetails: new[]
                     {
-                        TestAchievementDetailParamFactory.Create(workingNumber: "23Z-1")
+                        TestAchievementDetailParamFactory.Create(workOrderId: "23Z-1")
                     }),
                 TestAchievementParamFactory.Create(
                     workingDate: new DateTime(2023, 12, 1),
                     achievementDetails: new[]
                     {
-                        TestAchievementDetailParamFactory.Create(workingNumber: "23Z-1")
+                        TestAchievementDetailParamFactory.Create(workOrderId: "23Z-1")
                     }),
                 TestAchievementParamFactory.Create(
                     workingDate: new DateTime(2023, 5, 1),
                     achievementDetails: new[]
                     {
-                        TestAchievementDetailParamFactory.Create(workingNumber: "23Z-2")
+                        TestAchievementDetailParamFactory.Create(workOrderId: "23Z-2")
                     }),
             };
             var count = await useCase.ExecuteAsync(achievements, canAdd);
@@ -78,8 +78,8 @@ namespace Wada.WriteWorkRecordApplication.Tests
             Assert.AreEqual(achievements.Count, count);
             achievementMock.Verify(x => x.MaxByAchievementIdAsync(), Times.Once);
             employeeMock.Verify(x => x.FindByEmployeeNumberAsync(It.IsAny<uint>()), Times.Exactly(achievements.Count));
-            workingLedgerMock.Verify(
-                x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()), Times.Exactly(achievements.Sum(x => x.AchievementDetails.Count())));
+            workOrderMock.Verify(
+                x => x.FindByWorkOrderIdAsync(It.IsAny<WorkOrderId>()), Times.Exactly(achievements.Sum(x => x.AchievementDetails.Count())));
             achievementMock.Verify(x => x.Add(It.IsAny<AchievementLedger>()), Times.Exactly(achievements.Count));
             if (canAdd && processFlowId == 2)
             {
@@ -101,7 +101,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
                 .ThrowsAsync(new EmployeeNotFoundException(employeeMessage));
 
             var processMock = Mock.Of<IProcessFlowRepository>();
-            var workingLedgerMock = Mock.Of<IWorkingLedgerRepository>();
+            var workOrderMock = Mock.Of<IWorkOrderRepository>();
             var achievementMock = Mock.Of<IAchievementLedgerRepository>();
             var designMock = Mock.Of<IDesignManagementWriter>();
 
@@ -109,7 +109,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 processMock,
-                workingLedgerMock,
+                workOrderMock,
                 achievementMock,
                 designMock);
             var achievements = new List<AchievementParam>
@@ -135,7 +135,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             processMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
                 .ThrowsAsync(new ProcessFlowNotFoundException(repositoryMessage));
 
-            var workingLedgerMock = Mock.Of<IWorkingLedgerRepository>();
+            var workOrderMock = Mock.Of<IWorkOrderRepository>();
             var achievementMock = Mock.Of<IAchievementLedgerRepository>();
             var designMock = Mock.Of<IDesignManagementWriter>();
 
@@ -143,7 +143,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock,
                 processMock.Object,
-                workingLedgerMock,
+                workOrderMock,
                 achievementMock,
                 designMock);
             var achievements = new List<AchievementParam>
@@ -174,10 +174,10 @@ namespace Wada.WriteWorkRecordApplication.Tests
             var employeeMock = Mock.Of<IEmployeeRepository>();
             var processMock = Mock.Of<IProcessFlowRepository>();
 
-            Mock<IWorkingLedgerRepository> workingLedgerMock = new();
-            string workingLedgerMessage = "作業台帳が見つかりません";
-            workingLedgerMock.Setup(x => x.FindByWorkingNumberAsync(It.IsAny<WorkingNumber>()))
-                .ThrowsAsync(new WorkingLedgerNotFoundException(workingLedgerMessage));
+            Mock<IWorkOrderRepository> workOrderMock = new();
+            string workOrderMessage = "作業台帳が見つかりません";
+            workOrderMock.Setup(x => x.FindByWorkOrderIdAsync(It.IsAny<WorkOrderId>()))
+                .ThrowsAsync(new WorkOrderNotFoundException(workOrderMessage));
 
             var achievementMock = Mock.Of<IAchievementLedgerRepository>();
             var designMock = Mock.Of<IDesignManagementWriter>();
@@ -186,7 +186,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock,
                 processMock,
-                workingLedgerMock.Object,
+                workOrderMock.Object,
                 achievementMock,
                 designMock);
             var achievements = new List<AchievementParam>
@@ -198,7 +198,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
 
             // then
             var ex = await Assert.ThrowsExceptionAsync<WriteWorkRecordUseCaseException>(target);
-            var message = $"実績を登録中に問題が発生しました\n{workingLedgerMessage}";
+            var message = $"実績を登録中に問題が発生しました\n{workOrderMessage}";
             Assert.AreEqual(message, ex.Message);
         }
 
@@ -213,7 +213,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
 
             var processMock = Mock.Of<IProcessFlowRepository>();
 
-            var workingLedgerMock = Mock.Of<IWorkingLedgerRepository>();
+            var workOrderMock = Mock.Of<IWorkOrderRepository>();
 
             Mock<IAchievementLedgerRepository> achievementMock = new();
             achievementMock.Setup(x => x.MaxByAchievementIdAsync())
@@ -229,7 +229,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             string achievementMessage =
                 $"実績日: {achievements.First().WorkingDate:yyyy/MM/dd(ddd)}\n" +
                 $"氏名: {testEmployee.Name}\n" +
-                $"作業番号: {achievements.First().AchievementDetails.First().WorkingNumber}";
+                $"作業番号: {achievements.First().AchievementDetails.First().WorkOrderId}";
             achievementMock.Setup(x => x.Add(It.IsAny<AchievementLedger>()))
                 .Throws(new AchievementLedgerAggregationException(achievementMessage));
 
@@ -237,7 +237,7 @@ namespace Wada.WriteWorkRecordApplication.Tests
             IWriteWorkRecordUseCase useCase = new WriteWorkRecordUseCase(
                 employeeMock.Object,
                 processMock,
-                workingLedgerMock,
+                workOrderMock,
                 achievementMock.Object,
                 designMock.Object);
             Task target() => _ = useCase.ExecuteAsync(achievements!, false);

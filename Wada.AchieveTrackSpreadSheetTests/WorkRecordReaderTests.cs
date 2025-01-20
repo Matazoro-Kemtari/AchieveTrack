@@ -1,8 +1,8 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wada.AchieveTrackService;
-using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkRecordReader;
 
 namespace Wada.AchieveTrackSpreadSheet.Tests
 {
@@ -29,7 +29,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                 x.WorkingDate,
                 x.EmployeeNumber,
                 x.EmployeeName,
-                x.WorkingNumber,
+                x.WorkOrderId,
                 x.JigCode,
                 x.ManHour,
                 x.Note,
@@ -41,7 +41,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                     x.WorkingDate,
                     x.EmployeeNumber,
                     x.EmployeeName,
-                    x.WorkingNumber,
+                    x.WorkOrderId,
                     x.JigCode,
                     x.ManHour,
                     x.Note,
@@ -68,7 +68,7 @@ namespace Wada.AchieveTrackSpreadSheet.Tests
                 sht.Cell(x.i + 2, "A").SetValue(x.item.WorkingDate);
                 sht.Cell(x.i + 2, "B").SetValue(x.item.EmployeeNumber);
                 sht.Cell(x.i + 2, "C").SetValue(x.item.EmployeeName);
-                sht.Cell(x.i + 2, "E").SetValue(x.item.WorkingNumber.Value);
+                sht.Cell(x.i + 2, "E").SetValue(x.item.WorkOrderId.Value);
                 sht.Cell(x.i + 2, "F").SetValue(x.item.JigCode);
                 sht.Cell(x.i + 2, "G").SetValue(x.item.ProcessFlow);
                 sht.Cell(x.i + 2, "H").SetValue(x.item.Note);

@@ -57,7 +57,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         {
             { typeof(InvalidWorkNumberErrorCollectionViewModel), InvalidWorkNumberErrorCollectionViewModel.Create },
             { typeof(DuplicateWorkDateEmployeeErrorCollectionViewModel), DuplicateWorkDateEmployeeErrorCollectionViewModel.Create },
-            { typeof(UnregisteredWorkNumberErrorCollectionViewModel), UnregisteredWorkNumberErrorCollectionViewModel.Create },
+            { typeof(UnregisteredWorkOrderIdErrorCollectionViewModel), UnregisteredWorkOrderIdErrorCollectionViewModel.Create },
             { typeof(WorkDateExpiredErrorCollectionViewModel), WorkDateExpiredErrorCollectionViewModel.Create },
         };
 
@@ -66,7 +66,7 @@ public class AchievementCollectionViewModel : BindableBase, IDestructible
         HasErrors.Value = _model.ValidationResults.Any();
         HasErrorsWithOutDesignManagement.Value =
             _model.ValidationResults.Any(
-                x => x.GetType() != typeof(UnregisteredWorkNumberErrorCollectionViewModel));
+                x => x.GetType() != typeof(UnregisteredWorkOrderIdErrorCollectionViewModel));
     }
 
     public void Destroy() => Disposables.Dispose();

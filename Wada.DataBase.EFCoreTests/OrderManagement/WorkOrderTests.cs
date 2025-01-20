@@ -5,7 +5,7 @@ using Wada.DataBase.EFCore.OrderManagement.Entities;
 namespace Wada.DataBase.EFCore.OrderManagement.Tests
 {
     [TestClass()]
-    public class WorkingLedgerTests
+    public class WorkOrderTests
     {
         private static IConfiguration? _configuration;
 
@@ -25,10 +25,10 @@ namespace Wada.DataBase.EFCore.OrderManagement.Tests
         {
             // given
             // when
-            List<WorkingLedger> actual;
+            List<WorkOrder> actual;
             using (var dbContext = new OrderManagementContext(_configuration!))
             {
-                actual = dbContext.WorkingLedgers.ToList();
+                actual = dbContext.WorkOrders.ToList();
             }
 
             // then

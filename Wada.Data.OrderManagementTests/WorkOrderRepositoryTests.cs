@@ -2,12 +2,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wada.AchieveTrackService;
 using Wada.AchieveTrackService.ValueObjects;
-using Wada.AchieveTrackService.WorkingLedgerAggregation;
+using Wada.AchieveTrackService.WorkOrderAggregation;
 
 namespace Wada.Data.OrderManagement.Tests
 {
     [TestClass()]
-    public class WorkingLedgerRepositoryTests
+    public class WorkOrderRepositoryTests
     {
         private static IConfiguration? _configuration;
 
@@ -26,30 +26,30 @@ namespace Wada.Data.OrderManagement.Tests
         public async Task 正常系_作業台帳が取得できること()
         {
             // given
-            var workingNumber = "23K-110";
+            var workOrderId = "23K-110";
 
             // when
-            IWorkingLedgerRepository repository = new WorkingLedgerRepository(_configuration!);
-            var actual = await repository.FindByWorkingNumberAsync(WorkingNumber.Create(workingNumber));
+            IWorkOrderRepository repository = new WorkOrderRepository(_configuration!);
+            var actual = await repository.FindByWorkOrderIdAsync(WorkOrderId.Create(workOrderId));
 
             // then
             Assert.IsNotNull(actual);
-            Assert.AreEqual(workingNumber, actual.WorkingNumber.Value);
+            Assert.AreEqual(workOrderId, actual.WorkOrderId.Value);
         }
 
         [TestMethod()]
         public async Task 異常系_作業台帳に作業番号がない場合例外を返すこと()
         {
             // given
-            var workingNumber = "99Q-999";
+            var workOrderId = "99Q-999";
 
             // when
-            IWorkingLedgerRepository repository = new WorkingLedgerRepository(_configuration!);
-            Task target() => repository.FindByWorkingNumberAsync(WorkingNumber.Create(workingNumber));
+            IWorkOrderRepository repository = new WorkOrderRepository(_configuration!);
+            Task target() => repository.FindByWorkOrderIdAsync(WorkOrderId.Create(workOrderId));
 
             // then
-            var ex = await Assert.ThrowsExceptionAsync<WorkingLedgerNotFoundException>(target);
-            var message = $"作業番号を確認してください 受注管理に登録されていません 作業番号: {workingNumber}";
+            var ex = await Assert.ThrowsExceptionAsync<WorkOrderNotFoundException>(target);
+            var message = $"作業番号を確認してください 受注管理に登録されていません 作業番号: {workOrderId}";
             Assert.AreEqual(message, ex.Message);
         }
     }

@@ -129,7 +129,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
             {
                 new IValidationError[]
                 {
-                    TestUnregisteredWorkNumberResultFactory.Create(),
+                    TestUnregisteredWorkOrderIdResultFactory.Create(),
                 },
             };
             validatorMock.Setup(x => x.ValidateWorkRecordsAsync(It.IsAny<IEnumerable<WorkRecord>>()))
@@ -146,7 +146,7 @@ namespace Wada.VerifyAchievementRecordContentApplication.Tests
 
             // then
             Assert.AreEqual(validationResults.Length, actual.Count());
-            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(UnregisteredWorkNumberErrorResult)));
+            Assert.IsTrue(actual.SelectMany(x => x).Any(x => x.GetType() == typeof(UnregisteredWorkOrderIdErrorResult)));
         }
     }
 }

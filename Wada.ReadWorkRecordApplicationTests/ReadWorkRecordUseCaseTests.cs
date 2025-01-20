@@ -29,10 +29,10 @@ namespace Wada.ReadWorkRecordApplication.Tests
             {
                 TestWorkRecordFactory.Create(
                     workingDate: new DateTime(2023,4,1),
-                    workingNumber: WorkingNumber.Create("23A-1")),
+                    workOrderId: WorkOrderId.Create("23A-1")),
                 TestWorkRecordFactory.Create(
                     workingDate: new DateTime(2023,4,1),
-                    workingNumber: WorkingNumber.Create("23A-2")),
+                    workOrderId: WorkOrderId.Create("23A-2")),
             };
             readerMock.Setup(x => x.ReadWorkRecordsAsync(It.IsAny<Stream>()))
                 .ReturnsAsync(res);

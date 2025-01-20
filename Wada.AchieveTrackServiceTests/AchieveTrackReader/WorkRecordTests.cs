@@ -32,7 +32,7 @@ namespace Wada.AchieveTrackService.WorkRecordReader.Tests
             static void target() => _ = WorkRecord.Create(DateTime.Now,
                                                    1,
                                                    "無人",
-                                                   TestWorkingNumberFactory.Create(),
+                                                   TestWorkOrderIdFactory.Create(),
                                                    "11A",
                                                    "NC",
                                                    "特記事項",

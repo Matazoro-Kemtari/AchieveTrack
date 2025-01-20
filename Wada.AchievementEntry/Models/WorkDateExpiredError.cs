@@ -1,28 +1,27 @@
-﻿using System;
-using Wada.VerifyAchievementRecordContentApplication;
+﻿using Wada.VerifyAchievementRecordContentApplication;
 using Wada.VerifyWorkRecordApplication;
 
 namespace Wada.AchievementEntry.Models;
 
 internal record class WorkDateExpiredError : IValidationError
 {
-    private WorkDateExpiredError(string workingNumber, string jigCode, string note)
+    private WorkDateExpiredError(string workOrderId, string jigCode, string note)
     {
-        WorkingNumber = workingNumber;
+        WorkOrderId = workOrderId;
         JigCode = jigCode;
         Note = note;
     }
 
     public string Message => "作業日が完成日を過ぎた作業番号があります";
 
-    public string WorkingNumber { get; }
+    public string WorkOrderId { get; }
 
     public string JigCode { get; }
 
     public string Note { get; }
 
-    internal static WorkDateExpiredError Create(string workingNumber, string jigCode, string note)
-        => new(workingNumber, jigCode, note);
+    internal static WorkDateExpiredError Create(string workOrderId, string jigCode, string note)
+        => new(workOrderId, jigCode, note);
 
     public static WorkDateExpiredError Parse(IValidationErrorResult validationError)
     {
@@ -31,6 +30,6 @@ internal record class WorkDateExpiredError : IValidationError
                 $"引数には{nameof(WorkDateExpiredErrorResult)}を渡してください",
                 nameof(validationError));
 
-        return Create(validationError.WorkingNumber, validationError.JigCode, validationError.Note);
+        return Create(validationError.WorkOrderId, validationError.JigCode, validationError.Note);
     }
 }
