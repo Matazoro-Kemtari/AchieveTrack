@@ -5,31 +5,31 @@ namespace Wada.VerifyWorkRecordApplication;
 
 public record class InvalidWorkNumberErrorResult : IValidationErrorResult
 {
-    private InvalidWorkNumberErrorResult(string workingNumber, string jigCode, string note)
+    private InvalidWorkNumberErrorResult(string workOrderId, string jigCode, string note)
     {
-        WorkingNumber = workingNumber;
+        WorkOrderId = workOrderId;
         JigCode = jigCode;
         Note = note;
     }
 
     public string Message => "作業台帳にない作業番号です";
 
-    public string WorkingNumber { get; }
+    public string WorkOrderId { get; }
 
     public string JigCode { get; }
 
     public string Note { get; }
 
-    private static InvalidWorkNumberErrorResult Create(string workingNumber, string jigCode, string note)
-        => new(workingNumber, jigCode, note);
+    private static InvalidWorkNumberErrorResult Create(string workOrderId, string jigCode, string note)
+        => new(workOrderId, jigCode, note);
 
     public static InvalidWorkNumberErrorResult Parse(IValidationError validationResult)
     {
-        if (validationResult is not InvalidWorkNumberError)
+        if (validationResult is not InvalidWorkOrderIdError)
             throw new ArgumentException(
-                $"引数には{nameof(InvalidWorkNumberError)}を渡してください",
+                $"引数には{nameof(InvalidWorkOrderIdError)}を渡してください",
                 nameof(validationResult));
 
-        return Create(validationResult.WorkingNumber.Value, validationResult.JigCode, validationResult.Note);
+        return Create(validationResult.WorkOrderId.Value, validationResult.JigCode, validationResult.Note);
     }
 }

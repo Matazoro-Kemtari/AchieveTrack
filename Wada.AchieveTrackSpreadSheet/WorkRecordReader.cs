@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Wada.AchieveTrackService;
-using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AchieveTrackService.ValueObjects;
+using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AOP.Logging;
 
 namespace Wada.AchieveTrackSpreadSheet;
@@ -31,7 +31,7 @@ public class WorkRecordReader : IWorkRecordReader
         {
             throw new DomainException("ワークシートが見つかりません", ex);
         }
-        catch (WorkingNumberException ex)
+        catch (WorkOrderIdException ex)
         {
             throw new DomainException(ex.Message, ex);
         }
@@ -57,8 +57,8 @@ public class WorkRecordReader : IWorkRecordReader
             throw new DomainException(
                 $"社員名が取得できませんでした 行: {row.RowNumber()}");
 
-        if (!row.Cell(columnNumbers.WorkingNumberColumnNumber).TryGetValue(out string workingNumber)
-            || workingNumber == string.Empty)
+        if (!row.Cell(columnNumbers.WorkOrderIdColumnNumber).TryGetValue(out string workOrderId)
+            || workOrderId == string.Empty)
             throw new DomainException(
                 $"作業番号が取得できませんでした 行: {row.RowNumber()}");
 
@@ -78,7 +78,7 @@ public class WorkRecordReader : IWorkRecordReader
         return WorkRecord.Create(workingDate,
                                     (uint)employeeNumber,
                                     employeeName,
-                                    WorkingNumber.Create(workingNumber),
+                                    WorkOrderId.Create(workOrderId),
                                     jigCode,
                                     processFlow,
                                     note,
@@ -91,7 +91,7 @@ public class WorkRecordReader : IWorkRecordReader
         const string workingDateSubject = "日付";
         const string employeeNumberSubject = "社員番号";
         const string employeeNameSubject = "氏名";
-        const string workingNumberSubject = "作業番号";
+        const string workOrderIdSubject = "作業番号";
         const string jigCodeNumberSubject = "コード";
         const string ProcessFlowSubject = "作業名";
         const string noteSubject = "特記事項";
@@ -106,8 +106,8 @@ public class WorkRecordReader : IWorkRecordReader
                                                       .First(cell => cell.GetString() == employeeNumberSubject).Address.ColumnNumber,
                 EmployeeNameColumnNumber: subjectRow.Cells()
                                                     .First(cell => cell.GetString() == employeeNameSubject).Address.ColumnNumber,
-                WorkingNumberColumnNumber: subjectRow.Cells()
-                                                     .First(cell => cell.GetString() == workingNumberSubject).Address.ColumnNumber,
+                WorkOrderIdColumnNumber: subjectRow.Cells()
+                                                     .First(cell => cell.GetString() == workOrderIdSubject).Address.ColumnNumber,
                 JigCodeNumberColumnNumber: subjectRow.Cells()
                                                      .First(cell => cell.GetString() == jigCodeNumberSubject).Address.ColumnNumber,
                 ProcessFlowColumnNumber: subjectRow.Cells()
@@ -127,7 +127,7 @@ public class WorkRecordReader : IWorkRecordReader
         int WorkingDateColumnNumber,
         int EmployeeNumberColumnNumber,
         int EmployeeNameColumnNumber,
-        int WorkingNumberColumnNumber,
+        int WorkOrderIdColumnNumber,
         int JigCodeNumberColumnNumber,
         int ProcessFlowColumnNumber,
         int NoteColumnNumber,

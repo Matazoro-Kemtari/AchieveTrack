@@ -18,14 +18,14 @@ public class TestAchievementParamFactory
         return new AchievementParam(workingDate.Value, employeeNumber, achievementDetails);
     }
 }
-public record class AchievementDetailParam(string WorkingNumber,
+public record class AchievementDetailParam(string WorkOrderId,
                                            string ProcessFlow,
                                            decimal ManHour);
 
 public class TestAchievementDetailParamFactory
 {
-    public static AchievementDetailParam Create(string workingNumber = "22Z-1",
+    public static AchievementDetailParam Create(string workOrderId = "22Z-1",
                                                 string processFlow = "NC",
                                                 decimal manHour = 10m)
-        => new(workingNumber, processFlow, manHour);
+        => new(workOrderId, processFlow, manHour);
 }

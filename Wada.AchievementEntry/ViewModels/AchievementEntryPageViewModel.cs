@@ -1,7 +1,5 @@
 ﻿using GongSolutions.Wpf.DragDrop;
 using Livet.Messaging;
-using Prism.Mvvm;
-using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Collections.ObjectModel;
@@ -134,7 +132,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                         x => new WorkRecordParam(x.WorkingDate,
                                                  x.EmployeeNumber,
                                                  x.EmployeeName,
-                                                 x.WorkingNumber,
+                                                 x.WorkOrderId,
                                                  x.JigCode,
                                                  x.ProcessFlow,
                                                  x.Note,
@@ -152,8 +150,8 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             var parser = new Dictionary<Type, Func<IValidationErrorResult, Models.IValidationError>>
             {
                 { typeof(DuplicateWorkDateEmployeeErrorResult), Models.DuplicateWorkDateEmployeeError.Parse },
-                { typeof(InvalidWorkNumberErrorResult), Models.InvalidWorkNumberError.Parse },
-                { typeof(UnregisteredWorkNumberErrorResult), Models.UnregisteredWorkNumberError.Parse },
+                { typeof(InvalidWorkNumberErrorResult), Models.InvalidWorkOrderIdError.Parse },
+                { typeof(UnregisteredWorkOrderIdErrorResult), Models.UnregisteredWorkOrderIdError.Parse },
                 { typeof(WorkDateExpiredErrorResult), Models.WorkDateExpiredError.Parse },
             };
 
@@ -165,7 +163,7 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
                  (r, v) => new
                  {
                      r.Value.WorkingDate,
-                     r.Value.WorkingNumber,
+                     r.Value.WorkOrderId,
                      r.Value.EmployeeNumber,
                      r.Value.EmployeeName,
                      r.Value.ManHour,
@@ -175,9 +173,9 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             // 集計する
             var vmCreater = new Dictionary<Type, Func<Models.IValidationError, IValidationErrorCollectionViewModel>>
             {
-                { typeof(Models.InvalidWorkNumberError), InvalidWorkNumberErrorCollectionViewModel.Create },
+                { typeof(Models.InvalidWorkOrderIdError), InvalidWorkNumberErrorCollectionViewModel.Create },
                 { typeof(Models.DuplicateWorkDateEmployeeError), DuplicateWorkDateEmployeeErrorCollectionViewModel.Create },
-                { typeof(Models.UnregisteredWorkNumberError), UnregisteredWorkNumberErrorCollectionViewModel.Create },
+                { typeof(Models.UnregisteredWorkOrderIdError), UnregisteredWorkOrderIdErrorCollectionViewModel.Create },
                 { typeof(Models.WorkDateExpiredError), WorkDateExpiredErrorCollectionViewModel.Create },
             };
 
@@ -246,14 +244,14 @@ public class AchievementEntryPageViewModel : BindableBase, IDestructible, IDropT
             {
                 w.WorkingDate,
                 w.EmployeeNumber,
-                w.WorkingNumber,
+                w.WorkOrderId,
                 w.ProcessFlow,
                 w.ManHour,
             })
             .GroupBy(x => new { x.WorkingDate, x.EmployeeNumber })
             .Select(x => new AchievementParam(x.Key.WorkingDate,
                                               x.Key.EmployeeNumber,
-                                              x.GroupBy(y => y.WorkingNumber).Select(y => new AchievementDetailParam(
+                                              x.GroupBy(y => y.WorkOrderId).Select(y => new AchievementDetailParam(
                                                   y.Key,
                                                   y.Select(z => z.ProcessFlow).First(), // ここでエラーが起こるなら取込時に処理に問題あり
                                                   y.Sum(z => z.ManHour)))));

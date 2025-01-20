@@ -47,7 +47,7 @@ public class OrderManagementContext : DbContext
     }
 
     public DbSet<Employee> Employees { get; set; }
-    public DbSet<WorkingLedger> WorkingLedgers { get; set; }
+    public DbSet<WorkOrder> WorkOrders { get; set; }
     public DbSet<DesignManagement> DesignManagements { get; set; }
     public DbSet<AchievementLedger> AchievementLedgers { get; set; }
     public DbSet<AchievementDetail> AchievementDetails { get; set; }

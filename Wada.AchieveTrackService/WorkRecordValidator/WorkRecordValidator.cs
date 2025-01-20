@@ -1,27 +1,17 @@
 ﻿using Wada.AchieveTrackService.AchievementLedgerAggregation;
 using Wada.AchieveTrackService.DesignManagementAggregation;
 using Wada.AchieveTrackService.ValueObjects;
-using Wada.AchieveTrackService.WorkingLedgerAggregation;
+using Wada.AchieveTrackService.WorkOrderAggregation;
 using Wada.AchieveTrackService.WorkRecordReader;
 using Wada.AOP.Logging;
 
 namespace Wada.AchieveTrackService.WorkRecordValidator;
 
-public class WorkRecordValidator : IWorkRecordValidator
+public class WorkRecordValidator(IWorkOrderRepository workOrderRepository,
+                                 IAchievementLedgerRepository achievementLedgerRepository,
+                                 IDesignManagementRepository designManagementRepository)
+    : IWorkRecordValidator
 {
-    private readonly IWorkingLedgerRepository _workingLedgerRepository;
-    private readonly IAchievementLedgerRepository _achievementLedgerRepository;
-    private readonly IDesignManagementRepository _designManagementRepository;
-    private readonly IEmployeeRepository _employeeReader;
-
-    public WorkRecordValidator(IWorkingLedgerRepository workingLedgerRepository, IAchievementLedgerRepository achievementLedgerRepository, IDesignManagementRepository designManagementRepository, IEmployeeRepository employeeReader)
-    {
-        _workingLedgerRepository = workingLedgerRepository;
-        _achievementLedgerRepository = achievementLedgerRepository;
-        _designManagementRepository = designManagementRepository;
-        _employeeReader = employeeReader;
-    }
-
     [Logging]
     public async Task<IEnumerable<IEnumerable<IValidationError>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
     {
@@ -35,20 +25,20 @@ public class WorkRecordValidator : IWorkRecordValidator
             {
                 var validationResults = new List<IValidationError>();
 
-                if (await IsWorkNumberInWorkingLedgerAsync(x.WorkingNumber))
+                if (await IsWorkNumberInWorkOrderAsync(x.WorkOrderId))
                 {
-                    if (await IsWorkingDatePastCompletionAsync(x.WorkingNumber, x.WorkingDate))
-                        validationResults.Add(WorkDateExpiredError.Create(x.WorkingNumber, x.JigCode, x.Note));
+                    if (await IsWorkingDatePastCompletionAsync(x.WorkOrderId, x.WorkingDate))
+                        validationResults.Add(WorkDateExpiredError.Create(x.WorkOrderId, x.JigCode, x.Note));
 
                     if (x.ProcessFlow == CadProcessFlow
-                        && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkingNumber))
-                        validationResults.Add(UnregisteredWorkNumberError.Create(x.WorkingNumber, x.JigCode, x.Note));
+                        && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkOrderId))
+                        validationResults.Add(UnregisteredWorkOrderIdError.Create(x.WorkOrderId, x.JigCode, x.Note));
                 }
                 else
-                    validationResults.Add(InvalidWorkNumberError.Create(x.WorkingNumber, x.JigCode, x.Note));
+                    validationResults.Add(InvalidWorkOrderIdError.Create(x.WorkOrderId, x.JigCode, x.Note));
 
                 if (await IsRecordInAchievementLedgerAsync(x.WorkingDate, x.EmployeeNumber))
-                    validationResults.Add(DuplicateWorkDateEmployeeError.Create(x.WorkingNumber, x.JigCode, x.Note));
+                    validationResults.Add(DuplicateWorkDateEmployeeError.Create(x.WorkOrderId, x.JigCode, x.Note));
 
                 return validationResults;
             }));
@@ -57,17 +47,17 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// <summary>
     /// 作業番号が作業台帳にあるか調べる
     /// </summary>
-    /// <param name="workingNumber"></param>
+    /// <param name="workOrderId"></param>
     /// <returns>存在する場合: true</returns>
     [Logging]
-    private async Task<bool> IsWorkNumberInWorkingLedgerAsync(WorkingNumber workingNumber)
+    private async Task<bool> IsWorkNumberInWorkOrderAsync(WorkOrderId workOrderId)
     {
         try
         {
-            _ = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
+            _ = await workOrderRepository.FindByWorkOrderIdAsync(workOrderId);
             return true;
         }
-        catch (WorkingLedgerNotFoundException)
+        catch (WorkOrderNotFoundException)
         {
             return false;
         }
@@ -79,15 +69,15 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// <param name="workingDate">過ぎている場合: true</param>
     /// <returns></returns>
     [Logging]
-    private async Task<bool> IsWorkingDatePastCompletionAsync(WorkingNumber workingNumber, DateTime workingDate)
+    private async Task<bool> IsWorkingDatePastCompletionAsync(WorkOrderId workOrderId, DateTime workingDate)
     {
         try
         {
-            var result = await _workingLedgerRepository.FindByWorkingNumberAsync(workingNumber);
+            var result = await workOrderRepository.FindByWorkOrderIdAsync(workOrderId);
             return result.CompletionDate != null
                    && workingDate.CompareTo(result.CompletionDate) > 0;
         }
-        catch (WorkingLedgerNotFoundException ex)
+        catch (WorkOrderNotFoundException ex)
         {
             throw new WorkRecordValidatorException(ex.Message, ex);
         }
@@ -103,7 +93,7 @@ public class WorkRecordValidator : IWorkRecordValidator
     {
         try
         {
-            _ = await _achievementLedgerRepository.FindByWorkingDateAndEmployeeNumberAsync(workingDate, employeeNumber);
+            _ = await achievementLedgerRepository.FindByWorkingDateAndEmployeeNumberAsync(workingDate, employeeNumber);
             return true;
         }
         catch (AchievementLedgerAggregationException)
@@ -118,15 +108,15 @@ public class WorkRecordValidator : IWorkRecordValidator
     /// <param name="workNumber"></param>
     /// <returns>存在する場合: true</returns>
     [Logging]
-    private async Task<bool> IsWorkNumberInDesignManagementLedgerAsync(WorkingNumber workNumber)
+    private async Task<bool> IsWorkNumberInDesignManagementLedgerAsync(WorkOrderId workNumber)
     {
         try
         {
-            var workingLedger = await _workingLedgerRepository.FindByWorkingNumberAsync(workNumber);
-            _ = await _designManagementRepository.FindByOwnCompanyNumberAsync(workingLedger.OwnCompanyNumber);
+            var workOrder = await workOrderRepository.FindByWorkOrderIdAsync(workNumber);
+            _ = await designManagementRepository.FindByOwnCompanyNumberAsync(workOrder.OwnCompanyNumber);
             return true;
         }
-        catch (Exception ex) when (ex is WorkingLedgerNotFoundException or DesignManagementNotFoundException)
+        catch (Exception ex) when (ex is WorkOrderNotFoundException or DesignManagementNotFoundException)
         {
             return false;
         }

@@ -7,18 +7,18 @@ namespace Wada.AchieveTrackService.WorkRecordValidator;
 /// </summary>
 public record class DuplicateWorkDateEmployeeError : IValidationError
 {
-    protected DuplicateWorkDateEmployeeError(WorkingNumber workingNumber, string jigCode, string note)
+    protected DuplicateWorkDateEmployeeError(WorkOrderId workOrderId, string jigCode, string note)
     {
-        WorkingNumber = workingNumber;
+        WorkOrderId = workOrderId;
         JigCode = jigCode;
         Note = note;
     }
 
-    public static DuplicateWorkDateEmployeeError Create(WorkingNumber workingNumber, string jigCode, string note) => new(workingNumber, jigCode, note);
+    public static DuplicateWorkDateEmployeeError Create(WorkOrderId workOrderId, string jigCode, string note) => new(workOrderId, jigCode, note);
 
     public string Message => "この作業日と社員番号の組み合わせが 実績処理で既に存在します";
 
-    public WorkingNumber WorkingNumber { get; }
+    public WorkOrderId WorkOrderId { get; }
 
     public string JigCode { get; }
 
@@ -27,11 +27,11 @@ public record class DuplicateWorkDateEmployeeError : IValidationError
 
 public class TestDuplicateWorkDateEmployeeResultFactory
 {
-    public static DuplicateWorkDateEmployeeError Create(WorkingNumber? workingNumber = default,
+    public static DuplicateWorkDateEmployeeError Create(WorkOrderId? workOrderId = default,
                                                          string jigCode = "11A",
                                                          string note = "特記事項")
     {
-        workingNumber ??= TestWorkingNumberFactory.Create();
-        return DuplicateWorkDateEmployeeError.Create(workingNumber, jigCode, note);
+        workOrderId ??= TestWorkOrderIdFactory.Create();
+        return DuplicateWorkDateEmployeeError.Create(workOrderId, jigCode, note);
     }
 }

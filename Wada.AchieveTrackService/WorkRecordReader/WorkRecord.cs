@@ -8,7 +8,7 @@ public record class WorkRecord
     private WorkRecord(DateTime workingDate,
                        uint employeeNumber,
                        string employeeName,
-                       WorkingNumber workingNumber,
+                       WorkOrderId workOrderId,
                        string? jigCode,
                        string processFlow,
                        string? note,
@@ -18,7 +18,7 @@ public record class WorkRecord
         WorkingDate = workingDate;
         EmployeeNumber = employeeNumber;
         EmployeeName = employeeName;
-        WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));
+        WorkOrderId = workOrderId ?? throw new ArgumentNullException(nameof(workOrderId));
         JigCode = jigCode;
         ProcessFlow = processFlow;
         Note = note;
@@ -29,7 +29,7 @@ public record class WorkRecord
                        DateTime workingDate,
                        uint employeeNumber,
                        string employeeName,
-                       WorkingNumber workingNumber,
+                       WorkOrderId workOrderId,
                        string? jigCode,
                        string processFlow,
                        string? note,
@@ -39,7 +39,7 @@ public record class WorkRecord
         WorkingDate = workingDate;
         EmployeeNumber = employeeNumber;
         EmployeeName = employeeName;
-        WorkingNumber = workingNumber ?? throw new ArgumentNullException(nameof(workingNumber));
+        WorkOrderId = workOrderId ?? throw new ArgumentNullException(nameof(workOrderId));
         JigCode = jigCode;
         ProcessFlow = processFlow;
         Note = note;
@@ -50,24 +50,24 @@ public record class WorkRecord
     public static WorkRecord Create(DateTime workingDate,
                                     uint employeeNumber,
                                     string employeeName,
-                                    WorkingNumber workingNumber,
+                                    WorkOrderId workOrderId,
                                     string? jigCode,
                                     string processFlow,
                                     string? note,
                                     ManHour manHour)
-        => new(workingDate, employeeNumber, employeeName, workingNumber, jigCode, processFlow, note, manHour);
+        => new(workingDate, employeeNumber, employeeName, workOrderId, jigCode, processFlow, note, manHour);
 
     [Logging]
     public static WorkRecord Reconstruct(Ulid id,
                                          DateTime workingDate,
                                          uint employeeNumber,
                                          string employeeName,
-                                         WorkingNumber workingNumber,
+                                         WorkOrderId workOrderId,
                                          string jigCode,
                                          string processFlow,
                                          string note,
                                          ManHour manHour)
-        => new(id, workingDate, employeeNumber, employeeName, workingNumber, jigCode, processFlow, note, manHour);
+        => new(id, workingDate, employeeNumber, employeeName, workOrderId, jigCode, processFlow, note, manHour);
 
     public Ulid Id { get; init; }
 
@@ -77,7 +77,7 @@ public record class WorkRecord
 
     public string EmployeeName { get; init; }
 
-    public WorkingNumber WorkingNumber { get; init; }
+    public WorkOrderId WorkOrderId { get; init; }
 
     public string? JigCode { get; init; }
 
@@ -94,15 +94,15 @@ public class TestWorkRecordFactory
     public static WorkRecord Create(DateTime? workingDate = default,
                                     uint employeeNumber = 4001u,
                                     string employeeName = "本社　無人",
-                                    WorkingNumber? workingNumber = default,
+                                    WorkOrderId? workOrderId = default,
                                     string jigCode = "11A",
                                     string processFlow = "NC",
                                     string note = "特記事項",
                                     ManHour? manHour = default)
     {
         workingDate ??= new DateTime(2023, 4, 1);
-        workingNumber ??= TestWorkingNumberFactory.Create();
+        workOrderId ??= TestWorkOrderIdFactory.Create();
         manHour ??= ManHour.Create(4);
-        return WorkRecord.Create(workingDate.Value, employeeNumber, employeeName, workingNumber, jigCode, processFlow, note, manHour);
+        return WorkRecord.Create(workingDate.Value, employeeNumber, employeeName, workOrderId, jigCode, processFlow, note, manHour);
     }
 }

@@ -6,7 +6,7 @@ public interface IValidationError
 {
     string Message { get; }
 
-    public WorkingNumber WorkingNumber { get; }
+    public WorkOrderId WorkOrderId { get; }
 
     public string JigCode { get; }
 
