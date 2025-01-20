@@ -25,8 +25,8 @@ public class VerifyWorkRecordUseCase : IVerifyWorkRecordUseCase
         var parser = new Dictionary<Type, Func<IValidationError, IValidationErrorResult>>
         {
             { typeof(DuplicateWorkDateEmployeeError), DuplicateWorkDateEmployeeErrorResult.Parse },
-            { typeof(InvalidWorkNumberError), InvalidWorkNumberErrorResult.Parse },
-            { typeof(UnregisteredWorkNumberError), UnregisteredWorkNumberErrorResult.Parse },
+            { typeof(InvalidWorkOrderIdError), InvalidWorkNumberErrorResult.Parse },
+            { typeof(UnregisteredWorkOrderIdError), UnregisteredWorkOrderIdErrorResult.Parse },
             { typeof(WorkDateExpiredError), WorkDateExpiredErrorResult.Parse },
         };
 

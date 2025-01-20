@@ -1,15 +1,15 @@
 ﻿using Wada.AchieveTrackService.ValueObjects;
 
-namespace Wada.AchieveTrackService.WorkingLedgerAggregation;
+namespace Wada.AchieveTrackService.WorkOrderAggregation;
 
-public record class WorkingLedger
+public record class WorkOrder
 {
-    private WorkingLedger(uint ownCompanyNumber,
-                          WorkingNumber workingNumber,
+    private WorkOrder(uint ownCompanyNumber,
+                          WorkOrderId workOrderId,
                           DateTime? completionDate)
     {
         OwnCompanyNumber = ownCompanyNumber;
-        WorkingNumber = workingNumber;
+        WorkOrderId = workOrderId;
         CompletionDate = completionDate;
     }
 
@@ -20,14 +20,14 @@ public record class WorkingLedger
     /// インフラ層専用
     /// </summary>
     /// <param name="ownCompanyNumber"></param>
-    /// <param name="workingNumber"></param>
+    /// <param name="workOrderId"></param>
     /// <returns></returns>
-    public static WorkingLedger Reconstruct(uint ownCompanyNumber,
-                                            WorkingNumber workingNumber,
+    public static WorkOrder Reconstruct(uint ownCompanyNumber,
+                                            WorkOrderId workOrderId,
                                             DateTime? completionDate)
         => new(
             ownCompanyNumber,
-            workingNumber,
+            workOrderId,
             completionDate);
 
     /// <summary>
@@ -38,7 +38,7 @@ public record class WorkingLedger
     /// <summary>
     /// 作業番号
     /// </summary>
-    public WorkingNumber WorkingNumber { get; }
+    public WorkOrderId WorkOrderId { get; }
 
     /// <summary>
     /// 完成日
@@ -46,15 +46,15 @@ public record class WorkingLedger
     public DateTime? CompletionDate { get; }
 }
 
-public class TestWorkingLedgerFactory
+public class TestWorkOrderFactory
 {
-    public static WorkingLedger Create(uint ownCompanyNumber = 2002010040u,
-                                       WorkingNumber? workingNumber = default,
+    public static WorkOrder Create(uint ownCompanyNumber = 2002010040u,
+                                       WorkOrderId? workOrderId = default,
                                        DateTime? completionDate = default)
     {
-        workingNumber ??= TestWorkingNumberFactory.Create();
-        return WorkingLedger.Reconstruct(ownCompanyNumber,
-                                         workingNumber,
+        workOrderId ??= TestWorkOrderIdFactory.Create();
+        return WorkOrder.Reconstruct(ownCompanyNumber,
+                                         workOrderId,
                                          completionDate);
     }
 }

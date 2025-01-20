@@ -105,7 +105,7 @@
                                                                d:Text="{d:Binding}"
                                                                Foreground="Red"/>
                                                     <TextBlock Margin="0,0,5,0"
-                                                               Text="{Binding WorkingNumber.Value}"
+                                                               Text="{Binding WorkOrderId.Value}"
                                                                d:Text="{d:Binding}"
                                                                Foreground="Red"/>
                                                     <TextBlock Margin="0,0,5,0"

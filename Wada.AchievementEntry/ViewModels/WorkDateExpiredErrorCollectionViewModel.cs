@@ -1,6 +1,4 @@
-﻿using Prism.Mvvm;
-using Prism.Navigation;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Reactive.Disposables;
 using Wada.AchievementEntry.Models;
@@ -18,7 +16,7 @@ public class WorkDateExpiredErrorCollectionViewModel : BindableBase, IDestructib
         Message = new ReactivePropertySlim<string>(_model.Message)
             .AddTo(Disposables);
 
-        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber)
+        WorkOrderId = new ReactivePropertySlim<string>(_model.WorkOrderId)
             .AddTo(Disposables);
 
         JigCode = new ReactivePropertySlim<string>(_model.JigCode)
@@ -33,7 +31,7 @@ public class WorkDateExpiredErrorCollectionViewModel : BindableBase, IDestructib
 
     internal static WorkDateExpiredErrorCollectionViewModel Create(IValidationErrorCollectionViewModel validationResult)
     {
-        var _model = WorkDateExpiredError.Create(validationResult.WorkingNumber.Value, validationResult.JigCode.Value, validationResult.Note.Value);
+        var _model = WorkDateExpiredError.Create(validationResult.WorkOrderId.Value, validationResult.JigCode.Value, validationResult.Note.Value);
         return Create(_model);
     }
 
@@ -46,7 +44,7 @@ public class WorkDateExpiredErrorCollectionViewModel : BindableBase, IDestructib
 
     public ReactivePropertySlim<string> Message { get; }
 
-    public ReactivePropertySlim<string> WorkingNumber { get; }
+    public ReactivePropertySlim<string> WorkOrderId { get; }
 
     public ReactivePropertySlim<string> JigCode { get; }
 

@@ -1,6 +1,4 @@
-﻿using Prism.Mvvm;
-using Prism.Navigation;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Reactive.Disposables;
 using Wada.AchievementEntry.Models;
@@ -8,18 +6,18 @@ using Wada.AOP.Logging;
 
 namespace Wada.AchievementEntry.ViewModels;
 
-public class UnregisteredWorkNumberErrorCollectionViewModel : BindableBase, IDestructible, IValidationErrorCollectionViewModel
+public class UnregisteredWorkOrderIdErrorCollectionViewModel : BindableBase, IDestructible, IValidationErrorCollectionViewModel
 {
     private readonly IValidationError _model;
 
-    public UnregisteredWorkNumberErrorCollectionViewModel(IValidationError validationResult)
+    public UnregisteredWorkOrderIdErrorCollectionViewModel(IValidationError validationResult)
     {
         _model = validationResult;
 
         Message = new ReactivePropertySlim<string>(_model.Message)
             .AddTo(Disposables);
 
-        WorkingNumber = new ReactivePropertySlim<string>(_model.WorkingNumber)
+        WorkOrderId = new ReactivePropertySlim<string>(_model.WorkOrderId)
             .AddTo(Disposables);
 
         JigCode = new ReactivePropertySlim<string>(_model.JigCode)
@@ -30,13 +28,13 @@ public class UnregisteredWorkNumberErrorCollectionViewModel : BindableBase, IDes
     }
 
     [Logging]
-    internal static UnregisteredWorkNumberErrorCollectionViewModel Create(IValidationError validationResult)
+    internal static UnregisteredWorkOrderIdErrorCollectionViewModel Create(IValidationError validationResult)
         => new(validationResult);
 
     [Logging]
-    internal static UnregisteredWorkNumberErrorCollectionViewModel Create(IValidationErrorCollectionViewModel validationResult)
+    internal static UnregisteredWorkOrderIdErrorCollectionViewModel Create(IValidationErrorCollectionViewModel validationResult)
     {
-        var _model = UnregisteredWorkNumberError.Create(validationResult.WorkingNumber.Value, validationResult.JigCode.Value, validationResult.Note.Value);
+        var _model = UnregisteredWorkOrderIdError.Create(validationResult.WorkOrderId.Value, validationResult.JigCode.Value, validationResult.Note.Value);
         return Create(_model);
     }
 
@@ -49,7 +47,7 @@ public class UnregisteredWorkNumberErrorCollectionViewModel : BindableBase, IDes
 
     public ReactivePropertySlim<string> Message { get; }
 
-    public ReactivePropertySlim<string> WorkingNumber { get; }
+    public ReactivePropertySlim<string> WorkOrderId { get; }
 
     public ReactivePropertySlim<string> JigCode { get; }
 

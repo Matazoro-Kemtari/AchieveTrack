@@ -5,7 +5,7 @@ using Wada.AchieveTrackService.DesignManagementWriter;
 using Wada.AchieveTrackService.EmployeeAggregation;
 using Wada.AchieveTrackService.ProcessFlowAggregation;
 using Wada.AchieveTrackService.ValueObjects;
-using Wada.AchieveTrackService.WorkingLedgerAggregation;
+using Wada.AchieveTrackService.WorkOrderAggregation;
 using Wada.AOP.Logging;
 
 namespace Wada.WriteWorkRecordApplication;
@@ -15,40 +15,27 @@ public interface IWriteWorkRecordUseCase
     Task<int> ExecuteAsync(IEnumerable<AchievementParam> achievements, bool canAddingDesignManagement);
 }
 
-public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
+public class WriteWorkRecordUseCase(IEmployeeRepository employeeReader,
+                                    IProcessFlowRepository processFlowRepository,
+                                    IWorkOrderRepository workOrderRepository,
+                                    IAchievementLedgerRepository achievementLedgerRepository,
+                                    IDesignManagementWriter designManagementWriter)
+    : IWriteWorkRecordUseCase
 {
     private const uint CadProcessFlowId = 2u;
-    private readonly IEmployeeRepository _employeeReader;
-    private readonly IProcessFlowRepository _processFlowRepository;
-    private readonly IWorkingLedgerRepository _workingLedgerRepository;
-    private readonly IAchievementLedgerRepository _achievementLedgerRepository;
-    private readonly IDesignManagementWriter _designManagementWriter;
-
-    public WriteWorkRecordUseCase(IEmployeeRepository employeeReader,
-                                  IProcessFlowRepository processFlowRepository,
-                                  IWorkingLedgerRepository workingLedgerRepository,
-                                  IAchievementLedgerRepository achievementLedgerRepository,
-                                  IDesignManagementWriter designManagementWriter)
-    {
-        _employeeReader = employeeReader;
-        _processFlowRepository = processFlowRepository;
-        _workingLedgerRepository = workingLedgerRepository;
-        _achievementLedgerRepository = achievementLedgerRepository;
-        _designManagementWriter = designManagementWriter;
-    }
 
     [Logging]
     public async Task<int> ExecuteAsync(IEnumerable<AchievementParam> achievements, bool canAddingDesignManagement)
     {
         // 最大実績ID取得
-        var maxTask = _achievementLedgerRepository.MaxByAchievementIdAsync();
+        var maxTask = achievementLedgerRepository.MaxByAchievementIdAsync();
         // 結合に必要な分だけ社員情報(部署ID)絞り込み
         var employeeTask = FetchEmployee(achievements);
         // 結合に必要な分だけ実績工程絞り込み
         var processFlowTask = FetchProcessFlow(achievements);
         // 結合に必要な分だけ作業台帳(自社番号)取得
-        var workingLedgerTask = FetchWorkingLedger(achievements);
-        await Task.WhenAll(maxTask, employeeTask, processFlowTask, workingLedgerTask);
+        var workOrderTask = FetchWorkOrder(achievements);
+        await Task.WhenAll(maxTask, employeeTask, processFlowTask, workOrderTask);
 
         // 実績IDインクリメントのため、最大値取得
         var maxAchievementLedger = maxTask.Result;
@@ -56,14 +43,14 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
         // 登録に使用する情報を取得する
         var employees = employeeTask.Result;
         var processFlow = processFlowTask.Result;
-        var workingLedgers = workingLedgerTask.Result;
+        var workOrders = workOrderTask.Result;
 
         using TransactionScope scope = new();
 
         if (canAddingDesignManagement)
-            WriteDesignManagement(achievements, processFlow, workingLedgers);
+            WriteDesignManagement(achievements, processFlow, workOrders);
 
-        var addedCount = WriteAchievementLedgers(achievements, maxAchievementLedger, employees, processFlow, workingLedgers);
+        var addedCount = WriteAchievementLedgers(achievements, maxAchievementLedger, employees, processFlow, workOrders);
 
         scope.Complete();
         return addedCount;
@@ -75,11 +62,11 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     /// <param name="achievements"></param>
     /// <param name="maxAchievementLedger"></param>
     /// <param name="employees"></param>
-    /// <param name="workingLedgers"></param>
+    /// <param name="workOrders"></param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     /// <exception cref="WriteWorkRecordUseCaseException"></exception>
-    private int WriteAchievementLedgers(IEnumerable<AchievementParam> achievements, AchievementLedger maxAchievementLedger, IEnumerable<Employee> employees, IEnumerable<ProcessFlow> processFlow, IEnumerable<WorkingLedger> workingLedgers)
+    private int WriteAchievementLedgers(IEnumerable<AchievementParam> achievements, AchievementLedger maxAchievementLedger, IEnumerable<Employee> employees, IEnumerable<ProcessFlow> processFlow, IEnumerable<WorkOrder> workOrders)
     {
         // Entity作成
         var achievementLedgers = achievements.Join(
@@ -92,13 +79,13 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 a.EmployeeNumber,
                 e.DepartmentId,
                 AchievementDetails = a.AchievementDetails.Join(
-                    workingLedgers,
-                    a => a.WorkingNumber,
-                    w => w.WorkingNumber.Value,
+                    workOrders,
+                    a => a.WorkOrderId,
+                    w => w.WorkOrderId.Value,
                     (a, w) => new
                     {
                         w.OwnCompanyNumber,
-                        a.WorkingNumber,
+                        a.WorkOrderId,
                         a.ManHour,
                         a.ProcessFlow,
                     })
@@ -108,7 +95,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 (a, p) => new
                 {
                     a.OwnCompanyNumber,
-                    a.WorkingNumber,
+                    a.WorkOrderId,
                     a.ManHour,
                     ProcessFlowId = p.Id,
                 }),
@@ -134,7 +121,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
         {
             var addedCount = 0;
             // 実績台帳に追加する
-            achievementLedgers.ToList().ForEach(x => addedCount += _achievementLedgerRepository.Add(x));
+            achievementLedgers.ToList().ForEach(x => addedCount += achievementLedgerRepository.Add(x));
             return addedCount;
         }
         catch (Exception ex) when (ex is AchievementLedgerAggregationException or NullReferenceException)
@@ -149,11 +136,11 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     /// </summary>
     /// <param name="achievements"></param>
     /// <param name="processFlow"></param>
-    /// <param name="workingLedgers"></param>
+    /// <param name="workOrders"></param>
     /// <exception cref="WriteWorkRecordUseCaseException"></exception>
-    private void WriteDesignManagement(IEnumerable<AchievementParam> achievements, IEnumerable<ProcessFlow> processFlow, IEnumerable<WorkingLedger> workingLedgers)
+    private void WriteDesignManagement(IEnumerable<AchievementParam> achievements, IEnumerable<ProcessFlow> processFlow, IEnumerable<WorkOrder> workOrders)
     {
-        var workingNumbers =
+        var workOrderIds =
             // 明細の実績工程がCADだけ抽出
             achievements.Select(x => new
             {
@@ -163,30 +150,30 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                 p => p.Name,
                 (a, p) => new
                 {
-                    a.WorkingNumber,
+                    a.WorkOrderId,
                 }),
             })
             // 親要素と子要素をジャグ配列にして一次配列にもどす
             .Select(x => x.AchievementDetails.Select(y => new
             {
                 x.WorkingDate,
-                y.WorkingNumber,
+                y.WorkOrderId,
             }))
             .SelectMany(x => x)
             // 作業番号の重複を取り除く
-            .GroupBy(x => x.WorkingNumber)
+            .GroupBy(x => x.WorkOrderId)
             .Select(x => new
             {
-                WorkingNumber = x.Key,
+                WorkOrderId = x.Key,
                 WorkingDate = x.Min(y => y.WorkingDate)
             });
 
         try
         {
             // 作業番号から自社番号を取得
-            workingNumbers.Join(workingLedgers,
-                                a => a.WorkingNumber,
-                                w => w.WorkingNumber.Value,
+            workOrderIds.Join(workOrders,
+                                a => a.WorkOrderId,
+                                w => w.WorkOrderId.Value,
                                 (a, w) => new
                                 {
                                     w.OwnCompanyNumber,
@@ -194,7 +181,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
                                 })
                           .ToList().ForEach(
                             // 設計管理に登録する
-                            x => _ = _designManagementWriter.Add(x.OwnCompanyNumber, x.WorkingDate));
+                            x => _ = designManagementWriter.Add(x.OwnCompanyNumber, x.WorkingDate));
         }
         catch (DesignManagementWriterException ex)
         {
@@ -216,7 +203,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
         {
             var employees = await Task.WhenAll(
                 achievements.Select(
-                    async x => await _employeeReader.FindByEmployeeNumberAsync(x.EmployeeNumber)));
+                    async x => await employeeReader.FindByEmployeeNumberAsync(x.EmployeeNumber)));
             return employees.Distinct();
         }
         catch (EmployeeNotFoundException ex)
@@ -234,7 +221,7 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
             var processFlows = achievements.Select(x => x.AchievementDetails.Select(y => y.ProcessFlow))
                                            .SelectMany(x => x)
                                            .Distinct();
-            return await Task.WhenAll(processFlows.Select(x => _processFlowRepository.FindByNameAsync(x)));
+            return await Task.WhenAll(processFlows.Select(x => processFlowRepository.FindByNameAsync(x)));
         }
         catch (ProcessFlowNotFoundException ex)
         {
@@ -250,19 +237,19 @@ public class WriteWorkRecordUseCase : IWriteWorkRecordUseCase
     /// <returns></returns>
     /// <exception cref="WriteWorkRecordUseCaseException"></exception>
     [Logging]
-    private async Task<IEnumerable<WorkingLedger>> FetchWorkingLedger(IEnumerable<AchievementParam> achievements)
+    private async Task<IEnumerable<WorkOrder>> FetchWorkOrder(IEnumerable<AchievementParam> achievements)
     {
         try
         {
-            var WorkingLedgers = await Task.WhenAll(
+            var WorkOrders = await Task.WhenAll(
                 achievements.Select(
                     async (achievement, i) => await Task.WhenAll(
                         achievement.AchievementDetails.Select(
-                            async x => await _workingLedgerRepository.FindByWorkingNumberAsync(
-                                WorkingNumber.Create(x.WorkingNumber))))));
-            return WorkingLedgers.SelectMany(x => x).Distinct();
+                            async x => await workOrderRepository.FindByWorkOrderIdAsync(
+                                WorkOrderId.Create(x.WorkOrderId))))));
+            return WorkOrders.SelectMany(x => x).Distinct();
         }
-        catch (WorkingLedgerNotFoundException ex)
+        catch (WorkOrderNotFoundException ex)
         {
             throw new WriteWorkRecordUseCaseException(
                 $"実績を登録中に問題が発生しました\n{ex.Message}");
