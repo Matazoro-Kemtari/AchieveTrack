@@ -22,7 +22,7 @@ public class WriteWorkRecordUseCase(IEmployeeRepository employeeReader,
                                     IDesignManagementWriter designManagementWriter)
     : IWriteWorkRecordUseCase
 {
-    private const uint CadProcessFlowId = 2u;
+    private static readonly uint[] DesignProcessFlowIds = { 2u, 8u };
 
     [Logging]
     public async Task<int> ExecuteAsync(IEnumerable<AchievementParam> achievements, bool canAddingDesignManagement)
@@ -141,11 +141,11 @@ public class WriteWorkRecordUseCase(IEmployeeRepository employeeReader,
     private void WriteDesignManagement(IEnumerable<AchievementParam> achievements, IEnumerable<ProcessFlow> processFlow, IEnumerable<WorkOrder> workOrders)
     {
         var workOrderIds =
-            // 明細の実績工程がCADだけ抽出
+            // 明細の実績工程がCAD/設計を抽出
             achievements.Select(x => new
             {
                 x.WorkingDate,
-                AchievementDetails = x.AchievementDetails.Join(processFlow.Where(x => x.Id == CadProcessFlowId),
+                AchievementDetails = x.AchievementDetails.Join(processFlow.Where(x => DesignProcessFlowIds.Contains(x.Id)),
                 a => a.ProcessFlow,
                 p => p.Name,
                 (a, p) => new
