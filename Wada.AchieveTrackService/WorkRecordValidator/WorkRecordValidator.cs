@@ -12,15 +12,15 @@ public class WorkRecordValidator(IWorkOrderRepository workOrderRepository,
                                  IDesignManagementRepository designManagementRepository)
     : IWorkRecordValidator
 {
+    private static readonly IReadOnlyCollection<string> CadProcessFlows = ["CAD", "設計"];
+
     [Logging]
     public async Task<IEnumerable<IEnumerable<IValidationError>>> ValidateWorkRecordsAsync(IEnumerable<WorkRecord> workRecords)
     {
         if (!workRecords.Any())
             throw new ArgumentNullException(nameof(workRecords));
 
-        const string CadProcessFlow = "CAD";
-
-        return await Task.WhenAll((IEnumerable<Task<List<IValidationError>>>)workRecords.Select(
+        return await Task.WhenAll(workRecords.Select(
             async x =>
             {
                 var validationResults = new List<IValidationError>();
@@ -30,7 +30,7 @@ public class WorkRecordValidator(IWorkOrderRepository workOrderRepository,
                     if (await IsWorkingDatePastCompletionAsync(x.WorkOrderId, x.WorkingDate))
                         validationResults.Add(WorkDateExpiredError.Create(x.WorkOrderId, x.JigCode, x.Note));
 
-                    if (x.ProcessFlow == CadProcessFlow
+                    if (CadProcessFlows.Contains(x.ProcessFlow)
                         && !await IsWorkNumberInDesignManagementLedgerAsync(x.WorkOrderId))
                         validationResults.Add(UnregisteredWorkOrderIdError.Create(x.WorkOrderId, x.JigCode, x.Note));
                 }
